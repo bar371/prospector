@@ -158,15 +158,23 @@ def soil(points):
 
 
 def monuments(bbox):
-    params = {"service": "WFS", "version": "2.0.0", "request": "GetFeature", "typeNames": "ps-ch:rce_inspire_points",
-              "outputFormat": "application/json", "srsName": "EPSG:4326", "bbox": f"{bbox[1]},{bbox[0]},{bbox[3]},{bbox[2]},urn:ogc:def:crs:EPSG::4326"}
-    try:
-        feats = fetch_json(f"{RCE_WFS}?{urllib.parse.urlencode(params)}").get("features", [])
-    except Exception as e:
-        log(f"  monuments failed: {e}")
-        return []
+    """Rijksmonument points in the bbox; the WFS returns at most 1000 per request, so page with startIndex."""
+    feats, start = [], 0
+    while True:
+        params = {"service": "WFS", "version": "2.0.0", "request": "GetFeature", "typeNames": "ps-ch:rce_inspire_points",
+                  "outputFormat": "application/json", "srsName": "EPSG:4326", "count": "1000", "startIndex": str(start),
+                  "sortBy": "localid", "bbox": f"{bbox[1]},{bbox[0]},{bbox[3]},{bbox[2]},urn:ogc:def:crs:EPSG::4326"}
+        try:
+            page = fetch_json(f"{RCE_WFS}?{urllib.parse.urlencode(params)}").get("features", [])
+        except Exception as e:
+            log(f"  monuments failed at {start}: {e}")
+            break
+        feats += page
+        start += 1000
+        if len(page) < 1000:
+            break
     if feats:
-        log(f"  {len(feats)} rijksmonument points; fields {sorted(feats[0]['properties'])}")
+        log(f"  {len(feats)} rijksmonument points ({len({f['properties'].get('localid') for f in feats})} distinct)")
     return feats
 
 
@@ -374,9 +382,10 @@ def build(key, v):
             "raad": council.get(st, [])[:15],
         })
 
-    keep = ("weergavenaam", "straatnaam", "huisnummer", "huisletter", "huisnummertoevoeging", "postcode", "buurtcode",
-            "lon", "lat", "adresseerbaarobject_id", "oppervlakte", "gebruiksdoel", "bouwjaar", "pand", "bodem", "fundering", "monument")
-    addr_rows = [{k: d.get(k) for k in keep} for d in docs]
+    # Display name, soil, foundation flag and monument status live on the building or are rebuilt in the app.
+    keep = ("straatnaam", "huisnummer", "huisletter", "huisnummertoevoeging", "postcode", "buurtcode",
+            "lon", "lat", "adresseerbaarobject_id", "oppervlakte", "gebruiksdoel", "bouwjaar", "pand")
+    addr_rows = [{k: d.get(k) for k in keep if d.get(k) is not None} for d in docs]
     (out / "addresses.json").write_text(json.dumps(addr_rows, ensure_ascii=False, separators=(",", ":")))
     (out / "buildings.geojson").write_text(json.dumps({"type": "FeatureCollection", "features": features}, ensure_ascii=False, separators=(",", ":")))
     (out / "streets.json").write_text(json.dumps(street_rows, ensure_ascii=False, indent=0))

@@ -193,8 +193,11 @@ function addBuildingLayers() {
   map.on('mouseleave', 'buildings-fill', () => { map.getCanvas().style.cursor = ''; });
 }
 
-function villageFor(woonplaats) {
-  return Object.entries(villages.index || {}).find(([, v]) => v.woonplaats.toLowerCase() === String(woonplaats || '').toLowerCase())?.[0];
+// Villages covering a place: a whole woonplaats, or part of a city given as a list of buurten.
+function villagesFor(doc) {
+  const wp = String(doc.woonplaatsnaam || '').toLowerCase();
+  return Object.entries(villages.index || {}).filter(([, v]) => v.woonplaats.toLowerCase() === wp
+    && (!v.buurtcodes || !doc.buurtcode || v.buurtcodes.includes(doc.buurtcode))).map(([k]) => k);
 }
 
 function ensureVillage(key) {
@@ -202,6 +205,8 @@ function ensureVillage(key) {
   if (!villages.loaded.has(key)) {
     const get = (f) => fetch(`data/villages/${key}/${f}`).then((r) => { if (!r.ok) throw new Error(f); return r.json(); });
     villages.loaded.set(key, Promise.all([get('buildings.geojson'), get('streets.json'), get('addresses.json')]).then(([buildings, streets, addresses]) => {
+      // The display name is rebuilt in the Locatieserver's format ("Straat 1A-2, 1234AB Plaats").
+      for (const a of addresses) a.weergavenaam ??= `${a.straatnaam} ${houseNumber(a)}, ${a.postcode} ${villages.index[key].woonplaats}`;
       const v = { key, ...villages.index[key], buildings, streets, addresses };
       villages.data[key] = v;
       const all = Object.values(villages.data).flatMap((x) => x.buildings.features);
@@ -356,11 +361,10 @@ async function select(id) {
       await openArea(area.key, { point: doc.type === 'adres' ? pt : null, title: doc.type === 'adres' ? doc.weergavenaam : null });
       return;
     }
-    const vkey = villageFor(doc.woonplaatsnaam);
-    if (vkey && (doc.type === 'weg' || doc.type === 'adres')) {
+    for (const vkey of (doc.type === 'weg' || doc.type === 'adres') ? villagesFor(doc) : []) {
       const v = await ensureVillage(vkey);
       if (v && doc.type === 'weg' && v.streets.some((x) => x.straat === doc.straatnaam)) { await openStreet(vkey, doc.straatnaam); return; }
-      const a = v && v.addresses.find((x) => x.adresseerbaarobject_id === doc.adresseerbaarobject_id);
+      const a = v && doc.type === 'adres' && v.addresses.find((x) => x.adresseerbaarobject_id === doc.adresseerbaarobject_id);
       if (a?.pand) { await openBuilding(a.pand, { address: a }); return; }
     }
     if (pt) {
@@ -538,8 +542,9 @@ function renderBuilding(v, p, addrs, a) {
       ${home ? '<button type="button" class="council-button" data-valuation-building>Estimate a value</button>' : ''}
       <button type="button" class="council-button" data-street="${esc(p.straat)}">All of ${esc(p.straat)}</button>
     </div>
-    ${(() => { const own = addrs.map((x) => `${x.straatnaam} ${houseNumber(x)}`.toLowerCase());
-      const hits = (v.listings || []).filter((l) => own.includes(l.address.toLowerCase()));
+    ${(() => { const norm = (t) => t.toLowerCase().replace(/[\s-]/g, '');
+      const own = addrs.map((x) => norm(`${x.straatnaam} ${houseNumber(x)}`));
+      const hits = (v.listings || []).filter((l) => own.includes(norm(l.address)));
       return hits.length ? `<h2 class="section-title">Listed online</h2>${listingsHtml(hits)}` : ''; })()}
     ${addrs.length > 1 ? `<h2 class="section-title">Addresses in this building</h2>
       <ul class="address-list">${addrs.map((x) => `<li><button type="button" class="link-button" data-address="${esc(x.adresseerbaarobject_id)}"${x === a ? ' aria-current="true"' : ''}>${esc(houseNumber(x))}</button> <span class="muted">${esc(uses(x.gebruiksdoel))}${x.oppervlakte ? ` · ${x.oppervlakte} m²` : ''}</span></li>`).join('')}</ul>` : ''}
@@ -585,7 +590,7 @@ function renderStreet(v, st, pts) {
   const homes = pts.filter((x) => (x.gebruiksdoel || '').includes('woon')).sort(sortByNumber);
   sheetBody.innerHTML = `
     <h1>${esc(st.straat)}, ${esc(v.woonplaats)}</h1>
-    <p class="muted">${esc(v.gemeente)} · ${Object.keys(st.buurten).map((c) => esc(buurtProps(c)?.buurtnaam || c)).join(', ')}</p>
+    <p class="muted">${esc(v.gemeente)} · ${Object.keys(st.buurten).map((c) => esc(buurtProps(c)?.buurtnaam || c)).join(', ')}${v.buurtcodes ? ` · the part within ${esc(v.naam)}` : ''}</p>
     <dl class="facts">${rows.map(([k, val]) => `<dt>${esc(k)}</dt><dd>${esc(val)}</dd>`).join('')}</dl>
     ${total ? `<h2 class="section-title">Foundation risk, by address</h2>
       <div class="stack" role="img" aria-label="${Object.entries(FOUNDATION).map(([k, f]) => `${f.label}: ${flags[k] || 0}`).join(', ')}">

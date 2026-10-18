@@ -1,0 +1,23 @@
+{
+  "area": "Leiden city centre (Binnenstad-Zuid, Binnenstad-Noord, Stationsdistrict)",
+  "found_on": "2026-10-18",
+  "method": "Online search of public listing pages (Funda, Huispedia, Vastgoed Nederland, makelaar sites). Values come from search-result snippets; the pages themselves were not opened.",
+  "price_note": "Asking prices (vraagprijs, kosten koper) unless noted. Final sale prices are not public for free and can differ. Statuses may have changed since the search.",
+  "listings": [
+    { "address": "Herensteeg 5", "asking_price_eur": 725000, "floor_area_m2": 121, "status": "te koop", "source": "https://huispedia.nl/leiden/2311sg/herensteeg/5" },
+    { "address": "Botermarkt 4B", "asking_price_eur": 580000, "floor_area_m2": 92, "listed_on": "2026-09-08", "status": "te koop", "source": "https://www.vastgoednederland.nl/koopwoningen/leiden/woning-660876-botermarkt-4b" },
+    { "address": "Vliet 5-B", "asking_price_eur": 650000, "floor_area_m2": 98, "status": "verkocht onder voorbehoud", "source": "https://www.funda.nl/detail/koop/leiden/appartement-vliet-5-b/80825349/" },
+    { "address": "Vliet 5", "asking_price_eur": 425000, "floor_area_m2": 58, "status": "onder bod", "source": "https://www.apollomakelaardij.nl/woningaanbod/koop/leiden/vliet/5" },
+    { "address": "Galgewater 11", "asking_price_eur": 925000, "floor_area_m2": 129, "status": "te koop", "source": "https://www.funda.nl/detail/koop/leiden/huis-galgewater-11/17220918/" },
+    { "address": "Breestraat 54-D", "asking_price_eur": 250000, "floor_area_m2": 37, "status": "te koop, price reduced", "source": "https://huispedia.nl/leiden/2311cs/breestraat/54-d" },
+    { "address": "Plantsoen 23", "asking_price_eur": 1425000, "floor_area_m2": 259, "status": "te koop", "source": "https://www.dewekkermakelaardij.nl/woningaanbod/koop/leiden/plantsoen/23" },
+    { "address": "4e Binnenvestgracht 42", "asking_price_eur": 419000, "floor_area_m2": 76, "status": "verkocht onder voorbehoud", "source": "https://www.funda.nl/detail/koop/leiden/huis-4e-binnenvestgracht-42/43392221/" },
+    { "address": "Oude Herengracht 12", "asking_price_eur": 875000, "floor_area_m2": 161, "listed_on": "2026-01-08", "sold_on": "2026-03-03", "status": "verkocht", "source": "https://www.funda.nl/detail/koop/verkocht/leiden/huis-oude-herengracht-12/43205525/" },
+    { "address": "Houtmarkt 11", "asking_price_eur": 449000, "floor_area_m2": 62, "sold_on": "2026-04-09", "status": "verkocht", "note": "first listed at €475,000; leasehold (erfpacht)", "source": "https://www.funda.nl/detail/koop/verkocht/leiden/huis-houtmarkt-11/43205517/" },
+    { "address": "Van der Lubbehof 2", "asking_price_eur": 500000, "floor_area_m2": 83, "sold_on": "2026-03-13", "status": "verkocht", "source": "https://www.funda.nl/detail/koop/verkocht/leiden/huis-van-der-lubbehof-2/43189200/" },
+    { "address": "Haven 11", "asking_price_eur": 625000, "status": "verkocht", "source": "https://www.funda.nl/koop/verkocht/leiden/huis-42364874-haven-11/" },
+    { "address": "Hooigracht 67", "type": "appartement", "asking_price_eur": 295000, "floor_area_m2": 48, "sold_on": "2026-04-07", "status": "verkocht", "source": "https://www.funda.nl/detail/koop/verkocht/leiden/appartement-hooigracht-67/89733629/" },
+    { "address": "Haven 56-A", "type": "studio", "asking_price_eur": 229500, "status": "verkocht onder voorbehoud", "source": "https://www.funda.nl/detail/koop/leiden/appartement-haven-56-a/80806718/" },
+    { "address": "Nieuwe Rijn 3", "status": "te koop", "source": "https://www.funda.nl/detail/koop/leiden/huis-nieuwe-rijn-3/89729032/" }
+  ]
+}
