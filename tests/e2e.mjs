@@ -413,6 +413,98 @@ await test('Value estimate: a rejected key gives a clear message', async () => {
   await context.close();
 });
 
+// Village coverage: every building and street in Hazerswoude-Rijndijk.
+await test('Village: building card from a searched address', async () => {
+  const { context, page, log } = await open();
+  await page.fill('#q', 'Valeriusstraat 15 Hazerswoude-Rijndijk');
+  await page.locator('#suggestions li[data-id]').first().waitFor({ timeout: 10000 });
+  await page.press('#q', 'Enter');
+  await waitForTitle(page, /^Valeriusstraat 15$/);
+  const f = await facts(page);
+  check(/^\d{4}$/.test(f.Built || ''), `building year (${f.Built})`);
+  check(/m²/.test(f['Floor area'] || ''), `floor area (${f['Floor area']})`);
+  check(/risk|Check/.test(f.Foundation || ''), `foundation flag (${(f.Foundation || '').slice(0, 40)})`);
+  check(!!f.Soil, `soil (${f.Soil})`);
+  const text = await sheetText(page);
+  check(/€325\.000/.test(text), 'the asking price found online is shown');
+  check(/Prospect score/.test(text), 'neighbourhood scores shown');
+  await page.waitForTimeout(1500);
+  const selected = await page.evaluate(() => {
+    const m = window.prospectMap;
+    return m.queryRenderedFeatures({ layers: ['buildings-fill'] }).some((x) => m.getFeatureState({ source: 'buildings', id: x.properties.pand }).selected);
+  });
+  check(selected, 'the building is highlighted on the map');
+  check(await page.waitForFunction(() => /foundation risk/i.test(document.querySelector('#legend').innerText), null, { timeout: 8000 }).then(() => true, () => false),
+    'legend explains the building colours');
+  await page.screenshot({ path: `${OUT}/village-building.png` });
+  await page.click('[data-street]');
+  await waitForTitle(page, /^Valeriusstraat, Hazerswoude-Rijndijk$/);
+  const sf = await facts(page);
+  check(/^\d+/.test(sf.Addresses || ''), `street address count (${sf.Addresses})`);
+  check(await page.locator('#s-homes .link-button').count() > 3, 'homes on the street listed');
+  check(await page.locator('.stack span').count() >= 1, 'foundation risk bar shown');
+  await page.screenshot({ path: `${OUT}/village-street.png` });
+  await page.locator('#s-homes summary').click();
+  await page.locator('#s-homes .link-button').nth(2).click();
+  await waitForTitle(page, /^Valeriusstraat \d/);
+  check(true, `a home opens from the street list (${await page.locator('#sheet-body h1').innerText()})`);
+  check(log.errors.length === 0, `no errors${log.errors.length ? ': ' + log.errors.join(' | ') : ''}`);
+  await context.close();
+});
+
+await test('Village: street search and tapping a building', async () => {
+  const { context, page, log } = await open();
+  await page.fill('#q', 'Albert Verweijstraat Hazerswoude-Rijndijk');
+  await page.locator('#suggestions li[data-id]').first().waitFor({ timeout: 10000 });
+  await page.press('#q', 'Enter');
+  await waitForTitle(page, /^Albert Verweijstraat, Hazerswoude-Rijndijk$/);
+  check(/€489\.000/.test(await sheetText(page)), 'listings on the street shown');
+  await page.waitForTimeout(2000);
+  await page.click('.handle');
+  await page.waitForTimeout(400);
+  const target = await page.evaluate(() => {
+    const m = window.prospectMap;
+    const f = m.queryRenderedFeatures({ layers: ['buildings-fill'] }).find((x) => x.properties.wonen);
+    if (!f) return null;
+    const ring = f.geometry.type === 'Polygon' ? f.geometry.coordinates[0] : f.geometry.coordinates[0][0];
+    const c = ring.reduce((a, p) => [a[0] + p[0] / ring.length, a[1] + p[1] / ring.length], [0, 0]);
+    const pt = m.project(c);
+    return { x: pt.x, y: pt.y, straat: f.properties.straat };
+  });
+  check(!!target, 'buildings are drawn on the map');
+  if (target) {
+    await page.mouse.click(target.x, target.y);
+    await waitForTitle(page, new RegExp(`^${target.straat} `)).catch(() => {});
+    check(new RegExp(`^${target.straat} `).test(await page.locator('#sheet-body h1').innerText()), `tapping a building opens its card (${await page.locator('#sheet-body h1').innerText()})`);
+  }
+  check(log.errors.length === 0, `no errors${log.errors.length ? ': ' + log.errors.join(' | ') : ''}`);
+  await context.close();
+});
+
+await test('Village: value estimate carries building and street data', async () => {
+  const { context, page } = await open();
+  let body = null;
+  await context.route('**/v1/messages**', async (route) => {
+    body = JSON.parse(route.request().postData());
+    await route.fulfill({ status: 200, headers: { 'content-type': 'text/event-stream' }, body: sse(MOCK_RESULT) });
+  });
+  await page.fill('#q', 'Schutterstraat 34 Hazerswoude-Rijndijk');
+  await page.locator('#suggestions li[data-id]').first().waitFor({ timeout: 10000 });
+  await page.press('#q', 'Enter');
+  await waitForTitle(page, /^Schutterstraat 34$/);
+  await page.click('[data-valuation-building]');
+  await waitForTitle(page, /Estimate a value/);
+  await page.selectOption('select[name=type]', { index: 0 });
+  await page.fill('input[name=apikey]', 'sk-ant-test-key');
+  await page.click('#valuation-form button[type=submit]');
+  await page.locator('.estimate').waitFor({ timeout: 15000 }).catch(() => {});
+  await page.screenshot({ path: `${OUT}/village-valuation.png` });
+  const text = body ? body.messages[0].content.map((c) => c.text).join('\n') : '';
+  check(/building level/.test(text) && /"foundation_flag"/.test(text), 'request carries the building facts');
+  check(/Schutterstraat 34/.test(text) && /475000/.test(text), 'request carries the street listings');
+  await context.close();
+});
+
 // 6. Layout on different screens and colour schemes.
 const SCREENS = [
   ['iphone-se', { width: 320, height: 568 }, true],

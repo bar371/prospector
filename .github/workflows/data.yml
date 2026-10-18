@@ -5,7 +5,7 @@ name: Data
 on:
   push:
     branches-ignore: [main]
-    paths: ['pipeline/**', '.github/workflows/data.yml']
+    paths: ['pipeline/**', '!pipeline/village.py', '.github/workflows/data.yml']
   workflow_dispatch:
     inputs:
       steps:
