@@ -286,8 +286,8 @@ await test('Map: tapping a neighbourhood opens its scores', async () => {
 
 // 5. Test-area dossiers.
 for (const [key, title, buurten, councilRe] of [
-  ['zamenhofstraat-leiden', /^Zamenhofstraat, Leiden$/, 1, /Energiepark/],
-  ['rijndijk-hazerswoude-rijndijk', /^Rijndijk, Hazerswoude-Rijndijk$/, 4, /not in Open Raadsinformatie/],
+  ['zamenhofstraat-leiden', /^Zamenhofstraat, Leiden$/, 1, /Said in meetings[\s\S]*Energiepark/],
+  ['rijndijk-hazerswoude-rijndijk', /^Rijndijk, Hazerswoude-Rijndijk$/, 4, /Elektriciteitsstation Hazerswoude-Rijndijk/],
 ]) {
   await test(`Dossier: ${key}`, async () => {
     const { context, page, log } = await open();

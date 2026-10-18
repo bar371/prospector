@@ -81,6 +81,12 @@ if (window.matchMedia('(min-width: 760px)').matches) {
   map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
 }
 window.prospectMap = map; // for tests and debugging
+// Tile and data requests are aborted when the view changes or the page reloads; those are not errors.
+map.on('error', (e) => {
+  const msg = String(e?.error?.message || e?.error || '');
+  if (/abort|Failed to fetch|NetworkError/i.test(msg)) return;
+  console.warn('Map error:', msg);
+});
 
 const marker = new maplibregl.Marker({ color: '#0f172a' });
 let schoolMarkers = [];
@@ -121,7 +127,9 @@ function addBuurtLayers() {
   if (pendingSelection) { selectBuurten(pendingSelection); pendingSelection = null; }
 }
 
-function ensureGemeente(code) {
+function ensureGemeente(rawCode) {
+  // The Locatieserver gives "0363"; CBS files use "GM0363".
+  const code = rawCode && (String(rawCode).startsWith('GM') ? String(rawCode) : `GM${rawCode}`);
   if (!code || !gemeenteIndex?.[code]) return Promise.resolve();
   if (!loadedGemeenten.has(code)) {
     loadedGemeenten.set(code, fetch(`data/gemeenten/${code}.geojson`).then((r) => r.json()).then((fc) => {
