@@ -1,0 +1,29 @@
+name: Probe
+
+# One-off exploration of data sources; output goes to the probe-build branch.
+on:
+  push:
+    branches-ignore: [main]
+    paths: ['pipeline/probe_enrich.py', '.github/workflows/probe.yml']
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: mkdir -p out && python pipeline/probe_enrich.py > out/probe.log 2>&1 || true
+      - name: Publish to the probe-build branch
+        run: |
+          cd out
+          git init -q -b probe-build
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A && git commit -qm "Probe for $GITHUB_SHA"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" probe-build

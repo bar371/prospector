@@ -501,7 +501,36 @@ await test('Village: value estimate carries building and street data', async () 
   await page.screenshot({ path: `${OUT}/village-valuation.png` });
   const text = body ? body.messages[0].content.map((c) => c.text).join('\n') : '';
   check(/building level/.test(text) && /"foundation_flag"/.test(text), 'request carries the building facts');
+  check(/"measured_at_home"/.test(text) && /"perceel_m2"/.test(text), 'request carries the measured plot, garden and noise');
   check(/Schutterstraat 34/.test(text) && /475000/.test(text), 'request carries the street listings');
+  await context.close();
+});
+
+await test('Village: new development gets measured scores (Koolrabi)', async () => {
+  const { context, page, log } = await open();
+  await page.fill('#q', 'Koolrabi Hazerswoude-Rijndijk');
+  await page.locator('#suggestions li[data-id]').first().waitFor({ timeout: 10000 });
+  await page.press('#q', 'Enter');
+  await waitForTitle(page, /^Koolrabi, Hazerswoude-Rijndijk$/);
+  const text = await sheetText(page);
+  check(/New development, built 202/.test(text), 'the street is flagged as a new development');
+  check(/Scores for this street/.test(text) && /measured at this street/.test(text), 'quiet and car-light are measured for the street');
+  const f = await facts(page);
+  check(!!f['Median plot'] && !!f['Median garden'], `plot and garden sizes (${f['Median plot']}, ${f['Median garden']})`);
+  await page.screenshot({ path: `${OUT}/village-new-street.png` });
+  await page.locator('#s-homes summary').click();
+  await page.locator('#s-homes .link-button').first().click();
+  await waitForTitle(page, /^Koolrabi \d/);
+  const h = await facts(page);
+  check(!!h['House type'], `house type (${h['House type']})`);
+  check(/m²/.test(h.Garden || '') || /m²/.test(h.Plot || ''), `garden or plot (${h.Garden} / ${h.Plot})`);
+  check(/dB/.test(h.Noise || ''), `noise at the home (${h.Noise})`);
+  check(/A\+\+\+|Not available|^[A-G]/.test(h['Energy label'] || ''), `energy label line (${h['Energy label']})`);
+  await page.screenshot({ path: `${OUT}/village-new-home.png`, fullPage: false });
+  await page.click('[data-layer="rust"]');
+  await page.waitForTimeout(800);
+  check(/measured at each home/.test(await page.locator('#legend').innerText()), 'on Quiet, buildings show the measured score');
+  check(log.errors.length === 0, `no errors${log.errors.length ? ': ' + log.errors.join(' | ') : ''}`);
   await context.close();
 });
 

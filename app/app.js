@@ -118,7 +118,10 @@ let gemeenteIndex = null;
 function addBuurtLayers() {
   map.addSource('buurten', { type: 'geojson', data: state.buurten, promoteId: 'buurtcode' });
   map.addLayer({ id: 'buurten-fill', type: 'fill', source: 'buurten',
-    paint: { 'fill-color': layerPaint(), 'fill-opacity': ['case', ['boolean', ['feature-state', 'selected'], false], 0.75, 0.55] } });
+    // Fades when zoomed in to buildings, so the buurt average does not read as the colour of each street.
+    paint: { 'fill-color': layerPaint(), 'fill-opacity': ['interpolate', ['linear'], ['zoom'],
+      14, ['case', ['boolean', ['feature-state', 'selected'], false], 0.75, 0.55],
+      16.5, ['case', ['boolean', ['feature-state', 'selected'], false], 0.3, 0.18]] } });
   map.addLayer({ id: 'buurten-line', type: 'line', source: 'buurten',
     paint: { 'line-color': '#ffffff', 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 0.4, 15, 1.5] } });
   map.addLayer({ id: 'buurten-selected', type: 'line', source: 'buurten',
@@ -181,11 +184,20 @@ const USES = { woonfunctie: 'home', winkelfunctie: 'shop', kantoorfunctie: 'offi
   logiesfunctie: 'lodging', overige: 'other', celfunctie: 'cells' };
 const villages = { index: null, loaded: new Map(), data: {} };
 
+// Measured per home (pipeline/enrich.py); on these layers buildings show the home's own score instead of foundation risk.
+const MEASURED = ['rust', 'autoluw'];
+const buildingMode = () => (MEASURED.includes(state.layer) && Object.values(villages.data).some((v) => v.enrich) ? state.layer : 'fundering');
+
+function buildingPaint() {
+  const mode = buildingMode();
+  if (mode !== 'fundering') return ['case', ['==', ['get', `score_${mode}`], null], '#94a3b8', stepExpression(`score_${mode}`, SCORE_COLORS, SCORE_BREAKS)];
+  return ['match', ['get', 'fundering'], 'high', FOUNDATION.high.color, 'check', FOUNDATION.check.color, 'low', FOUNDATION.low.color, '#94a3b8'];
+}
+
 function addBuildingLayers() {
   map.addSource('buildings', { type: 'geojson', data: { type: 'FeatureCollection', features: [] }, promoteId: 'pand' });
   map.addLayer({ id: 'buildings-fill', type: 'fill', source: 'buildings', minzoom: 14,
-    paint: { 'fill-color': ['match', ['get', 'fundering'], 'high', FOUNDATION.high.color, 'check', FOUNDATION.check.color,
-      'low', FOUNDATION.low.color, '#94a3b8'], 'fill-opacity': ['case', ['boolean', ['feature-state', 'selected'], false], 1, 0.8] } });
+    paint: { 'fill-color': buildingPaint(), 'fill-opacity': ['case', ['boolean', ['feature-state', 'selected'], false], 1, 0.8] } });
   map.addLayer({ id: 'buildings-line', type: 'line', source: 'buildings', minzoom: 14,
     paint: { 'line-color': ['case', ['boolean', ['feature-state', 'selected'], false], '#0f172a', '#ffffff'],
       'line-width': ['case', ['boolean', ['feature-state', 'selected'], false], 2.5, 0.6] } });
@@ -193,19 +205,36 @@ function addBuildingLayers() {
   map.on('mouseleave', 'buildings-fill', () => { map.getCanvas().style.cursor = ''; });
 }
 
-function villageFor(woonplaats) {
-  return Object.entries(villages.index || {}).find(([, v]) => v.woonplaats.toLowerCase() === String(woonplaats || '').toLowerCase())?.[0];
+// Villages covering a place: a whole woonplaats, or part of a city given as a list of buurten.
+function villagesFor(doc) {
+  const wp = String(doc.woonplaatsnaam || '').toLowerCase();
+  return Object.entries(villages.index || {}).filter(([, v]) => v.woonplaats.toLowerCase() === wp
+    && (!v.buurtcodes || !doc.buurtcode || v.buurtcodes.includes(doc.buurtcode))).map(([k]) => k);
 }
 
 function ensureVillage(key) {
   if (!key || !villages.index?.[key]) return Promise.resolve(null);
   if (!villages.loaded.has(key)) {
     const get = (f) => fetch(`data/villages/${key}/${f}`).then((r) => { if (!r.ok) throw new Error(f); return r.json(); });
-    villages.loaded.set(key, Promise.all([get('buildings.geojson'), get('streets.json'), get('addresses.json')]).then(([buildings, streets, addresses]) => {
-      const v = { key, ...villages.index[key], buildings, streets, addresses };
+    const optional = (f) => get(f).catch(() => null);
+    villages.loaded.set(key, Promise.all([get('buildings.geojson'), get('streets.json'), get('addresses.json'),
+      optional('enrich.json'), optional('streets_enrich.json')]).then(([buildings, streets, addresses, enrich, streetsEnrich]) => {
+      // The display name is rebuilt in the Locatieserver's format ("Straat 1A-2, 1234AB Plaats").
+      for (const a of addresses) a.weergavenaam ??= `${a.straatnaam} ${houseNumber(a)}, ${a.postcode} ${villages.index[key].woonplaats}`;
+      if (enrich) {
+        const byPand = {};
+        for (const a of addresses) if (enrich[a.adresseerbaarobject_id] && a.pand) (byPand[a.pand] ??= []).push(enrich[a.adresseerbaarobject_id]);
+        for (const f of buildings.features) {
+          const es = byPand[f.properties.pand];
+          if (!es) continue;
+          for (const k of MEASURED) f.properties[`score_${k}`] = Math.round(es.reduce((t, e) => t + (e[`score_${k}`] ?? 0), 0) / es.length);
+        }
+      }
+      const v = { key, ...villages.index[key], buildings, streets, addresses, enrich, streetsEnrich };
       villages.data[key] = v;
       const all = Object.values(villages.data).flatMap((x) => x.buildings.features);
       map.getSource('buildings')?.setData({ type: 'FeatureCollection', features: all });
+      if (map.getLayer('buildings-fill')) map.setPaintProperty('buildings-fill', 'fill-color', buildingPaint());
       renderLegend();
       return v;
     }).catch(() => { villages.loaded.delete(key); return null; }));
@@ -270,6 +299,7 @@ function setLayer(layer) {
   state.layer = layer;
   document.querySelectorAll('.chip[data-layer]').forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.layer === layer)));
   if (map.getLayer('buurten-fill')) map.setPaintProperty('buurten-fill', 'fill-color', layerPaint());
+  if (map.getLayer('buildings-fill')) map.setPaintProperty('buildings-fill', 'fill-color', buildingPaint());
   renderLegend();
 }
 
@@ -284,7 +314,9 @@ function renderLegend() {
     <ol class="legend-scale">${colors.map((c, i) => `<li><span class="swatch" style="background:${c}"></span>${esc(labels[i])}</li>`).join('')}</ol>
     <div class="legend-compact" aria-hidden="true"><span>${ends[0]}</span>${colors.map((c) => `<span class="swatch" style="background:${c}"></span>`).join('')}<span>${ends[1]}</span></div>
     ${isValue ? '' : '<div class="legend-note">Compared with all Dutch neighbourhoods</div>'}
-    ${buildingsVisible() ? `<div class="legend-buildings"><div class="legend-title">Buildings: foundation risk</div>
+    ${buildingsVisible() && buildingMode() !== 'fundering' ? `<div class="legend-buildings"><div class="legend-title">Buildings: measured at each home</div>
+      <div class="legend-note">Same colours; scored on noise and road data, not compared nationally</div></div>` : ''}
+    ${buildingsVisible() && buildingMode() === 'fundering' ? `<div class="legend-buildings"><div class="legend-title">Buildings: foundation risk</div>
       <ol class="legend-scale">${Object.values(FOUNDATION).map((f) => `<li><span class="swatch" style="background:${f.color}"></span>${esc(f.label)}</li>`).join('')}</ol>
       <div class="legend-compact" aria-hidden="true"><span>Higher</span>${Object.values(FOUNDATION).map((f) => `<span class="swatch" style="background:${f.color}"></span>`).join('')}<span>Lower</span></div></div>` : ''}`;
 }
@@ -356,11 +388,10 @@ async function select(id) {
       await openArea(area.key, { point: doc.type === 'adres' ? pt : null, title: doc.type === 'adres' ? doc.weergavenaam : null });
       return;
     }
-    const vkey = villageFor(doc.woonplaatsnaam);
-    if (vkey && (doc.type === 'weg' || doc.type === 'adres')) {
+    for (const vkey of (doc.type === 'weg' || doc.type === 'adres') ? villagesFor(doc) : []) {
       const v = await ensureVillage(vkey);
       if (v && doc.type === 'weg' && v.streets.some((x) => x.straat === doc.straatnaam)) { await openStreet(vkey, doc.straatnaam); return; }
-      const a = v && v.addresses.find((x) => x.adresseerbaarobject_id === doc.adresseerbaarobject_id);
+      const a = v && doc.type === 'adres' && v.addresses.find((x) => x.adresseerbaarobject_id === doc.adresseerbaarobject_id);
       if (a?.pand) { await openBuilding(a.pand, { address: a }); return; }
     }
     if (pt) {
@@ -437,10 +468,12 @@ function renderPlace(doc) {
     ${PRESETS}`;
 }
 
-function buurtSummary(p) {
-  const scores = Object.fromEntries(MAP_THEMES.map((k) => [k, p[`score_${k}`] ?? null]));
-  return `<h2 class="section-title">Neighbourhood ${esc(p.buurtnaam)}</h2>
+function buurtSummary(p, { measured = null, where = 'this home' } = {}) {
+  const scores = Object.fromEntries(MAP_THEMES.map((k) => [k, measured?.[`score_${k}`] ?? p[`score_${k}`] ?? null]));
+  return `<h2 class="section-title">${measured ? `Scores for ${esc(where)}` : `Neighbourhood ${esc(p.buurtnaam)}`}</h2>
     ${scoreBars(scores)}
+    ${measured ? `<p class="source">Quiet and Car-light are measured at ${esc(where)} (noise ${num(measured.lden_db)} dB Lden, ${esc(measured.lden_bron || '')};
+      main road ${num(measured.afstand_hoofdweg_m)} m away). The other scores are averages for buurt ${esc(p.buurtnaam)}.</p>` : ''}
     <dl class="facts compact">
       <dt>Residents</dt><dd>${num(p.inwoners)}</dd>
       <dt>Average WOZ</dt><dd>${p.woz ? eur(p.woz * 1000) : 'n/a'}</dd>
@@ -527,23 +560,64 @@ function buildingFacts(p, a) {
   ].filter(([, val]) => val != null && val !== '');
 }
 
+// Streets mostly built after the buurt statistics were collected (surveys, crime, liveability describe older homes).
+function newDevelopmentNotice(v, straat, buurt) {
+  const st = v.streets.find((x) => x.straat === straat);
+  if (!st?.bouwjaar_min || st.bouwjaar_min < 2015) return '';
+  return `<p class="notice">New development, built ${st.bouwjaar_min === st.bouwjaar_max ? st.bouwjaar_min : `${st.bouwjaar_min}–${st.bouwjaar_max}`}.
+    The neighbourhood statistics (health survey, crime, liveability) were mostly collected before these homes existed and describe the older
+    part of buurt ${esc(buurt?.buurtnaam || '')}. Quiet and Car-light below are measured here instead.</p>`;
+}
+
+const yesNo = (b) => (b === true ? 'Yes' : b === false ? 'No' : null);
+function homeFacts(e) {
+  if (!e) return '';
+  const water = e.aan_breed_water ? 'On wide water (river or canal)' : e.aan_het_water ? 'Plot borders water'
+    : e.afstand_water_m != null ? `${e.afstand_water_m} m to water${e.afstand_breed_water_m != null ? `, ${e.afstand_breed_water_m} m to wide water` : ''}` : null;
+  const rows = [
+    ['House type', e.woningtype],
+    ['Floors', e.bouwlagen ? `${e.bouwlagen}${e.hoogte_m ? ` (${num(e.hoogte_m, 1)} m high)` : ''}` : null],
+    ['Plot', e.perceel_m2 && e.woningtype !== 'apartment' ? `${num(e.perceel_m2)} m²` : null],
+    ['Garden', e.tuin_m2 == null ? null : e.tuin_m2 < 5 ? 'None on the house\'s own parcel (a garden may be on a separate parcel)'
+      : `${num(e.tuin_m2)} m²${e.achtertuin_m2 != null ? `, of which ${num(e.achtertuin_m2)} m² behind the house` : ''}`],
+    ['Back garden faces', e.achtertuin_richting ? `${e.achtertuin_richting}${e.achtertuin_zuid ? ' (sunny side)' : ''}` : null],
+    ['Back access', yesNo(e.achterom) && (e.achterom ? 'Yes, path or road behind the garden' : 'No path or road behind the garden')],
+    ['Water', water],
+    ['Noise', e.lden_db != null ? `${num(e.lden_db)} dB Lden${e.lden_band ? `, EU map band ${e.lden_band}` : ''} (${e.lden_bron})` : null],
+    ['Cars at the door', e.afstand_autoweg_m != null ? (e.afstand_autoweg_m <= 3 ? 'Front door on a road with cars' : `${num(e.afstand_autoweg_m)} m to the nearest car lane`) : null],
+    ['Main road', e.afstand_hoofdweg_m != null ? `${num(e.afstand_hoofdweg_m)} m` : null],
+    ['Railway', e.afstand_spoor_m != null ? `${num(e.afstand_spoor_m)} m` : null],
+    ['New build', e.nieuwbouw ? 'Yes (2015 or later)' : null],
+    ['Energy label', e.energielabel?.label ? `${e.energielabel.label}${e.energielabel.datum ? ` (${String(e.energielabel.datum).slice(0, 10)})` : ''}`
+      : e.energielabel_verwacht ? `Expected ${e.energielabel_verwacht}` : 'Not available (EP-Online key not configured)'],
+  ].filter(([, val]) => val != null && val !== '');
+  return `<h2 class="section-title">This home</h2>
+    <dl class="facts">${rows.map(([k, val]) => `<dt>${esc(k)}</dt><dd>${esc(val)}</dd>`).join('')}</dl>
+    <p class="source">Measured from BRK parcels, BGT, BAG, 3D BAG, NWB and ProRail. Garden orientation and back access are derived from the
+      plot shape and are indicative.</p>`;
+}
+
 function renderBuilding(v, p, addrs, a) {
   const buurt = buurtProps(a?.buurtcode || p.buurtcode);
+  const e = a && v.enrich?.[a.adresseerbaarobject_id];
   const home = (a?.gebruiksdoel || p.gebruik || '').includes('woon');
   sheetBody.innerHTML = `
     <h1>${esc(a ? `${a.straatnaam} ${houseNumber(a)}` : p.straat)}</h1>
     <p class="muted">${esc(a?.postcode || '')} ${esc(v.woonplaats)} · ${esc(v.gemeente)}</p>
+    ${newDevelopmentNotice(v, p.straat, buurt)}
     <dl class="facts">${buildingFacts(p, a).map(([k, val, raw]) => `<dt>${esc(k)}</dt><dd>${raw ? val : esc(val)}</dd>`).join('')}</dl>
     <div class="action-row">
       ${home ? '<button type="button" class="council-button" data-valuation-building>Estimate a value</button>' : ''}
       <button type="button" class="council-button" data-street="${esc(p.straat)}">All of ${esc(p.straat)}</button>
     </div>
-    ${(() => { const own = addrs.map((x) => `${x.straatnaam} ${houseNumber(x)}`.toLowerCase());
-      const hits = (v.listings || []).filter((l) => own.includes(l.address.toLowerCase()));
+    ${homeFacts(e)}
+    ${(() => { const norm = (t) => t.toLowerCase().replace(/[\s-]/g, '');
+      const own = addrs.map((x) => norm(`${x.straatnaam} ${houseNumber(x)}`));
+      const hits = (v.listings || []).filter((l) => own.includes(norm(l.address)));
       return hits.length ? `<h2 class="section-title">Listed online</h2>${listingsHtml(hits)}` : ''; })()}
     ${addrs.length > 1 ? `<h2 class="section-title">Addresses in this building</h2>
       <ul class="address-list">${addrs.map((x) => `<li><button type="button" class="link-button" data-address="${esc(x.adresseerbaarobject_id)}"${x === a ? ' aria-current="true"' : ''}>${esc(houseNumber(x))}</button> <span class="muted">${esc(uses(x.gebruiksdoel))}${x.oppervlakte ? ` · ${x.oppervlakte} m²` : ''}</span></li>`).join('')}</ul>` : ''}
-    ${buurt ? buurtSummary(buurt) : ''}
+    ${buurt ? buurtSummary(buurt, { measured: e }) : ''}
     <p class="source">Building: BAG (Kadaster) · soil: BRO Bodemkaart · monuments: RCE. The foundation flag is a rule of thumb from building year and soil, not a survey.</p>
     ${PRESETS}`;
 }
@@ -583,16 +657,34 @@ function renderStreet(v, st, pts) {
   ].filter(([, val]) => val != null);
   const total = Object.values(flags).reduce((x, y) => x + y, 0);
   const homes = pts.filter((x) => (x.gebruiksdoel || '').includes('woon')).sort(sortByNumber);
+  const se = v.streetsEnrich?.[st.straat];
+  const pct = (x) => (x == null ? null : `${x}%`);
+  const homeRows = se ? [
+    ['House types', Object.entries(se.woningtypen || {}).sort((x, y) => y[1] - x[1]).map(([k, n]) => `${k} ${n}`).join(', ')],
+    ['Median plot', se.perceel_m2_mediaan ? `${num(se.perceel_m2_mediaan)} m²` : null],
+    ['Median garden', se.tuin_m2_mediaan != null ? `${num(se.tuin_m2_mediaan)} m²` : null],
+    ['Back garden on the sunny side', pct(se.achtertuin_zuid_pct)],
+    ['Back access', pct(se.achterom_pct)],
+    ['On the water', se.aan_het_water_pct ? `${se.aan_het_water_pct}%${se.aan_breed_water_pct ? ` (${se.aan_breed_water_pct}% on wide water)` : ''}` : null],
+    ['Noise (median)', se.lden_db_mediaan != null ? `${se.lden_db_mediaan} dB Lden` : null],
+    ['Cars at the door (median)', se.afstand_autoweg_m_mediaan != null ? `${num(se.afstand_autoweg_m_mediaan)} m to a car lane` : null],
+    ['Main road (median)', se.afstand_hoofdweg_m_mediaan != null ? `${num(se.afstand_hoofdweg_m_mediaan)} m` : null],
+    ['Railway (median)', se.afstand_spoor_m_mediaan != null ? `${num(se.afstand_spoor_m_mediaan)} m` : null],
+  ].filter(([, val]) => val) : [];
   sheetBody.innerHTML = `
     <h1>${esc(st.straat)}, ${esc(v.woonplaats)}</h1>
-    <p class="muted">${esc(v.gemeente)} · ${Object.keys(st.buurten).map((c) => esc(buurtProps(c)?.buurtnaam || c)).join(', ')}</p>
+    <p class="muted">${esc(v.gemeente)} · ${Object.keys(st.buurten).map((c) => esc(buurtProps(c)?.buurtnaam || c)).join(', ')}${v.buurtcodes ? ` · the part within ${esc(v.naam)}` : ''}</p>
+    ${newDevelopmentNotice(v, st.straat, buurt)}
     <dl class="facts">${rows.map(([k, val]) => `<dt>${esc(k)}</dt><dd>${esc(val)}</dd>`).join('')}</dl>
+    ${homeRows.length ? `<h2 class="section-title">Homes on this street</h2>
+      <dl class="facts">${homeRows.map(([k, val]) => `<dt>${esc(k)}</dt><dd>${esc(val)}</dd>`).join('')}</dl>` : ''}
     ${total ? `<h2 class="section-title">Foundation risk, by address</h2>
       <div class="stack" role="img" aria-label="${Object.entries(FOUNDATION).map(([k, f]) => `${f.label}: ${flags[k] || 0}`).join(', ')}">
         ${Object.entries(FOUNDATION).filter(([k]) => flags[k]).map(([k, f]) => `<span style="flex:${flags[k]};background:${f.color}"></span>`).join('')}</div>
       <ul class="stack-legend">${Object.entries(FOUNDATION).filter(([k]) => flags[k]).map(([k, f]) => `<li><span class="swatch" style="background:${f.color}"></span>${esc(f.label)} <strong>${flags[k]}</strong></li>`).join('')}</ul>` : ''}
     ${area ? `<div class="action-row"><button type="button" class="council-button preset" data-area="${area.key}">Full street dossier</button></div>` : ''}
-    ${buurt ? buurtSummary(buurt) : ''}
+    ${buurt ? buurtSummary(buurt, { measured: se && { score_rust: se.score_rust, score_autoluw: se.score_autoluw, lden_db: se.lden_db_mediaan,
+      lden_bron: se.lden_bron, afstand_hoofdweg_m: se.afstand_hoofdweg_m_mediaan }, where: 'this street' }) : ''}
     ${details('s-homes', `Homes on this street (${homes.length})`, `<ul class="address-list">${homes.map((x) =>
       `<li><button type="button" class="link-button" data-address="${esc(x.adresseerbaarobject_id)}">${esc(houseNumber(x))}</button> <span class="muted">${x.bouwjaar || ''}${x.oppervlakte ? ` · ${x.oppervlakte} m²` : ''}</span></li>`).join('')}</ul>`)}
     ${streetListings(v, st.straat).length ? details('s-street-market', `For sale & recently sold (${streetListings(v, st.straat).length})`, listingsHtml(streetListings(v, st.straat)), true) : ''}
@@ -894,9 +986,10 @@ function villageDossier(v, a) {
     buurtcode: a.buurtcode, buurtnaam: buurtProps(a.buurtcode)?.buurtnaam });
   d.adressen = st.adressen;
   d.building = { built: p.bouwjaar, status: p.status, addresses_in_building: p.adressen, floor_area_m2: a.oppervlakte, use: uses(a.gebruiksdoel),
-    soil: p.bodem, foundation_flag: p.fundering, rijksmonument: p.monument };
+    soil: p.bodem, foundation_flag: p.fundering, rijksmonument: p.monument, measured_at_home: v.enrich?.[a.adresseerbaarobject_id] || null };
   d.street = { addresses: st.adressen, homes: st.woningen, built_min: st.bouwjaar_min, built_median: st.bouwjaar_mediaan, built_max: st.bouwjaar_max,
     median_home_floor_area_m2: st.oppervlakte_mediaan, foundation_flags_by_address: st.fundering, soil: st.bodem,
+    measured_on_street: v.streetsEnrich?.[a.straatnaam] || null,
     homes: v.addresses.filter((x) => x.straatnaam === a.straatnaam && (x.gebruiksdoel || '').includes('woon')).slice(0, 150)
       .map((x) => `${houseNumber(x)}: ${x.bouwjaar || '?'}, ${x.oppervlakte || '?'} m²`),
     recent_publications: (st.bekendmakingen || []).slice(0, 12).map((r) => `${r.available}: ${r.title}`),
