@@ -100,7 +100,38 @@ Shown as a "development" layer with plan contours and permit pins, plus a short 
 - **In the app:** a dedicated button on the area card. It opens a timeline of quotes and summaries, each linked to its source.
 - **Phase 1:** done offline and **pre-populated** for the two test areas. A monthly refresh comes later.
 
-### 2.9 Financing and municipal buyer rules
+### 2.9 Mobility: highways, public transport and "hoe autoluw is je zone?"
+Three sub-scores shown side by side. Being car-free is good for quiet and safety but bad for parking, so the user decides through the weights how much each counts.
+
+**a) Highway access**
+| Data | Source | Notes |
+|---|---|---|
+| Distance to the nearest highway on-ramp (per buurt) | **CBS Nabijheid voorzieningen** ("afstand tot oprit hoofdverkeersweg") | Official, ready to use |
+| Drive time from the address to the nearest on-ramp and to key destinations (A4, A44, A12; Den Haag, Amsterdam, Utrecht, Schiphol) | **NWB – Nationaal Wegenbestand** (Rijkswaterstaat, via PDOK), with drive times calculated in our pipeline | Distances are calculated off-peak. Rush-hour traffic is noted, not modelled |
+| Planned road projects (for example the RijnlandRoute and N11 changes) | Rijkswaterstaat, provincie Zuid-Holland | Also feeds the development layer (2.7) |
+
+**b) Public transport**
+| Data | Source | Notes |
+|---|---|---|
+| Distance to the nearest train station and nearest major transfer station | **CBS Nabijheid voorzieningen** | Per buurt |
+| Stops within walking distance, the lines serving them, and how often they run (peak and evening) | **NDOV Loket** (official public-transport timetable data, GTFS feed) | Calculated per address |
+| Door-to-door travel time by public transport to Leiden Centraal, Den Haag, Amsterdam, Schiphol and Utrecht | Same GTFS, with an offline route planner in the pipeline (r5py or OpenTripPlanner) | Stored as **isochrones**: map areas showing everything reachable within 15, 30 or 45 minutes |
+| Cycling time to the station or centre | Calculated over the NWB / OSM cycle network | Matters a lot in Leiden |
+
+**c) "Hoe autoluw is je zone?"**: how car-free or low-traffic the area is
+| Signal | Source |
+|---|---|
+| Car-free streets, one-way streets, filters and closures, 30 km/h zones, woonerven (residential streets with walking-pace traffic) | **Verkeersbesluiten**. Every such measure must be published in the Gemeenteblad / Staatscourant, which we search via the KOOP open-data API. Road speeds come from the **NDW Wegkenmerkendatabase** |
+| Paid parking, permit areas, rates, waiting lists | **RDW Open Data Parkeren** (parking areas and rates), plus the gemeente's parking pages |
+| Traffic volume on nearby roads | **NDW** traffic data |
+| Cars per household | **CBS KWB** |
+| Environmental or zero-emission zones | **milieuzones.nl** (Rijksoverheid) and the gemeente verkeersbesluit |
+| Policy now and planned (for example Leiden's plans for a car-free city centre, or circulation plans) | Gemeente mobiliteitsplan / verkeersvisie, raadsinformatie, and the council feature (2.8) |
+
+- **Autoluw score (0–100).** This is a score we calculate ourselves, combining the share of nearby road length that is 30 km/h or woonerf, car-free or filtered streets, traffic volume, cars per household, and the parking regime. A "planned" marker appears when council or policy documents announce new measures.
+- The app always shows the parts of the score and explains the result. For example: "Autoluw 78: 30 km/h zone, through-traffic filtered on the Zamenhofstraat side; permit parking, waiting list ±X months."
+
+### 2.10 Financing and municipal buyer rules
 Whether someone can buy here, and what it costs them, depends partly on the gemeente. Prospect shows the rules for the municipality of the selected address.
 
 | Data | Source | Notes |
@@ -117,14 +148,13 @@ Whether someone can buy here, and what it costs them, depends partly on the geme
 
 **Pipeline:** a small table per gemeente (`/data/regelingen/<gemeente>.json`) with each scheme, its limits, its source link, its effective date, and the date it was checked. It is built by hand or semi-automatically from CVDR for the test municipalities and refreshed regularly, because these rules change often (usually every 1 January).
 
-### 2.10 Other things worth adding
+### 2.11 Other things worth adding
 - **Erfpacht** (ground lease): a big hidden cost, common in some municipalities. Source: BRK.
 - **VvE / apartment rights**, from BAG units and BRK apartment rights.
 - **Monument status**, from the **Rijksmonumentenregister** (RCE) and municipal monument lists. This limits renovation.
 - **Protected cityscape**, from beschermd stads- en dorpsgezicht (RCE).
 - **Price trend per region**, from **CBS / Kadaster prijsindex**.
 - **Time on market and overbidding.** This is NVM data and not official, so it is optional and clearly labelled.
-- **Commute**, from CBS nabijheid plus OV via NDOV open data.
 
 ---
 
@@ -138,12 +168,13 @@ Whether someone can buy here, and what it costs them, depends partly on the geme
 
 **Layout (mobile first):**
 1. **Search bar** at the top. It uses **PDOK Locatieserver** (official address search, free, CORS-enabled).
-2. **Layer chips** in a horizontal scroll: Prospect score · Education · Safety · Liveability · Soil & foundations · Climate · Development · Value. Tap one to show it; long-press to add it as a second layer.
+2. **Layer chips** in a horizontal scroll: Prospect score · Education · Safety · Liveability · Mobility & autoluw · Soil & foundations · Climate · Development · Value. Tap one to show it; long-press to add it as a second layer.
 3. **Map:** buurt polygons filled on a colour-blind-safe diverging scale (deep green → neutral → deep red). A toggle switches to the **100 m Leefbaarometer grid**. Points (schools, permits, contamination sites) appear when zoomed in.
 4. **Bottom sheet** (drag up), opened by tapping a buurt or address:
    - a header with an overall **Prospect score** and a spider or radar chart of the dimensions;
    - one row per dimension: a score, a one-line explanation, the source and date;
-   - **"Kopen als starter"** (municipal starter loans and buyer rules, see 2.9);
+   - **Bereikbaarheid (accessibility)**: highway, public transport and cycling times, with an isochrone toggle ("what can I reach in 30 minutes?") and the autoluw score with its explanation;
+   - **"Kopen als starter"** (municipal starter loans and buyer rules, see 2.10);
    - **"Wat zegt de raad?"** (council intelligence);
    - **"Waardeer deze woning"** (valuation, phase 4).
 5. **Weights:** sliders for how much each dimension counts (for example, families may weigh education more). The composite score and colours update live. The weights are saved locally.
@@ -163,6 +194,7 @@ Whether someone can buy here, and what it costs them, depends partly on the geme
   - comparable Kadaster sales from the last 12–24 months within about 500 m with similar type and size;
   - development plans;
   - council signals;
+  - accessibility and autoluw scores;
   - municipal buyer rules (Starterslening limits, opkoopbescherming, zelfbewoningsplicht);
   - user-supplied listing details.
 - **Output:** a value range, the main drivers up and down, risks to check (such as a foundation survey or soil investigation), and confidence, with every claim citing a source in the dossier.
@@ -185,7 +217,7 @@ PLAN.md
 | Phase | Deliverable |
 |---|---|
 | **0 – Confirm** | Answer the open questions below and pin down the exact buurt codes for both test areas |
-| **1 – Data & DD** | Pipeline scripts for the open sources (CBS KWB, buurt polygons, politie/CBS crime, DUO + Inspectie, Leefbaarometer, BAG, EP-Online, BRO soil, Bodemloket, Klimaateffectatlas, RIVM, ruimtelijke plannen), plus the municipal buyer-rules table for Leiden and Alphen aan den Rijn. Output: `/data` for both areas plus a written **DD report per area** in `/docs` |
+| **1 – Data & DD** | Pipeline scripts for the open sources (CBS KWB, buurt polygons, politie/CBS crime, DUO + Inspectie, Leefbaarometer, BAG, EP-Online, BRO soil, Bodemloket, Klimaateffectatlas, RIVM, ruimtelijke plannen), the mobility layer (CBS nabijheid, NWB, NDOV GTFS isochrones, verkeersbesluiten, RDW parking, autoluw score), plus the municipal buyer-rules table for Leiden and Alphen aan den Rijn. Output: `/data` for both areas plus a written **DD report per area** in `/docs` |
 | **2 – App** | The map app with layers, bottom sheet, search, weights and PWA install, using the phase-1 data. Deployed on GitHub Pages |
 | **3 – Raad** | The council-transcript pipeline for both test areas, pre-populated, plus the "Wat zegt de raad?" view |
 | **4 – Valuation** | The dossier builder for any address, Kadaster comparables, the LLM valuation call, and the result card |
