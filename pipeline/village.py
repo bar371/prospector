@@ -32,6 +32,14 @@ VILLAGES = {
         "woonplaats": "Hazerswoude-Rijndijk", "gemeente": "Alphen aan den Rijn", "gemeentecode": "GM0484",
         "postcode4": ["2394"], "ibabs": "https://alphenaandenrijn.bestuurlijkeinformatie.nl",
     },
+    # Part of a city: the wijken Binnenstad-Zuid, Binnenstad-Noord and Stationsdistrict.
+    "leiden-centrum": {
+        "naam": "Leiden city centre", "woonplaats": "Leiden", "gemeente": "Leiden", "gemeentecode": "GM0546",
+        "buurtcodes": ["BU05460000", "BU05460001", "BU05460002", "BU05460003", "BU05460100", "BU05460101", "BU05460102",
+                       "BU05460103", "BU05460104", "BU05460105", "BU05460106", "BU05460107", "BU05460108", "BU05460109",
+                       "BU05460200"],
+        "postcode4": ["2311", "2312", "2313", "2316"], "ori": "leiden",
+    },
 }
 LOCATIESERVER = "https://api.pdok.nl/bzk/locatieserver/search/v3_1"
 BAG = "https://api.pdok.nl/kadaster/bag/ogc/v2/collections"
@@ -76,16 +84,20 @@ def ogc_items(collection, bbox):
 # ---------------------------------------------------------------- steps
 
 def addresses(v):
-    fq = f'type:adres AND woonplaatsnaam:"{v["woonplaats"]}"'
-    docs, start = [], 0
-    while True:
-        resp = fetch_json(f"{LOCATIESERVER}/free?q=*&fq={q(fq)}&rows=100&start={start}"
-                          "&fl=weergavenaam,straatnaam,huisnummer,huisletter,huisnummertoevoeging,postcode,buurtcode,buurtnaam,"
-                          "wijkcode,centroide_ll,adresseerbaarobject_id,nummeraanduiding_id")["response"]
-        docs += resp["docs"]
-        start += 100
-        if start >= resp["numFound"]:
-            break
+    # A whole woonplaats, or (for part of a city) one query per buurt, which keeps each result set small.
+    filters = ([f"type:adres AND buurtcode:{b}" for b in v["buurtcodes"]] if v.get("buurtcodes")
+               else [f'type:adres AND woonplaatsnaam:"{v["woonplaats"]}"'])
+    docs = []
+    for fq in filters:
+        start = 0
+        while True:
+            resp = fetch_json(f"{LOCATIESERVER}/free?q=*&fq={q(fq)}&rows=100&start={start}"
+                              "&fl=weergavenaam,straatnaam,huisnummer,huisletter,huisnummertoevoeging,postcode,buurtcode,buurtnaam,"
+                              "wijkcode,centroide_ll,adresseerbaarobject_id,nummeraanduiding_id")["response"]
+            docs += resp["docs"]
+            start += 100
+            if start >= resp["numFound"]:
+                break
     for d in docs:
         lon, lat = map(float, d.pop("centroide_ll")[6:-1].split())
         d["lon"], d["lat"] = round(lon, 6), round(lat, 6)
@@ -206,6 +218,40 @@ def publications(v, streets):
 
 
 def council_documents(v, streets):
+    return council_ori(v, streets) if v.get("ori") else council_ibabs(v, streets)
+
+
+def council_ori(v, streets):
+    """Open Raadsinformatie: the most recent council documents that mention the street."""
+    def one(street):
+        body = json.dumps({"query": {"simple_query_string": {"query": f'"{street}"', "fields": ["text", "name", "description"]}},
+                           "size": 15, "sort": [{"last_discussed_at": {"order": "desc", "unmapped_type": "date"}}],
+                           "_source": {"excludes": ["text", "md_text"]}}).encode()
+        try:
+            data = json.loads(fetch(f"https://api.openraadsinformatie.nl/v1/elastic/ori_{v['ori']}_*/_search", data=body,
+                                    headers={"Content-Type": "application/json"}))
+        except Exception as e:
+            return street, [], str(e)
+        hits = []
+        for h in data["hits"]["hits"]:
+            src = h["_source"]
+            url = src.get("original_url") or src.get("url")
+            if url and src.get("name"):
+                hits.append({"url": url, "title": src["name"], "date": (src.get("last_discussed_at") or src.get("start_date") or "")[:10]})
+        return street, hits, data["hits"]["total"]["value"]
+
+    out, errors = {}, []
+    with ThreadPoolExecutor(4) as pool:
+        for street, hits, total in pool.map(one, streets):
+            out[street] = hits
+            if isinstance(total, str):
+                errors.append(total)
+    log(f"  council documents (ORI): {sum(len(r) for r in out.values())} across {sum(1 for r in out.values() if r)} streets"
+        + (f"; {len(errors)} errors, first: {errors[0]}" if errors else ""))
+    return out
+
+
+def council_ibabs(v, streets):
     """iBabs search per street; keeps results whose title names the street."""
     jar = http.cookiejar.CookieJar()
     opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
@@ -259,17 +305,24 @@ def build(key, v):
             shapes[pid] = shape(g)
     soils = soil([(pid, s.centroid.x, s.centroid.y) for pid, s in shapes.items()])
     mons = monuments(bbox)
+    # The building that contains the monument point, else the nearest one within ~15 m.
+    from shapely import STRtree
+    pids = list(shapes)
+    tree = STRtree([shapes[p] for p in pids])
     mon_by_pand = {}
     for m in mons:
         g = m.get("geometry") or {}
         if g.get("type") not in ("Point", "MultiPoint"):
             continue
         pt = shape(g).representative_point()
-        for pid, s in shapes.items():
-            if s.buffer(0.00015).contains(pt):
-                mon_by_pand[pid] = {k: m["properties"].get(k) for k in m["properties"] if k.lower() in (
-                    "monumentnummer", "rijksmonumentnummer", "rijksmonument_nummer", "localid", "text", "naam", "omschrijving", "hoofdcategorie", "url", "rijksmonumenturl")}
-                break
+        hit = tree.query(pt, predicate="intersects")
+        if not len(hit):
+            idx, dist = tree.query_nearest(pt, max_distance=0.00015, return_distance=True)
+            hit = idx[:1]
+        if len(hit):
+            mon_by_pand.setdefault(pids[int(hit[0])], {k: m["properties"].get(k) for k in m["properties"] if k.lower() in (
+                "monumentnummer", "rijksmonumentnummer", "rijksmonument_nummer", "localid", "text", "naam", "omschrijving",
+                "hoofdcategorie", "url", "rijksmonumenturl")})
     log(f"  {len(mon_by_pand)} buildings are rijksmonumenten")
 
     features = []
@@ -329,7 +382,8 @@ def build(key, v):
     (out / "streets.json").write_text(json.dumps(street_rows, ensure_ascii=False, indent=0))
     years = [int(f["properties"]["bouwjaar"]) for f in features if str(f["properties"]["bouwjaar"] or "").isdigit()]
     summary = {
-        "key": key, **{k: v[k] for k in ("woonplaats", "gemeente", "gemeentecode")},
+        "key": key, "naam": v.get("naam", v["woonplaats"]), "buurtcodes": v.get("buurtcodes"),
+        **{k: v[k] for k in ("woonplaats", "gemeente", "gemeentecode")},
         "adressen": len(docs), "gebouwen": len(features), "straten": len(streets),
         "woningen": sum(1 for d in docs if "woon" in (d.get("gebruiksdoel") or "")),
         "bbox": [round(x, 5) for x in bbox], "bouwjaar_mediaan": statistics.median(years) if years else None,
@@ -343,7 +397,10 @@ def build(key, v):
 if __name__ == "__main__":
     t0 = time.time()
     try:
+        only = [x for x in __import__("os").environ.get("VILLAGES", "").split(",") if x]
         for key, v in VILLAGES.items():
+            if only and key not in only:
+                continue
             log(f"\n== {key}")
             build(key, v)
     finally:

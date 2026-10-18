@@ -7,6 +7,11 @@ on:
     branches-ignore: [main]
     paths: ['pipeline/village.py', '.github/workflows/village.yml']
   workflow_dispatch:
+    inputs:
+      villages:
+        description: 'Comma-separated village keys to build (empty = all)'
+        required: false
+        default: ''
 
 jobs:
   build:
@@ -19,12 +24,22 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Start from the previous build, so building one village keeps the others
+        run: |
+          mkdir -p out/village
+          if git ls-remote --exit-code origin village-build >/dev/null; then
+            git fetch -q origin village-build
+            git archive origin/village-build | tar -x -C out/village
+          fi
       - run: pip install -q shapely==2.0.6
       - run: python pipeline/village.py out/village
+        env:
+          VILLAGES: ${{ github.event.inputs.villages }}
       - name: Publish to the village-build branch
         if: always()
         run: |
           mkdir -p out/village && cd out/village
+          rm -rf .git
           git init -q -b village-build
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
