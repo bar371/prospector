@@ -1,0 +1,166 @@
+{
+ "hazerswoude-rijndijk": {
+  "key": "hazerswoude-rijndijk",
+  "woonplaats": "Hazerswoude-Rijndijk",
+  "gemeente": "Alphen aan den Rijn",
+  "gemeentecode": "GM0484",
+  "adressen": 3295,
+  "gebouwen": 2481,
+  "straten": 73,
+  "woningen": 2920,
+  "bbox": [
+   4.54563,
+   52.11164,
+   4.62927,
+   52.14001
+  ],
+  "bouwjaar_mediaan": 1980,
+  "fundering": {
+   "high": 123,
+   "check": 853,
+   "low": 1505
+  },
+  "monumenten": 15,
+  "listings": [
+   {
+    "address": "Albert Verweijstraat 14",
+    "asking_price_eur": 489000,
+    "status": "te koop",
+    "source": "https://www.funda.nl/zoeken/koop?selected_area=%5B%22hazerswoude-rijndijk%22%5D",
+    "straat": "Albert Verweijstraat"
+   },
+   {
+    "address": "Albert Verweijstraat 13",
+    "asking_price_eur": 525000,
+    "status": "onder bod",
+    "source": "https://aanbod.vastgoednederland.nl/koopwoningen/hazerswoude-rijndijk?o=straat&d=asc",
+    "straat": "Albert Verweijstraat"
+   },
+   {
+    "address": "Koolrabi 63",
+    "asking_price_eur": 795000,
+    "status": "te koop",
+    "source": "https://www.funda.nl/zoeken/koop?selected_area=%5B%22hazerswoude-rijndijk%22%5D",
+    "straat": "Koolrabi"
+   },
+   {
+    "address": "Pastinaak 127",
+    "asking_price_eur": 945000,
+    "status": "possibly onder bod",
+    "source": "https://www.funda.nl/zoeken/koop?selected_area=%5B%22hazerswoude-rijndijk%22%5D",
+    "straat": "Pastinaak"
+   },
+   {
+    "address": "J.P. Heijestraat 21",
+    "asking_price_eur": 499000,
+    "status": "te koop",
+    "source": "https://www.funda.nl/zoeken/koop?selected_area=%5B%22hazerswoude-rijndijk%22%5D",
+    "straat": "J.P. Heijestraat"
+   },
+   {
+    "address": "Van Beethovenlaan 16",
+    "asking_price_eur": 625000,
+    "status": "te koop",
+    "source": "https://www.funda.nl/zoeken/koop?selected_area=%5B%22hazerswoude-rijndijk%22%5D",
+    "straat": "Van Beethovenlaan"
+   },
+   {
+    "address": "Valeriusstraat 15",
+    "asking_price_eur": 325000,
+    "status": "te koop",
+    "source": "https://www.funda.nl/detail/koop/hazerswoude-rijndijk/huis-valeriusstraat-15/44468046/",
+    "straat": "Valeriusstraat"
+   },
+   {
+    "address": "Herman Gorterstraat 3",
+    "type": "appartement",
+    "asking_price_eur": 300000,
+    "status": "te koop",
+    "source": "https://www.funda.nl/detail/koop/hazerswoude-rijndijk/appartement-herman-gorterstraat-3/89790623/",
+    "straat": "Herman Gorterstraat"
+   },
+   {
+    "address": "Sweelincklaan 10",
+    "asking_price_eur": 395000,
+    "status": "verkocht onder voorbehoud",
+    "source": "https://aanbod.vastgoednederland.nl/koopwoningen/hazerswoude-rijndijk?o=straat&d=asc",
+    "straat": "Sweelincklaan"
+   },
+   {
+    "address": "Schutterstraat 34",
+    "asking_price_eur": 475000,
+    "listed_on": "2026-01-26",
+    "sold_on": "2026-02-25",
+    "status": "verkocht",
+    "source": "https://www.funda.nl/detail/koop/verkocht/hazerswoude-rijndijk/huis-schutterstraat-34/89689070/",
+    "straat": "Schutterstraat"
+   },
+   {
+    "address": "Rijndijk 33",
+    "type": "eengezinswoning",
+    "asking_price_eur": 450000,
+    "listed_on": "2026-01-28",
+    "sold_on": "2026-02-25",
+    "status": "verkocht",
+    "source": "https://www.funda.nl/detail/koop/verkocht/hazerswoude-rijndijk/huis-rijndijk-33/89682073/",
+    "straat": "Rijndijk"
+   },
+   {
+    "address": "Rijndijk 27",
+    "type": "eengezinswoning",
+    "asking_price_eur": 695000,
+    "status": "verkocht",
+    "source": "https://onlinewoningbrochure.nl/makelaars/alphen-aan-den-rijn/houtman-en-de-vogel/aanbod/rijndijk27.nl",
+    "straat": "Rijndijk"
+   },
+   {
+    "address": "Rijndijk 160-A",
+    "asking_price_eur": 629000,
+    "sold_on": "2026-08-08",
+    "status": "verkocht",
+    "source": "https://juistemakelaar.nl/makelaars/zuid-holland/hazerswoude-rijndijk/",
+    "straat": "Rijndijk"
+   },
+   {
+    "address": "Rijndijk 189-B",
+    "asking_price_eur": 800000,
+    "status": "verkocht",
+    "source": "https://www.funda.nl/detail/koop/verkocht/hazerswoude-rijndijk/huis-rijndijk-189-b/43530160/",
+    "straat": "Rijndijk"
+   },
+   {
+    "address": "Rijndijk 242-C",
+    "asking_price_eur": 825000,
+    "status": "te koop",
+    "source": "https://www.funda.nl/zoeken/koop?selected_area=%5B%22hazerswoude-rijndijk%22%5D",
+    "straat": "Rijndijk"
+   },
+   {
+    "address": "Rijndijk 300",
+    "type": "monumental villa with business premises",
+    "asking_price_eur": 1795000,
+    "status": "te koop",
+    "source": "https://www.funda.nl/zoeken/koop?selected_area=%5B%22hazerswoude-rijndijk%22%5D",
+    "straat": "Rijndijk"
+   },
+   {
+    "address": "Rijndijk 110-WS",
+    "status": "verkocht",
+    "source": "https://www.funda.nl/detail/koop/verkocht/hazerswoude-rijndijk/huis-rijndijk-110-ws/43720884/",
+    "straat": "Rijndijk"
+   },
+   {
+    "address": "Rhynenburcherlaan 68",
+    "status": "verkocht",
+    "source": "https://www.funda.nl/detail/koop/verkocht/hazerswoude-rijndijk/huis-rhynenburcherlaan-68/43999520/",
+    "straat": "Rhynenburcherlaan"
+   },
+   {
+    "address": "Jaagpad 30",
+    "status": "verkocht",
+    "source": "https://www.funda.nl/detail/koop/verkocht/hazerswoude-rijndijk/huis-jaagpad-30/43190709/",
+    "straat": "Jaagpad"
+   }
+  ]
+ }
+}

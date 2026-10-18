@@ -67,3 +67,22 @@ It runs on GitHub Actions (the **Data** workflow), because the official sources 
 - Reports: [`docs/dd/`](docs/dd/)
 - App data: [`app/data/`](app/data/), with a dossier per area and `buurten-scores.geojson` for the map
 - Hand-collected data: [`data/listings/`](data/listings/) (asking prices found online) and [`data/regelingen/`](data/regelingen/) (starter loans and buyer rules)
+
+### Whole villages, down to the building
+
+[`pipeline/village.py`](pipeline/village.py) covers every address and building in a village. It currently covers Hazerswoude-Rijndijk.
+
+For each building and address it collects:
+- the footprint, building year, floor area and use, from BAG;
+- the soil type, from the BRO Bodemkaart;
+- whether it is a rijksmonument, from RCE;
+- a foundation-risk flag. This is a rule of thumb from the building year and the soil type, not a survey.
+
+For each street it collects a building summary, official publications and council documents.
+
+It runs on GitHub Actions (the **Village** workflow), and its output goes to the `village-build` branch. `python tools/publish_village.py <dir>` copies that output into [`app/data/villages/`](app/data/villages/). The publish step also adds the asking prices in `data/listings/village-<key>.json`.
+
+In the app:
+- buildings appear once you zoom in on the village, coloured by foundation risk;
+- tapping a building opens its card;
+- searching a street in the village opens a street card.

@@ -1,0 +1,31 @@
+{
+  "area": "Hazerswoude-Rijndijk (gemeente Alphen aan den Rijn), whole village",
+  "found_on": "2026-10-18",
+  "method": "Online search of public listing pages (Funda, Vastgoed Nederland, JuisteMakelaar, makelaar brochure sites). Values come from search-result snippets; the pages themselves were not opened.",
+  "price_note": "Asking prices (vraagprijs, kosten koper) unless noted. Final sale prices are not public for free and can differ. Statuses may have changed since the search.",
+  "listings": [
+    { "address": "Albert Verweijstraat 14", "asking_price_eur": 489000, "status": "te koop", "source": "https://www.funda.nl/zoeken/koop?selected_area=%5B%22hazerswoude-rijndijk%22%5D" },
+    { "address": "Albert Verweijstraat 13", "asking_price_eur": 525000, "status": "onder bod", "source": "https://aanbod.vastgoednederland.nl/koopwoningen/hazerswoude-rijndijk?o=straat&d=asc" },
+    { "address": "Koolrabi 63", "asking_price_eur": 795000, "status": "te koop", "source": "https://www.funda.nl/zoeken/koop?selected_area=%5B%22hazerswoude-rijndijk%22%5D" },
+    { "address": "Pastinaak 127", "asking_price_eur": 945000, "status": "possibly onder bod", "source": "https://www.funda.nl/zoeken/koop?selected_area=%5B%22hazerswoude-rijndijk%22%5D" },
+    { "address": "J.P. Heijestraat 21", "asking_price_eur": 499000, "status": "te koop", "source": "https://www.funda.nl/zoeken/koop?selected_area=%5B%22hazerswoude-rijndijk%22%5D" },
+    { "address": "Van Beethovenlaan 16", "asking_price_eur": 625000, "status": "te koop", "source": "https://www.funda.nl/zoeken/koop?selected_area=%5B%22hazerswoude-rijndijk%22%5D" },
+    { "address": "Valeriusstraat 15", "asking_price_eur": 325000, "status": "te koop", "source": "https://www.funda.nl/detail/koop/hazerswoude-rijndijk/huis-valeriusstraat-15/44468046/" },
+    { "address": "Herman Gorterstraat 3", "type": "appartement", "asking_price_eur": 300000, "status": "te koop", "source": "https://www.funda.nl/detail/koop/hazerswoude-rijndijk/appartement-herman-gorterstraat-3/89790623/" },
+    { "address": "Sweelincklaan 10", "asking_price_eur": 395000, "status": "verkocht onder voorbehoud", "source": "https://aanbod.vastgoednederland.nl/koopwoningen/hazerswoude-rijndijk?o=straat&d=asc" },
+    { "address": "Schutterstraat 34", "asking_price_eur": 475000, "listed_on": "2026-01-26", "sold_on": "2026-02-25", "status": "verkocht", "source": "https://www.funda.nl/detail/koop/verkocht/hazerswoude-rijndijk/huis-schutterstraat-34/89689070/" },
+    { "address": "Rijndijk 33", "type": "eengezinswoning", "asking_price_eur": 450000, "listed_on": "2026-01-28", "sold_on": "2026-02-25", "status": "verkocht", "source": "https://www.funda.nl/detail/koop/verkocht/hazerswoude-rijndijk/huis-rijndijk-33/89682073/" },
+    { "address": "Rijndijk 27", "type": "eengezinswoning", "asking_price_eur": 695000, "status": "verkocht", "source": "https://onlinewoningbrochure.nl/makelaars/alphen-aan-den-rijn/houtman-en-de-vogel/aanbod/rijndijk27.nl" },
+    { "address": "Rijndijk 160-A", "asking_price_eur": 629000, "sold_on": "2026-08-08", "status": "verkocht", "source": "https://juistemakelaar.nl/makelaars/zuid-holland/hazerswoude-rijndijk/" },
+    { "address": "Rijndijk 189-B", "asking_price_eur": 800000, "status": "verkocht", "source": "https://www.funda.nl/detail/koop/verkocht/hazerswoude-rijndijk/huis-rijndijk-189-b/43530160/" },
+    { "address": "Rijndijk 242-C", "asking_price_eur": 825000, "status": "te koop", "source": "https://www.funda.nl/zoeken/koop?selected_area=%5B%22hazerswoude-rijndijk%22%5D" },
+    { "address": "Rijndijk 300", "type": "monumental villa with business premises", "asking_price_eur": 1795000, "status": "te koop", "source": "https://www.funda.nl/zoeken/koop?selected_area=%5B%22hazerswoude-rijndijk%22%5D" },
+    { "address": "Rijndijk 110-WS", "status": "verkocht", "source": "https://www.funda.nl/detail/koop/verkocht/hazerswoude-rijndijk/huis-rijndijk-110-ws/43720884/" },
+    { "address": "Rhynenburcherlaan 68", "status": "verkocht", "source": "https://www.funda.nl/detail/koop/verkocht/hazerswoude-rijndijk/huis-rhynenburcherlaan-68/43999520/" },
+    { "address": "Jaagpad 30", "status": "verkocht", "source": "https://www.funda.nl/detail/koop/verkocht/hazerswoude-rijndijk/huis-jaagpad-30/43190709/" }
+  ],
+  "village_figures": [
+    { "figure": "Average asking price per m²", "value": 4574, "date": "2026-09-30", "source": "https://huispedia.nl/hazerswoude-rijndijk" },
+    { "figure": "Average sale price, recent period", "value": 479000, "note": "average time to sell 25 days", "source": "https://juistemakelaar.nl/makelaars/zuid-holland/hazerswoude-rijndijk/" }
+  ]
+}

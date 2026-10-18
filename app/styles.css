@@ -289,3 +289,17 @@ dl.facts dd { margin: 0; font-weight: 500; }
 .fragment h3 { font-size: 15px; margin: 6px 0 2px; }
 .fragment p { margin: 4px 0; font-size: 13px; }
 .speakers { color: var(--muted); }
+
+/* village building and street cards */
+.legend-buildings { margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--line); }
+.address-list { list-style: none; margin: 4px 0 12px; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0 12px; font-size: 14px; }
+.address-list .link-button { padding: 6px 0; min-width: 44px; text-align: left; font-weight: 600; }
+.address-list [aria-current="true"] { color: var(--ink); text-decoration: underline; }
+.stack { display: flex; gap: 2px; height: 12px; margin: 4px 0 6px; }
+.stack span:first-child { border-radius: 4px 0 0 4px; }
+.stack span:last-child { border-radius: 0 4px 4px 0; }
+.stack span:only-child { border-radius: 4px; }
+.stack-legend { list-style: none; margin: 0 0 12px; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; }
+.stack-legend li { display: flex; align-items: center; gap: 6px; }
+.docs { padding-left: 18px; margin: 6px 0; display: grid; gap: 6px; }
+@media (max-width: 759px) { .legend-buildings .legend-scale { display: grid; } }

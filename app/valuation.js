@@ -88,7 +88,9 @@ This is an indicative estimate, not a formal taxatie.`;
   function compactDossier(d) {
     if (d.limited) {
       return { street: `${d.straat}, ${d.woonplaats}`, gemeente: d.gemeente, data_coverage: 'buurt and gemeente level only',
-        scores_national_percentile: d.scores, buurt: d.buurten[0], gemeente_average_sale_price_by_year: d.gemeente_vergelijking.gemiddelde_verkoopprijs };
+        scores_national_percentile: d.scores, buurt: d.buurten[0], gemeente_average_sale_price_by_year: d.gemeente_vergelijking.gemiddelde_verkoopprijs,
+        ...(d.building ? { data_coverage: 'buurt, gemeente, street and building level', building: d.building, street: d.street,
+          listings_on_street: d.listings, listings_in_village: d.village_listings } : {}) };
     }
     return {
       street: `${d.straat}, ${d.woonplaats}`, gemeente: d.gemeente, addresses_on_street: d.adressen,
@@ -168,9 +170,9 @@ This is an indicative estimate, not a formal taxatie.`;
     const presetAddr = homes.find((a) => preset && a.adres === preset) || null;
     return `<button type="button" class="link-button back" data-back>← Back to ${esc(d.straat)}</button>
       <h1>Estimate a value</h1>
-      <p class="muted">Claude estimates the market value from ${d.limited ? 'the neighbourhood and gemeente data' : "this street's dossier"} and the
+      <p class="muted">Claude estimates the market value from ${d.building ? 'the building, street, neighbourhood and gemeente data' : d.limited ? 'the neighbourhood and gemeente data' : "this street's dossier"} and the
         details below. It is an indication, not a formal valuation (taxatie).</p>
-      ${d.limited ? '<p class="notice">Outside the test streets Prospect has neighbourhood-level data only, so the estimate will be less certain. Add what you know below.</p>' : ''}
+      ${d.limited && !d.building ? '<p class="notice">Outside the test streets Prospect has neighbourhood-level data only, so the estimate will be less certain. Add what you know below.</p>' : ''}
       <form id="valuation-form" class="valuation-form">
         <label>Address
           <select name="adres" required>

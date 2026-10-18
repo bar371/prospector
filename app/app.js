@@ -168,6 +168,82 @@ async function loadBuurten() {
   if (map.isStyleLoaded()) start(); else map.once('load', start);
 }
 
+// ---------------------------------------------------------------- villages: every building and street
+
+// Villages with building-level data (data/villages/index.json); buildings load when the village is in view.
+const FOUNDATION = {
+  high: { color: '#b8322a', label: 'Built before 1925', text: 'Built before 1925: wooden piles or shallow foundations are likely. Ask for a foundation survey.' },
+  check: { color: '#ec9474', label: '1925–1970, soft soil', text: 'Built 1925–1970 on clay, peat or unknown soil: check the foundation type.' },
+  low: { color: '#4fb3b0', label: 'After 1970 or firm soil', text: 'Built after 1970, or 1925–1970 on firm soil: low foundation risk.' },
+};
+const USES = { woonfunctie: 'home', winkelfunctie: 'shop', kantoorfunctie: 'office', bijeenkomstfunctie: 'meeting place',
+  industriefunctie: 'industry', onderwijsfunctie: 'school', gezondheidszorgfunctie: 'healthcare', sportfunctie: 'sport',
+  logiesfunctie: 'lodging', overige: 'other', celfunctie: 'cells' };
+const villages = { index: null, loaded: new Map(), data: {} };
+
+function addBuildingLayers() {
+  map.addSource('buildings', { type: 'geojson', data: { type: 'FeatureCollection', features: [] }, promoteId: 'pand' });
+  map.addLayer({ id: 'buildings-fill', type: 'fill', source: 'buildings', minzoom: 14,
+    paint: { 'fill-color': ['match', ['get', 'fundering'], 'high', FOUNDATION.high.color, 'check', FOUNDATION.check.color,
+      'low', FOUNDATION.low.color, '#94a3b8'], 'fill-opacity': ['case', ['boolean', ['feature-state', 'selected'], false], 1, 0.8] } });
+  map.addLayer({ id: 'buildings-line', type: 'line', source: 'buildings', minzoom: 14,
+    paint: { 'line-color': ['case', ['boolean', ['feature-state', 'selected'], false], '#0f172a', '#ffffff'],
+      'line-width': ['case', ['boolean', ['feature-state', 'selected'], false], 2.5, 0.6] } });
+  map.on('mouseenter', 'buildings-fill', () => { map.getCanvas().style.cursor = 'pointer'; });
+  map.on('mouseleave', 'buildings-fill', () => { map.getCanvas().style.cursor = ''; });
+}
+
+function villageFor(woonplaats) {
+  return Object.entries(villages.index || {}).find(([, v]) => v.woonplaats.toLowerCase() === String(woonplaats || '').toLowerCase())?.[0];
+}
+
+function ensureVillage(key) {
+  if (!key || !villages.index?.[key]) return Promise.resolve(null);
+  if (!villages.loaded.has(key)) {
+    const get = (f) => fetch(`data/villages/${key}/${f}`).then((r) => { if (!r.ok) throw new Error(f); return r.json(); });
+    villages.loaded.set(key, Promise.all([get('buildings.geojson'), get('streets.json'), get('addresses.json')]).then(([buildings, streets, addresses]) => {
+      const v = { key, ...villages.index[key], buildings, streets, addresses };
+      villages.data[key] = v;
+      const all = Object.values(villages.data).flatMap((x) => x.buildings.features);
+      map.getSource('buildings')?.setData({ type: 'FeatureCollection', features: all });
+      renderLegend();
+      return v;
+    }).catch(() => { villages.loaded.delete(key); return null; }));
+  }
+  return villages.loaded.get(key);
+}
+
+function loadVisibleVillages() {
+  if (!villages.index || map.getZoom() < 13) return;
+  const b = map.getBounds();
+  for (const [key, v] of Object.entries(villages.index)) {
+    const [w, s2, e, n] = v.bbox;
+    if (e >= b.getWest() && w <= b.getEast() && n >= b.getSouth() && s2 <= b.getNorth()) ensureVillage(key);
+  }
+}
+
+async function loadVillages() {
+  const res = await fetch('data/villages/index.json').catch(() => null);
+  if (!res?.ok) return;
+  villages.index = await res.json();
+  const start = () => {
+    addBuildingLayers();
+    loadVisibleVillages();
+    map.on('moveend', loadVisibleVillages);
+    map.on('zoomend', renderLegend);
+  };
+  if (map.isStyleLoaded()) start(); else map.once('load', start);
+}
+
+let selectedBuilding = null;
+function selectBuilding(pand) {
+  if (selectedBuilding && map.getSource('buildings')) map.setFeatureState({ source: 'buildings', id: selectedBuilding }, { selected: false });
+  selectedBuilding = pand;
+  if (pand && map.getSource('buildings')) map.setFeatureState({ source: 'buildings', id: pand }, { selected: true });
+}
+
+const buildingsVisible = () => map.getZoom() >= 14 && Object.keys(villages.data).length > 0;
+
 let selectedBuurten = [];
 let pendingSelection = null;
 let requestedSelection = [];
@@ -207,7 +283,9 @@ function renderLegend() {
   el.innerHTML = `<div class="legend-title">${esc(title)}</div>
     <ol class="legend-scale">${colors.map((c, i) => `<li><span class="swatch" style="background:${c}"></span>${esc(labels[i])}</li>`).join('')}</ol>
     <div class="legend-compact" aria-hidden="true"><span>${ends[0]}</span>${colors.map((c) => `<span class="swatch" style="background:${c}"></span>`).join('')}<span>${ends[1]}</span></div>
-    ${isValue ? '' : '<div class="legend-note">Compared with all Dutch neighbourhoods</div>'}`;
+    ${isValue ? '' : '<div class="legend-note">Compared with all Dutch neighbourhoods</div>'}
+    ${buildingsVisible() ? `<div class="legend-buildings"><div class="legend-title">Buildings: foundation risk</div>
+      <ol class="legend-scale">${Object.values(FOUNDATION).map((f) => `<li><span class="swatch" style="background:${f.color}"></span>${esc(f.label)}</li>`).join('')}</ol></div>` : ''}`;
 }
 
 // ---------------------------------------------------------------- search (PDOK Locatieserver)
@@ -277,6 +355,13 @@ async function select(id) {
       await openArea(area.key, { point: doc.type === 'adres' ? pt : null, title: doc.type === 'adres' ? doc.weergavenaam : null });
       return;
     }
+    const vkey = villageFor(doc.woonplaatsnaam);
+    if (vkey && (doc.type === 'weg' || doc.type === 'adres')) {
+      const v = await ensureVillage(vkey);
+      if (v && doc.type === 'weg' && v.streets.some((x) => x.straat === doc.straatnaam)) { await openStreet(vkey, doc.straatnaam); return; }
+      const a = v && v.addresses.find((x) => x.adresseerbaarobject_id === doc.adresseerbaarobject_id);
+      if (a?.pand) { await openBuilding(a.pand, { address: a }); return; }
+    }
     if (pt) {
       marker.setLngLat(pt).addTo(map);
       const zoom = { adres: 17, weg: 16, buurt: 15, wijk: 14, woonplaats: 13 }[doc.type] ?? 15;
@@ -341,6 +426,7 @@ function renderPlace(doc) {
     ['Gemeente', doc.gemeentenaam],
   ].filter(([, v]) => v);
   state.current = { kind: 'place', doc };
+  selectBuilding(null);
   sheetBody.innerHTML = `
     <h1>${esc(doc.weergavenaam)}</h1>
     <dl class="facts">${rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
@@ -365,6 +451,7 @@ function buurtSummary(p) {
 
 function renderBuurt(p) {
   state.current = { kind: 'buurt', props: p };
+  selectBuilding(null);
   clearSchools();
   marker.remove();
   selectBuurten([p.buurtcode]);
@@ -375,12 +462,148 @@ function renderBuurt(p) {
   setCollapsed(false);
 }
 
-map.on('click', 'buurten-fill', (e) => {
-  const f = e.features?.[0];
+map.on('click', (e) => {
+  const building = map.getLayer('buildings-fill') && map.queryRenderedFeatures(e.point, { layers: ['buildings-fill'] })[0];
+  if (building) { openBuilding(building.properties.pand); return; }
+  const f = map.getLayer('buurten-fill') && map.queryRenderedFeatures(e.point, { layers: ['buurten-fill'] })[0];
   if (f) renderBuurt(f.properties);
 });
 map.on('mouseenter', 'buurten-fill', () => { map.getCanvas().style.cursor = 'pointer'; });
 map.on('mouseleave', 'buurten-fill', () => { map.getCanvas().style.cursor = ''; });
+
+// ---------------------------------------------------------------- building and street cards (villages)
+
+const houseNumber = (a) => `${a.huisnummer}${a.huisletter || ''}${a.huisnummertoevoeging ? `-${a.huisnummertoevoeging}` : ''}`;
+const uses = (g) => String(g || '').split(',').filter(Boolean).map((u) => USES[u] || u).join(', ');
+const buurtProps = (code) => state.buurten?.features.find((f) => f.properties.buurtcode === code)?.properties;
+const sortByNumber = (a, b) => a.huisnummer - b.huisnummer || houseNumber(a).localeCompare(houseNumber(b));
+
+const streetListings = (v, straat) => (v.listings || []).filter((l) => (l.straat || '').toLowerCase() === straat.toLowerCase());
+
+function listingsHtml(items) {
+  return `<ul class="docs">${items.map((l) => `<li><a href="${esc(l.source)}" target="_blank" rel="noopener">${esc(l.address)}</a>
+    ${l.asking_price_eur ? `<strong>${eur(l.asking_price_eur)}</strong> k.k.` : ''} <span class="muted">${esc(l.status || '')}${l.sold_on ? ` ${esc(l.sold_on)}` : ''}</span></li>`).join('')}</ul>
+    <p class="source">Asking prices found online (search snippets); final sale prices are not public for free.</p>`;
+}
+
+function villageOfBuilding(pand) {
+  return Object.values(villages.data).find((v) => v.buildings.features.some((f) => f.properties.pand === pand));
+}
+
+async function openBuilding(pand, { address = null } = {}) {
+  const v = villageOfBuilding(pand);
+  if (!v) return;
+  const f = v.buildings.features.find((x) => x.properties.pand === pand);
+  const addrs = v.addresses.filter((a) => a.pand === pand).sort(sortByNumber);
+  const a = address || addrs[0];
+  const center = a ? [a.lon, a.lat] : f.geometry.coordinates.flat(3).slice(0, 2);
+  state.current = { kind: 'building', village: v.key, pand, address: a };
+  clearSchools();
+  marker.setLngLat(center).addTo(map);
+  if (map.getZoom() < 16.5 || !map.getBounds().contains(center)) map.flyTo({ center, zoom: 17.5, padding: { bottom: window.innerHeight * 0.4 } });
+  await buurtenLoaded;
+  await ensureGemeente(v.gemeentecode);
+  selectBuurten(a?.buurtcode ? [a.buurtcode] : []);
+  selectBuilding(pand);
+  renderBuilding(v, f.properties, addrs, a);
+  setCollapsed(false);
+  if (a) input.value = a.weergavenaam;
+}
+
+function buildingFacts(p, a) {
+  const found = FOUNDATION[p.fundering];
+  const mon = p.monument_info || {};
+  const monNr = String(mon.rijksmonumentnummer || mon.monumentnummer || mon.rijksmonument_nummer || mon.localid || '').replace(/\.0+$/, '');
+  return [
+    ['Built', p.bouwjaar],
+    ['Use', uses(a?.gebruiksdoel || p.gebruik)],
+    ['Floor area', a?.oppervlakte ? `${a.oppervlakte} m²` : p.oppervlakte ? `${p.oppervlakte} m² (whole building)` : null],
+    ['Addresses in building', p.adressen > 1 ? p.adressen : null],
+    ['Status', p.status],
+    ['Soil', p.bodem || 'not mapped (built-up area)'],
+    ['Foundation', found ? `<span class="pill" style="--c:${found.color}">${esc({ high: 'Higher risk', check: 'Check', low: 'Low risk' }[p.fundering])}</span> ${esc(found.text)}` : null, true],
+    ['Rijksmonument', p.monument ? (monNr ? `<a href="https://monumentenregister.cultureelerfgoed.nl/monumenten/${esc(monNr)}" target="_blank" rel="noopener">Yes, no. ${esc(monNr)}</a>` : 'Yes') : null, true],
+  ].filter(([, val]) => val != null && val !== '');
+}
+
+function renderBuilding(v, p, addrs, a) {
+  const buurt = buurtProps(a?.buurtcode || p.buurtcode);
+  const home = (a?.gebruiksdoel || p.gebruik || '').includes('woon');
+  sheetBody.innerHTML = `
+    <h1>${esc(a ? `${a.straatnaam} ${houseNumber(a)}` : p.straat)}</h1>
+    <p class="muted">${esc(a?.postcode || '')} ${esc(v.woonplaats)} · ${esc(v.gemeente)}</p>
+    <dl class="facts">${buildingFacts(p, a).map(([k, val, raw]) => `<dt>${esc(k)}</dt><dd>${raw ? val : esc(val)}</dd>`).join('')}</dl>
+    <div class="action-row">
+      ${home ? '<button type="button" class="council-button" data-valuation-building>Estimate a value</button>' : ''}
+      <button type="button" class="council-button" data-street="${esc(p.straat)}">All of ${esc(p.straat)}</button>
+    </div>
+    ${(() => { const own = addrs.map((x) => `${x.straatnaam} ${houseNumber(x)}`.toLowerCase());
+      const hits = (v.listings || []).filter((l) => own.includes(l.address.toLowerCase()));
+      return hits.length ? `<h2 class="section-title">Listed online</h2>${listingsHtml(hits)}` : ''; })()}
+    ${addrs.length > 1 ? `<h2 class="section-title">Addresses in this building</h2>
+      <ul class="address-list">${addrs.map((x) => `<li><button type="button" class="link-button" data-address="${esc(x.adresseerbaarobject_id)}"${x === a ? ' aria-current="true"' : ''}>${esc(houseNumber(x))}</button> <span class="muted">${esc(uses(x.gebruiksdoel))}${x.oppervlakte ? ` · ${x.oppervlakte} m²` : ''}</span></li>`).join('')}</ul>` : ''}
+    ${buurt ? buurtSummary(buurt) : ''}
+    <p class="source">Building: BAG (Kadaster) · soil: BRO Bodemkaart · monuments: RCE. The foundation flag is a rule of thumb from building year and soil, not a survey.</p>
+    ${PRESETS}`;
+}
+
+async function openStreet(vkey, straat) {
+  const v = await ensureVillage(vkey);
+  const st = v?.streets.find((x) => x.straat === straat);
+  if (!st) return;
+  state.current = { kind: 'street', village: vkey, straat };
+  clearSchools();
+  selectBuilding(null);
+  marker.setLngLat(st.centrum).addTo(map);
+  const pts = v.addresses.filter((a) => a.straatnaam === straat);
+  const b = new maplibregl.LngLatBounds();
+  pts.forEach((x) => b.extend([x.lon, x.lat]));
+  map.fitBounds(b, { padding: { top: 140, bottom: window.innerHeight * 0.45, left: 30, right: 30 }, maxZoom: 17, minZoom: 14.5, duration: 800 });
+  await buurtenLoaded;
+  await ensureGemeente(v.gemeentecode);
+  selectBuurten(Object.keys(st.buurten).filter((c) => c && c !== 'null'));
+  renderStreet(v, st, pts);
+  setCollapsed(false);
+  input.value = `${straat}, ${v.woonplaats}`;
+}
+
+function renderStreet(v, st, pts) {
+  const area = AREA_INDEX.find((x) => x.straat === st.straat.toLowerCase() && x.woonplaats === v.woonplaats.toLowerCase());
+  const mainBuurt = Object.entries(st.buurten).sort((x, y) => y[1] - x[1])[0]?.[0];
+  const buurt = buurtProps(mainBuurt);
+  const flags = st.fundering || {};
+  const years = st.bouwjaar_min ? (st.bouwjaar_min === st.bouwjaar_max ? `${st.bouwjaar_min}` : `${st.bouwjaar_min}–${st.bouwjaar_max}, median ${st.bouwjaar_mediaan}`) : null;
+  const rows = [
+    ['Addresses', `${st.adressen}${st.woningen !== st.adressen ? `, of which ${st.woningen} homes` : ''}`],
+    ['Built', years],
+    ['Median home size', st.oppervlakte_mediaan ? `${st.oppervlakte_mediaan} m²` : null],
+    ['Soil', st.bodem.length ? st.bodem.join('; ') : null],
+    ['Rijksmonumenten', st.monumenten || null],
+  ].filter(([, val]) => val != null);
+  const total = Object.values(flags).reduce((x, y) => x + y, 0);
+  const homes = pts.filter((x) => (x.gebruiksdoel || '').includes('woon')).sort(sortByNumber);
+  sheetBody.innerHTML = `
+    <h1>${esc(st.straat)}, ${esc(v.woonplaats)}</h1>
+    <p class="muted">${esc(v.gemeente)} · ${Object.keys(st.buurten).map((c) => esc(buurtProps(c)?.buurtnaam || c)).join(', ')}</p>
+    <dl class="facts">${rows.map(([k, val]) => `<dt>${esc(k)}</dt><dd>${esc(val)}</dd>`).join('')}</dl>
+    ${total ? `<h2 class="section-title">Foundation risk, by address</h2>
+      <div class="stack" role="img" aria-label="${Object.entries(FOUNDATION).map(([k, f]) => `${f.label}: ${flags[k] || 0}`).join(', ')}">
+        ${Object.entries(FOUNDATION).filter(([k]) => flags[k]).map(([k, f]) => `<span style="flex:${flags[k]};background:${f.color}"></span>`).join('')}</div>
+      <ul class="stack-legend">${Object.entries(FOUNDATION).filter(([k]) => flags[k]).map(([k, f]) => `<li><span class="swatch" style="background:${f.color}"></span>${esc(f.label)} <strong>${flags[k]}</strong></li>`).join('')}</ul>` : ''}
+    ${area ? `<div class="action-row"><button type="button" class="council-button preset" data-area="${area.key}">Full street dossier</button></div>` : ''}
+    ${buurt ? buurtSummary(buurt) : ''}
+    ${details('s-homes', `Homes on this street (${homes.length})`, `<ul class="address-list">${homes.map((x) =>
+      `<li><button type="button" class="link-button" data-address="${esc(x.adresseerbaarobject_id)}">${esc(houseNumber(x))}</button> <span class="muted">${x.bouwjaar || ''}${x.oppervlakte ? ` · ${x.oppervlakte} m²` : ''}</span></li>`).join('')}</ul>`)}
+    ${streetListings(v, st.straat).length ? details('s-street-market', `For sale & recently sold (${streetListings(v, st.straat).length})`, listingsHtml(streetListings(v, st.straat)), true) : ''}
+    ${details('s-street-pubs', `Permits & announcements (${st.bekendmakingen_totaal})`, st.bekendmakingen.length
+      ? `<ul class="docs">${st.bekendmakingen.map((r) => `<li><a href="${esc(r.preferredUrl)}" target="_blank" rel="noopener">${esc(r.title)}</a> <span class="muted">${esc(r.available || '')}</span></li>`).join('')}</ul>
+        <p class="source">Gemeenteblad via officielebekendmakingen.nl</p>` : '<p class="muted">No publications found for this street.</p>')}
+    ${details('s-street-council', `Council documents (${st.raad.length})`, st.raad.length
+      ? `<ul class="docs">${st.raad.map((r) => `<li><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a></li>`).join('')}</ul>
+        <p class="source">Gemeenteraad ${esc(v.gemeente)} (iBabs), documents whose title names the street</p>` : '<p class="muted">No council documents name this street.</p>')}
+    <p class="source">BAG (Kadaster), BRO Bodemkaart, RCE, CBS. Tap a building on the map for its details.</p>
+    ${PRESETS}`;
+}
 
 // ---------------------------------------------------------------- street dossier
 
@@ -580,6 +803,7 @@ async function loadCouncil(key) {
 async function openArea(key, { point = null, title = null } = {}) {
   const d = await loadDossier(key);
   state.current = { kind: 'area', key, title };
+  selectBuilding(null);
   const codes = d.buurten.map((b) => b.buurtcode);
   selectBuurten(codes);
   marker.setLngLat(point || [d.centrum.lon, d.centrum.lat]).addTo(map);
@@ -622,6 +846,19 @@ sheetBody.addEventListener('click', (e) => {
     openValuation(d);
   } else if (e.target.closest('[data-valuation-place]') && state.current?.kind === 'place') {
     openValuation(lightDossier(state.current.doc), { addresses: [placeAddress(state.current.doc)] });
+  } else if (e.target.closest('[data-valuation-building]') && state.current?.kind === 'building') {
+    const { address: a, village } = state.current;
+    openValuation(villageDossier(villages.data[village], a), { addresses: [{ adres: a.weergavenaam, postcode: a.postcode,
+      huisnummer: a.huisnummer, buurtcode: a.buurtcode, vbo: a.adresseerbaarobject_id }] });
+  } else if (e.target.closest('[data-street]') && state.current?.kind === 'building') {
+    openStreet(state.current.village, e.target.closest('[data-street]').dataset.street);
+  } else if (e.target.closest('[data-address]') && state.current?.village) {
+    const v = villages.data[state.current.village];
+    const a = v.addresses.find((x) => x.adresseerbaarobject_id === e.target.closest('[data-address]').dataset.address);
+    if (a?.pand) openBuilding(a.pand, { address: a });
+  } else if (e.target.closest('[data-back]') && state.current?.kind === 'building') {
+    const { village, pand, address } = state.current;
+    openBuilding(pand, { address });
   } else if (e.target.closest('[data-back]') && d) {
     renderArea(d, state.current.title);
   } else if (e.target.closest('[data-back]') && state.current?.kind === 'place') {
@@ -646,6 +883,26 @@ function lightDossier(doc) {
 function placeAddress(doc) {
   return { adres: doc.weergavenaam, postcode: doc.postcode, huisnummer: doc.huisnummer, buurtcode: doc.buurtcode,
     vbo: doc.adresseerbaarobject_id };
+}
+
+// For a village address: buurt and gemeente data plus the building and its street.
+function villageDossier(v, a) {
+  const st = v.streets.find((x) => x.straat === a.straatnaam) || {};
+  const p = v.buildings.features.find((f) => f.properties.pand === a.pand)?.properties || {};
+  const d = lightDossier({ straatnaam: a.straatnaam, woonplaatsnaam: v.woonplaats, gemeentenaam: v.gemeente, gemeentecode: v.gemeentecode,
+    buurtcode: a.buurtcode, buurtnaam: buurtProps(a.buurtcode)?.buurtnaam });
+  d.adressen = st.adressen;
+  d.building = { built: p.bouwjaar, status: p.status, addresses_in_building: p.adressen, floor_area_m2: a.oppervlakte, use: uses(a.gebruiksdoel),
+    soil: p.bodem, foundation_flag: p.fundering, rijksmonument: p.monument };
+  d.street = { addresses: st.adressen, homes: st.woningen, built_min: st.bouwjaar_min, built_median: st.bouwjaar_mediaan, built_max: st.bouwjaar_max,
+    median_home_floor_area_m2: st.oppervlakte_mediaan, foundation_flags_by_address: st.fundering, soil: st.bodem,
+    homes: v.addresses.filter((x) => x.straatnaam === a.straatnaam && (x.gebruiksdoel || '').includes('woon')).slice(0, 150)
+      .map((x) => `${houseNumber(x)}: ${x.bouwjaar || '?'}, ${x.oppervlakte || '?'} m²`),
+    recent_publications: (st.bekendmakingen || []).slice(0, 12).map((r) => `${r.available}: ${r.title}`),
+    council_documents: (st.raad || []).slice(0, 8).map((r) => r.title) };
+  d.listings = streetListings(v, a.straatnaam);
+  d.village_listings = (v.listings || []).filter((l) => l.asking_price_eur).slice(0, 25);
+  return d;
 }
 
 // The value estimate (and the Anthropic SDK it uses) loads only when someone opens it.
@@ -710,9 +967,12 @@ function applyWeights() {
   if (c?.kind === 'area' && sheetBody.querySelector('.overall')) renderArea(state.dossiers[c.key], c.title);
   else if (c?.kind === 'buurt') renderBuurt(state.buurten.features.find((f) => f.properties.buurtcode === c.props.buurtcode).properties);
   else if (c?.kind === 'place') renderPlace(c.doc);
+  else if (c?.kind === 'building') openBuilding(c.pand, { address: c.address });
+  else if (c?.kind === 'street') openStreet(c.village, c.straat);
 }
 
 const buurtenLoaded = loadBuurten().catch(() => {});
+loadVillages().catch(() => {});
 renderLegend();
 
 if ('serviceWorker' in navigator) {
