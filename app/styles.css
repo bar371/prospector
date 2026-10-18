@@ -40,7 +40,19 @@ body {
   pointer-events: none;
 }
 .top > * { pointer-events: auto; }
-.brand { font-weight: 700; letter-spacing: -0.02em; font-size: 18px; text-shadow: 0 1px 8px var(--bg); }
+.brand {
+  justify-self: start;
+  font-weight: 700; letter-spacing: -0.02em; font-size: 17px;
+  padding: 4px 12px; border-radius: 999px;
+  background: var(--panel);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--shadow);
+}
+@media (min-width: 760px) {
+  .top { grid-template-columns: auto minmax(0, 480px) 1fr; align-items: center; column-gap: 12px; }
+  .chips { grid-column: 1 / -1; }
+}
 
 .search { position: relative; }
 .search input {
@@ -89,7 +101,7 @@ body {
   font: inherit; font-size: 13px;
   box-shadow: var(--shadow);
 }
-.chip:disabled { opacity: 0.55; }
+.chip:disabled { color: var(--muted); }
 
 .sheet {
   position: fixed; left: 0; right: 0; bottom: 0;
@@ -104,7 +116,17 @@ body {
 @media (min-width: 760px) {
   .sheet { left: 16px; right: auto; bottom: 16px; width: 380px; border-radius: var(--radius); }
 }
-.handle { width: 36px; height: 5px; border-radius: 3px; background: var(--line); margin: 0 auto 10px; }
+.handle {
+  display: block; width: 100%; height: 32px; margin: -8px 0 0;
+  border: 0; background: none; cursor: pointer;
+}
+.handle::before {
+  content: ""; display: block; margin: 0 auto;
+  width: 36px; height: 5px; border-radius: 3px; background: var(--muted); opacity: 0.4;
+}
+/* Collapsed: only the title stays visible, so the map gets the screen. */
+.sheet.collapsed { max-height: none; overflow: hidden; }
+.sheet.collapsed #sheet-body > :not(h1) { display: none; }
 .sheet h1 { font-size: 20px; margin: 0 0 4px; letter-spacing: -0.01em; }
 .muted { color: var(--muted); margin: 0 0 12px; }
 .presets { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -118,3 +140,7 @@ dl.facts { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin
 dl.facts dt { color: var(--muted); }
 dl.facts dd { margin: 0; font-weight: 500; }
 .soon { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; }
+
+/* MapLibre's zoom buttons default to 29px; make them comfortable to tap on tablets. */
+.maplibregl-ctrl-group button { width: 40px; height: 40px; }
+.maplibregl-ctrl-bottom-right { margin-bottom: calc(env(safe-area-inset-bottom) + 6px); }
