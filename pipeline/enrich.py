@@ -143,7 +143,10 @@ def lden_at(base, layer, lon, lat):
     return None
 
 
-ROAD_DB_AT_10M = {0: 76, 1: 76, 2: 73, 3: 70, 4: 67, 5: 64, 6: 58, 7: 55}  # NWB functional road class -> Lden at 10 m
+# NWB functional road class -> typical Lden at 10 m from the road axis: motorway, provincial road (N11), collector roads,
+# then residential streets (30 km/h, a few hundred cars a day), which hardly add noise.
+ROAD_DB_AT_10M = {0: 78, 1: 77, 2: 74, 3: 71, 4: 64, 5: 60, 6: 51, 7: 48}
+RAIL_DB_AT_10M = 68  # regional line with sprinter trains (Leiden-Alphen)
 
 
 def estimated_lden(road_dists, rail_dist):
@@ -154,14 +157,14 @@ def estimated_lden(road_dists, rail_dist):
         if dist is not None:
             levels.append(ROAD_DB_AT_10M.get(frc, 55) - 15 * math.log10(max(dist, 10) / 10))
     if rail_dist is not None:
-        levels.append(72 - 15 * math.log10(max(rail_dist, 10) / 10))
-    total = 10 * math.log10(sum(10 ** (l / 10) for l in levels) + 10 ** 4.2)  # 42 dB background
+        levels.append(RAIL_DB_AT_10M - 15 * math.log10(max(rail_dist, 10) / 10))
+    total = 10 * math.log10(sum(10 ** (l / 10) for l in levels) + 10 ** 4.0)  # 40 dB background
     return round(total, 1)
 
 
 def quiet_score(lden):
-    """0-100 from Lden: 45 dB or less is 100, 70 dB or more is 0 (WHO advises below 53 dB for road traffic)."""
-    return None if lden is None else int(round(max(0, min(100, (70 - lden) * 4))))
+    """0-100 from Lden: 45 dB or less is 100, 65 dB or more is 0 (WHO advises below 53 dB for road traffic)."""
+    return None if lden is None else int(round(max(0, min(100, (65 - lden) * 5))))
 
 
 # ---------------------------------------------------------------- per village
@@ -208,6 +211,8 @@ def build(key):
     log(f"  BGT road parts: {len(wegdeel_feats)} by function {dict(sorted(funcs.items(), key=lambda x: -x[1])[:14])}")
     paths = [M.geom(f["geometry"]).buffer(0) for f in wegdeel_feats]
     path_tree = STRtree(paths)
+    car = [g for g, f in zip(paths, wegdeel_feats) if (f["properties"].get("functie") or "").startswith("rijbaan")]
+    car_tree = STRtree(car)
 
     roads = [f for f in ogc(NWB, "wegvakken", bbox) if f.get("geometry")]
     road_geom = [M.geom(f["geometry"]) for f in roads]
@@ -262,18 +267,22 @@ def build(key):
     home_pid_set = set(home_pids)
     home_pand_set = {i for i, pid in enumerate(pand_id) if pid in home_pid_set}
 
+    def neighbours(i):
+        g = pand_geom[i].buffer(0.3)
+        return [j for j in pand_tree.query(g) if j != i and j in home_pand_set and g.intersection(pand_geom[j].buffer(0.3)).length > 4]
+
     def house_type(pid, n_addr):
         if n_addr > 1:
             return "apartment"
         i = pand_index.get(pid)
         if i is None:
             return None
-        g = pand_geom[i]
-        shared = 0
-        for j in pand_tree.query(g.buffer(0.3)):
-            if j != i and j in home_pand_set and g.buffer(0.3).intersection(pand_geom[j].buffer(0.3)).length > 4:
-                shared += 1
-        return {0: "detached", 1: "semi-detached or end of terrace"}.get(shared, "mid-terrace")
+        nb = neighbours(i)
+        if not nb:
+            return "detached"
+        if len(nb) == 1:
+            return "end of terrace" if len(neighbours(nb[0])) >= 2 else "semi-detached"
+        return "mid-terrace"
 
     addr_per_pand = {}
     for a in addresses:
@@ -374,9 +383,14 @@ def build(key):
         out["score_rust"] = quiet_score(out["lden_db"])
         # car-light: quiet own street, far from main roads
         own_class = out.get("straat_klasse")
-        street_score = 100 if own_class is not None and own_class >= 6 else 60 if own_class == 5 else 20 if own_class == 4 else 0
+        street_score = {7: 100, 6: 80, 5: 40, 4: 10}.get(own_class, 0)
         main_score = min(100, (out["afstand_hoofdweg_m"] or 1000) / 5)
-        out["score_autoluw"] = int(round(0.5 * street_score + 0.5 * main_score))
+        # how far the home is from where cars drive (a home on a footpath or a car-free court scores high)
+        near_car = car_tree.query(pt.buffer(200))
+        car_d = min((car[j].distance(home if home is not None else pt) for j in near_car), default=200)
+        out["afstand_autoweg_m"] = round(car_d)
+        car_score = min(100, car_d * 4)  # 25 m or more from any car lane is fully car-free at the door
+        out["score_autoluw"] = int(round(0.4 * street_score + 0.3 * car_score + 0.3 * main_score))
 
         year = a.get("bouwjaar")
         out["nieuwbouw"] = bool(year) and int(year) >= 2015
@@ -419,6 +433,7 @@ def build(key):
             "aan_het_water_pct": share(e.get("aan_het_water") for e in es),
             "aan_breed_water_pct": share(e.get("aan_breed_water") for e in es),
             "afstand_hoofdweg_m_mediaan": med(e.get("afstand_hoofdweg_m") for e in es),
+            "afstand_autoweg_m_mediaan": med(e.get("afstand_autoweg_m") for e in es),
             "afstand_spoor_m_mediaan": med(e.get("afstand_spoor_m") for e in es),
             "lden_db_mediaan": med(e.get("lden_db") for e in es),
             "lden_bron": es[0].get("lden_bron") if es else None,

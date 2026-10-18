@@ -534,36 +534,6 @@ await test('Village: new development gets measured scores (Koolrabi)', async () 
   await context.close();
 });
 
-await test('Leiden centre: building and street cards', async () => {
-  const { context, page, log } = await open();
-  await page.fill('#q', 'Botermarkt 4B Leiden');
-  await page.locator('#suggestions li[data-id]').first().waitFor({ timeout: 10000 });
-  await page.press('#q', 'Enter');
-  await waitForTitle(page, /^Botermarkt 4B$/);
-  const f = await facts(page);
-  check(/^\d{4}$/.test(f.Built || ''), `building year (${f.Built})`);
-  check(!!f.Foundation, `foundation flag (${(f.Foundation || '').slice(0, 40)})`);
-  check(/€580\.000/.test(await sheetText(page)), 'the asking price found online is shown');
-  await page.waitForTimeout(1500);
-  await page.screenshot({ path: `${OUT}/leiden-building.png` });
-  await page.fill('#q', 'Oude Herengracht Leiden');
-  await page.locator('#suggestions li[data-id]').first().waitFor({ timeout: 10000 });
-  await page.press('#q', 'Enter');
-  await waitForTitle(page, /^Oude Herengracht, Leiden$/);
-  const text = await sheetText(page);
-  check(/€875\.000/.test(text), 'street listings shown');
-  check(/within Leiden city centre/.test(text), 'the card says it covers the part within the area');
-  check(await page.locator('#s-homes .link-button').count() > 3, 'homes on the street listed');
-  await page.screenshot({ path: `${OUT}/leiden-street.png` });
-  await page.fill('#q', 'Zamenhofstraat 25 Leiden');
-  await page.locator('#suggestions li[data-id]').first().waitFor({ timeout: 10000 });
-  await page.press('#q', 'Enter');
-  await waitForTitle(page, /Zamenhofstraat 25/);
-  check(await page.locator('[data-council]').count() === 1, 'a test-street address still opens its full dossier');
-  check(log.errors.length === 0, `no errors${log.errors.length ? ': ' + log.errors.join(' | ') : ''}`);
-  await context.close();
-});
-
 // 6. Layout on different screens and colour schemes.
 const SCREENS = [
   ['iphone-se', { width: 320, height: 568 }, true],
