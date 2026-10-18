@@ -539,7 +539,8 @@ function highlight(text, terms) {
 }
 
 function councilView(d, council) {
-  const fragments = council?.fragments || [];
+  // Under 3 minutes is procedure (introducing a hamerstuk, a vote), not debate.
+  const fragments = (council?.fragments || []).filter((f) => f.duration_min >= 3);
   const docs = council?.documents || [];
   const said = fragments.length ? fragments.map((f) => `
     <article class="fragment">
@@ -553,7 +554,7 @@ function councilView(d, council) {
         : '<p class="muted">The area is on the agenda, but the transcript does not name the street or buurt.</p>'}
       <p class="source">${esc(f.source)}</p>
     </article>`).join('') : '';
-  const docList = docs.length ? `<ul class="plain council">${docs.slice(0, 15).map((x) => `<li><span class="muted">${esc(x.date)} · ${esc(x.type || x.module || '')}</span>
+  const docList = docs.length ? `<ul class="plain council">${docs.slice(0, 15).map((x) => `<li>${x.date ? `<span class="muted">${esc(x.date)} · ${esc(x.type || x.module || '')}</span>` : ''}
       ${x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title)}</a>` : esc(x.title)}
       ${x.snippet ? `<blockquote>${highlight(x.snippet, x.terms)}</blockquote>` : ''}</li>`).join('')}</ul>` : '';
   const ori = !docs.length ? oriDocuments(d) : '';

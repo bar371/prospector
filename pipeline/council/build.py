@@ -294,7 +294,7 @@ def leiden(key, area):
                     speakers.append(s["name"])
             quotes = passages(cues, area["match"], entry)
             words = sum(len(c["text"].split()) for c in cues)
-            if words < 150 and not quotes:
+            if end - start < 180 or (words < 150 and not quotes):
                 log(f"  skip {label}: procedural ({words} words)")
                 continue
             fragments.append({
@@ -319,6 +319,7 @@ def scan_recent_meetings(key, area, done):
     home = fetch_json(f"{QUALIGRAF}/vji/public/homepage/action=detaildata")
     meetings = [m for m in (home.get("events") or home).get("past_tab", []) if (m.get("video") or {}).get("has_vod")]
     found = []
+    log(f"  recent meetings with video: {len(meetings)}")
     for m in meetings[:12]:
         ag = m.get("agenda_hexkey") or m.get("hexkey")
         try:
@@ -326,6 +327,8 @@ def scan_recent_meetings(key, area, done):
             embed_path = ((video.get("player") or {}).get("VIDEO_PLAYER") or {}).get("url")
             embed = fetch(urllib.parse.urljoin(QUALIGRAF, embed_path)) if embed_path else ""
             if "connectedviews" not in embed:
+                log(f"  scan {m['date']} {m['title']}: no Connected Views player; player={json.dumps(video.get('player'))[:300]}; "
+                    f"embed={embed[:300]!r}")
                 continue
             ndx = (video.get("indexdata") or {}).get("ndx") or []
             end = max([e.get("end", 0) for e in ndx] + [video.get("duration") or 0])
