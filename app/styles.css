@@ -101,7 +101,7 @@ body {
   font: inherit; font-size: 13px;
   box-shadow: var(--shadow);
 }
-.chip:disabled { opacity: 0.55; }
+.chip:disabled { color: var(--muted); }
 
 .sheet {
   position: fixed; left: 0; right: 0; bottom: 0;
