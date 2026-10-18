@@ -118,7 +118,10 @@ let gemeenteIndex = null;
 function addBuurtLayers() {
   map.addSource('buurten', { type: 'geojson', data: state.buurten, promoteId: 'buurtcode' });
   map.addLayer({ id: 'buurten-fill', type: 'fill', source: 'buurten',
-    paint: { 'fill-color': layerPaint(), 'fill-opacity': ['case', ['boolean', ['feature-state', 'selected'], false], 0.75, 0.55] } });
+    // Fades when zoomed in to buildings, so the buurt average does not read as the colour of each street.
+    paint: { 'fill-color': layerPaint(), 'fill-opacity': ['interpolate', ['linear'], ['zoom'],
+      14, ['case', ['boolean', ['feature-state', 'selected'], false], 0.75, 0.55],
+      16.5, ['case', ['boolean', ['feature-state', 'selected'], false], 0.3, 0.18]] } });
   map.addLayer({ id: 'buurten-line', type: 'line', source: 'buurten',
     paint: { 'line-color': '#ffffff', 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 0.4, 15, 1.5] } });
   map.addLayer({ id: 'buurten-selected', type: 'line', source: 'buurten',
