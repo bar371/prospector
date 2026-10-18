@@ -1,0 +1,31 @@
+name: Data
+
+# Runs the data pipeline on GitHub's runners (the official sources are reachable there)
+# and publishes the output to the data-build branch for review.
+on:
+  push:
+    branches-ignore: [main]
+    paths: ['pipeline/**', '.github/workflows/data.yml']
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python pipeline/probe.py out/probe
+      - name: Publish to the data-build branch
+        if: always()
+        run: |
+          cd out
+          git init -q -b data-build
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          printf '# Data build\n\nCommit %s, run %s\n' "$GITHUB_SHA" "$GITHUB_RUN_ID" > README.md
+          git add -A && git commit -qm "Data build for $GITHUB_SHA"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" data-build
