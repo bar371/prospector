@@ -1,0 +1,19 @@
+{
+  "area": "Zamenhofstraat, Leiden (postcodes 2312 NV / NW / NX; wijk Noordvest, Stationsdistrict)",
+  "found_on": "2026-10-18",
+  "method": "Online search of public listing and valuation pages. Values come from search-result snippets; the pages themselves were not opened (blocked from the dev environment).",
+  "price_note": "No asking prices or sales on this street turned up. Funda showed 0 homes for sale. The values below are WOZ values or third-party estimates, not asking prices.",
+  "listings": [],
+  "other_values": [
+    { "address": "Zamenhofstraat 25, 2312 NX", "kind": "WOZ 2025", "value_eur": 301000, "source": "https://drimble.nl/adres/leiden/2312NX/zamenhofstraat-25.html" },
+    { "address": "Zamenhofstraat 16, 2312 NV", "kind": "WOZ 2025", "value_eur": 255000, "source": "https://drimble.nl/adres/leiden/2312NV/zamenhofstraat-16.html" },
+    { "address": "Zamenhofstraat 38, 2312 NW", "kind": "Huispedia estimate (67 m2)", "value_eur_range": [431000, 477000], "source": "https://huispedia.nl/leiden/2312nw/zamenhofstraat/38" },
+    { "address": "Zamenhofstraat 18, 2312 NV", "kind": "Huispedia estimate (40 m2 apartment, built 1986)", "value_eur_range": [254000, 296000], "source": "https://huispedia.nl/leiden/2312nv/zamenhofstraat/18" },
+    { "address": "Zamenhofstraat 8, 2312 NV", "kind": "Huispedia estimate", "value_eur_range": [251000, 292000], "source": "https://huispedia.nl/leiden/2312nv/zamenhofstraat/8" }
+  ],
+  "next_steps": [
+    "Open the Funda sold archive for the street: https://www.funda.nl/koop/leiden/straat-zamenhofstraat/verkocht/",
+    "Widen to nearby streets in Noordvest (for example Langegracht, same postcode 2312 NW) for comparables",
+    "Confirm WOZ values on wozwaardeloket.nl"
+  ]
+}

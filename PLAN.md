@@ -14,7 +14,7 @@ A single, very simple and good-looking HTML app (installable on the iPhone home 
 Every data point comes from an official or open public source and keeps its source and reference date, so the user can always see where a number comes from.
 
 **Test areas (phase 1):**
-- **Zamenhofstraat, Leiden.** Merenwijk / Slaaghwijk area.
+- **Zamenhofstraat, Leiden.** Wijk Noordvest (Stationsdistrict), postcodes 2312 NV / NW / NX. This corrects an earlier guess of Merenwijk.
 - **Hazerswoude-Rijndijk** (gemeente Alphen aan den Rijn), along the Rijndijk. Confirmed. The exact CBS buurt codes are pinned down in phase 0.
 
 ---

@@ -1,0 +1,16 @@
+{
+  "area": "Rijndijk, Hazerswoude-Rijndijk (gemeente Alphen aan den Rijn)",
+  "found_on": "2026-10-18",
+  "method": "Online search of public listing pages. Values come from search-result snippets; the pages themselves were not opened (blocked from the dev environment).",
+  "price_note": "Asking prices (vraagprijs, kosten koper). Final sale prices are not public for free and can differ.",
+  "listings": [
+    { "address": "Rijndijk 33, 2394 AC", "type": "eengezinswoning", "asking_price_eur": 450000, "listed_on": "2026-01-28", "sold_on": "2026-02-25", "status": "verkocht", "source": "https://www.funda.nl/detail/koop/verkocht/hazerswoude-rijndijk/huis-rijndijk-33/89682073/" },
+    { "address": "Rijndijk 110-WS, 2394 AJ", "type": "woonark", "asking_price_eur": 375000, "listed_on": null, "sold_on": "2025-07-21", "status": "verkocht", "source": "https://www.funda.nl/detail/koop/verkocht/hazerswoude-rijndijk/huis-rijndijk-110-ws/43720884/" },
+    { "address": "Rijndijk 256, 2394 AP", "type": "half-vrijstaand, kluswoning", "asking_price_eur": 450000, "listed_on": "2024-06-14", "sold_on": "2024-07-12", "status": "verkocht", "source": "https://www.funda.nl/detail/koop/verkocht/hazerswoude-rijndijk/huis-rijndijk-256/89990209/" },
+    { "address": "Rijndijk 366, 2394 CJ", "type": "woning buitengebied", "asking_price_eur": 650000, "listed_on": "2024-04-12", "sold_on": "2024-05-06", "status": "verkocht", "source": "https://www.funda.nl/detail/koop/verkocht/hazerswoude-rijndijk/huis-rijndijk-366/43443680/" },
+    { "address": "Rijndijk 27", "type": "vrijstaand", "asking_price_eur": 695000, "listed_on": null, "sold_on": null, "status": "verkocht (date unknown)", "source": "https://onlinewoningbrochure.nl/makelaars/alphen-aan-den-rijn/houtman-en-de-vogel/aanbod/rijndijk27.nl" },
+    { "address": "Rijndijk 160-A, 2394 AL", "type": "appartement", "asking_price_eur": 629000, "listed_on": null, "sold_on": null, "status": "verkocht onder voorbehoud (at time of indexing)", "source": "https://www.funda.nl/detail/koop/hazerswoude-rijndijk/appartement-rijndijk-160-a/80865756/" },
+    { "address": "Rijndijk 28, 2394 AH", "type": "hoekwoning", "asking_price_eur": 350000, "listed_on": null, "sold_on": null, "status": "verkocht onder voorbehoud (at time of indexing)", "source": "https://www.pararius.nl/huis-te-koop/hazerswoude-rijndijk/e024a244/rijndijk" },
+    { "address": "Rijndijk 5-B, 2394 AA", "type": "tussenwoning", "asking_price_eur": 560000, "listed_on": null, "sold_on": null, "status": "te koop (at time of indexing)", "source": "https://www.funda.nl/detail/koop/hazerswoude-rijndijk/huis-rijndijk-5-b/17265635/" }
+  ]
+}
