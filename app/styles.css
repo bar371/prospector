@@ -159,12 +159,6 @@ dl.facts dd { margin: 0; font-weight: 500; }
 .legend-compact { display: none; align-items: center; gap: 2px; color: var(--muted); }
 .legend-compact span:first-child { margin-right: 4px; }
 .legend-compact span:last-child { margin-left: 4px; }
-@media (max-width: 759px) {
-  .legend { padding: 6px 8px; }
-  .legend-scale, .legend-note { display: none; }
-  .legend-compact { display: flex; }
-  .legend-compact .swatch { width: 12px; }
-}
 @media (min-width: 760px) { .legend { top: auto; bottom: 120px; right: 16px; } }
 .legend-title { font-weight: 600; margin-bottom: 4px; }
 .legend-scale { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
@@ -256,3 +250,11 @@ dl.facts dd { margin: 0; font-weight: 500; }
 .dialog-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }
 .primary { border: 0; border-radius: 10px; background: var(--accent); color: #fff; padding: 10px 18px; font: inherit; font-weight: 600; }
 @media (prefers-color-scheme: dark) { .primary { color: #042f2e; } }
+
+/* Narrow screens: a one-row legend so it never runs into the bottom sheet (after the base legend rules). */
+@media (max-width: 759px) {
+  .legend { padding: 6px 8px; }
+  .legend-scale, .legend-note { display: none; }
+  .legend-compact { display: flex; }
+  .legend-compact .swatch { width: 12px; }
+}

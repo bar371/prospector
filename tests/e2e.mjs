@@ -210,7 +210,7 @@ await test('Map: buurt layer, legend and layer chips', async () => {
   const n = await page.evaluate(() => new Set(window.prospectMap.querySourceFeatures('buurten').map((f) => f.properties.buurtcode)).size);
   check(n >= 100, `buurt polygons loaded (${n})`);
   check(/Prospect score/.test(await page.locator('#legend').innerText()), 'legend shows the Prospect score');
-  check(await page.locator('#legend .swatch').count() === 5, 'legend has 5 classes');
+  check(await page.locator('#legend .legend-scale .swatch').count() === 5, 'legend has 5 classes');
   const before = await page.evaluate(() => JSON.stringify(window.prospectMap.getPaintProperty('buurten-fill', 'fill-color')));
   await page.click('.chip[data-layer="veiligheid"]');
   const after = await page.evaluate(() => JSON.stringify(window.prospectMap.getPaintProperty('buurten-fill', 'fill-color')));
@@ -228,9 +228,9 @@ await test('Map: buurt layer, legend and layer chips', async () => {
 await test('Map: tapping a neighbourhood opens its scores', async () => {
   const { context, page, log } = await open();
   await page.waitForFunction(() => window.prospectMap.getLayer('buurten-fill') && window.prospectMap.loaded(), null, { timeout: 15000 });
-  await page.evaluate(() => window.prospectMap.jumpTo({ center: [4.4915, 52.1647], zoom: 15 }));
+  await page.evaluate(() => window.prospectMap.jumpTo({ center: [4.490699, 52.163989], zoom: 16 }));
   await page.waitForTimeout(1500);
-  const pt = await page.evaluate(() => window.prospectMap.project([4.4915, 52.1647]));
+  const pt = await page.evaluate(() => window.prospectMap.project([4.490699, 52.163989]));
   await page.mouse.click(pt.x, pt.y);
   await waitForTitle(page, /Noordvest/).catch(() => {});
   check(/Noordvest/.test(await page.locator('#sheet-body h1').innerText()), 'tap opens buurt Noordvest');

@@ -118,18 +118,23 @@ async function loadBuurten() {
     map.addLayer({ id: 'buurten-selected', type: 'line', source: 'buurten',
       paint: { 'line-color': '#0f172a', 'line-width': 2.5, 'line-opacity': ['case', ['boolean', ['feature-state', 'selected'], false], 1, 0] } });
     renderLegend();
+    if (pendingSelection) { selectBuurten(pendingSelection); pendingSelection = null; }
   };
   if (map.isStyleLoaded()) add(); else map.once('load', add);
 }
 
 let selectedBuurten = [];
+let pendingSelection = null;
 function selectBuurten(codes) {
+  // The buurt layer loads asynchronously; remember the selection until it exists.
+  if (!map.getSource('buurten')) { pendingSelection = codes; return; }
   for (const id of selectedBuurten) map.setFeatureState({ source: 'buurten', id }, { selected: false });
   selectedBuurten = codes.filter((c) => state.buurten?.features.some((f) => f.properties.buurtcode === c));
   for (const id of selectedBuurten) map.setFeatureState({ source: 'buurten', id }, { selected: true });
 }
 
-function fitBuurten(codes) {
+async function fitBuurten(codes) {
+  if (!state.buurten) await buurtenLoaded;
   const feats = state.buurten?.features.filter((f) => codes.includes(f.properties.buurtcode)) || [];
   if (!feats.length) return;
   const b = new maplibregl.LngLatBounds();
@@ -570,7 +575,7 @@ function applyWeights() {
   else if (c?.kind === 'place') renderPlace(c.doc);
 }
 
-loadBuurten().catch(() => {});
+const buurtenLoaded = loadBuurten().catch(() => {});
 renderLegend();
 
 if ('serviceWorker' in navigator) {
