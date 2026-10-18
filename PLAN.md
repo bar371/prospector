@@ -100,7 +100,24 @@ Shown as a "development" layer with plan contours and permit pins, plus a short 
 - **In the app:** a dedicated button on the area card. It opens a timeline of quotes and summaries, each linked to its source.
 - **Phase 1:** done offline and **pre-populated** for the two test areas. A monthly refresh comes later.
 
-### 2.9 Other things worth adding
+### 2.9 Financing and municipal buyer rules
+Whether someone can buy here, and what it costs them, depends partly on the gemeente. Prospect shows the rules for the municipality of the selected address.
+
+| Data | Source | Notes |
+|---|---|---|
+| **Starterslening**: whether the gemeente offers it, maximum loan, maximum purchase price, income or age limits, local-tie requirements, whether the budget is used up | **SVn** (Stimuleringsfonds Volkshuisvesting) lists the participating municipalities. The binding rules are in each gemeente's **Verordening Starterslening** on **lokaleregelgeving.overheid.nl** (CVDR) | Varies per gemeente and changes when the budget runs out or is topped up. We store the date checked and link to the verordening |
+| Other municipal loans: **Duurzaamheidslening**, **Blijverslening**, **Toekomstbestendig Wonen-lening**, funderingsherstel loans | SVn and the gemeente verordeningen (CVDR) | Relevant to sustainability and foundation repair costs (see 2.5) |
+| **Opkoopbescherming** (buy-to-let ban) and **zelfbewoningsplicht** (owner-occupancy obligation) | Gemeente huisvestingsverordening or omgevingsplan (CVDR) | Limits renting out the property. Often applies only below a WOZ threshold or to new-build |
+| Priority for local starters on new-build, **Koopgarant** or **Koopstart** schemes | Gemeente / housing corporation rules (CVDR) | Mostly new-build |
+| National rules for comparison: **NHG** cost limit, **startersvrijstelling overdrachtsbelasting** (transfer tax exemption: age and price limits) | **NHG**, **Belastingdienst** / Rijksoverheid | The same everywhere. Shown alongside so the user sees the full starter picture |
+
+**In the app:**
+- A **"Kopen als starter" (buying as a starter) section** on the property card. It shows which schemes apply, the limits, and whether this property's price fits within them. For example: "Asking price €X is above the Starterslening limit of €Y in this gemeente."
+- An optional **map layer** that colours municipalities by whether they offer a Starterslening. This matters mainly at regional zoom, for comparing Leiden with Alphen aan den Rijn.
+
+**Pipeline:** a small table per gemeente (`/data/regelingen/<gemeente>.json`) with each scheme, its limits, its source link, its effective date, and the date it was checked. It is built by hand or semi-automatically from CVDR for the test municipalities and refreshed regularly, because these rules change often (usually every 1 January).
+
+### 2.10 Other things worth adding
 - **Erfpacht** (ground lease): a big hidden cost, common in some municipalities. Source: BRK.
 - **VvE / apartment rights**, from BAG units and BRK apartment rights.
 - **Monument status**, from the **Rijksmonumentenregister** (RCE) and municipal monument lists. This limits renovation.
@@ -126,6 +143,7 @@ Shown as a "development" layer with plan contours and permit pins, plus a short 
 4. **Bottom sheet** (drag up), opened by tapping a buurt or address:
    - a header with an overall **Prospect score** and a spider or radar chart of the dimensions;
    - one row per dimension: a score, a one-line explanation, the source and date;
+   - **"Kopen als starter"** (municipal starter loans and buyer rules, see 2.9);
    - **"Wat zegt de raad?"** (council intelligence);
    - **"Waardeer deze woning"** (valuation, phase 4).
 5. **Weights:** sliders for how much each dimension counts (for example, families may weigh education more). The composite score and colours update live. The weights are saved locally.
@@ -145,6 +163,7 @@ Shown as a "development" layer with plan contours and permit pins, plus a short 
   - comparable Kadaster sales from the last 12–24 months within about 500 m with similar type and size;
   - development plans;
   - council signals;
+  - municipal buyer rules (Starterslening limits, opkoopbescherming, zelfbewoningsplicht);
   - user-supplied listing details.
 - **Output:** a value range, the main drivers up and down, risks to check (such as a foundation survey or soil investigation), and confidence, with every claim citing a source in the dossier.
 - **Implementation:** a Claude API call. A static page can't safely hold an API key, so we either (a) use a tiny serverless proxy (Cloudflare Worker), or (b) let the user paste their own key, stored only on the device. **Decision needed.**
@@ -166,7 +185,7 @@ PLAN.md
 | Phase | Deliverable |
 |---|---|
 | **0 – Confirm** | Answer the open questions below and pin down the exact buurt codes for both test areas |
-| **1 – Data & DD** | Pipeline scripts for the open sources (CBS KWB, buurt polygons, politie/CBS crime, DUO + Inspectie, Leefbaarometer, BAG, EP-Online, BRO soil, Bodemloket, Klimaateffectatlas, RIVM, ruimtelijke plannen). Output: `/data` for both areas plus a written **DD report per area** in `/docs` |
+| **1 – Data & DD** | Pipeline scripts for the open sources (CBS KWB, buurt polygons, politie/CBS crime, DUO + Inspectie, Leefbaarometer, BAG, EP-Online, BRO soil, Bodemloket, Klimaateffectatlas, RIVM, ruimtelijke plannen), plus the municipal buyer-rules table for Leiden and Alphen aan den Rijn. Output: `/data` for both areas plus a written **DD report per area** in `/docs` |
 | **2 – App** | The map app with layers, bottom sheet, search, weights and PWA install, using the phase-1 data. Deployed on GitHub Pages |
 | **3 – Raad** | The council-transcript pipeline for both test areas, pre-populated, plus the "Wat zegt de raad?" view |
 | **4 – Valuation** | The dossier builder for any address, Kadaster comparables, the LLM valuation call, and the result card |
@@ -178,6 +197,7 @@ PLAN.md
 - **WOZ-waardeloket** is meant for individual lookups. We respect that and don't bulk-scrape.
 - **Council transcripts** often don't exist. Transcription costs compute, and speakers are hard to identify automatically.
 - **Freshness:** CBS buurt data lags 1–2 years. Every value shows its reference date.
+- **Municipal schemes** change often, and a Starterslening budget can run out mid-year. We show the date each rule was checked and always link to the gemeente's own page, so the user confirms before relying on it.
 - **Privacy:** we show only aggregates and public registers, and no personal data from BRK.
 
 ## 8. Open questions
