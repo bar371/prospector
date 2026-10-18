@@ -228,6 +228,9 @@ for (const [name, viewport, mobile] of SCREENS) {
       const sheet = await page.locator('#sheet').boundingBox();
       check(sheet && sheet.y + sheet.height <= viewport.height + 1 && sheet.height <= viewport.height * 0.6, `sheet fits (${Math.round(sheet?.height)}px of ${viewport.height}px)`);
       check(sheet && sheet.y > search.y + search.height, 'sheet does not cover the search box');
+      check(search.width <= 520, `search box keeps a readable width (${Math.round(search.width)}px)`);
+      const brandBg = await page.evaluate(() => getComputedStyle(document.querySelector('.brand')).backgroundColor);
+      check(brandBg !== 'rgba(0, 0, 0, 0)', `title has its own background, readable over the map (${brandBg})`);
       const small = await page.evaluate(() => [...document.querySelectorAll('button, input')]
         .filter((el) => el.offsetParent && el.getBoundingClientRect().height < 30)
         .map((el) => `${el.getAttribute('aria-label') || el.title || el.textContent || el.id} (${Math.round(el.getBoundingClientRect().height)}px)`));
@@ -244,7 +247,33 @@ for (const [name, viewport, mobile] of SCREENS) {
   }
 }
 
-// 6. Offline: the service worker keeps the app shell available.
+// 6. Bottom sheet can be collapsed to give the map the screen.
+await test('Bottom sheet collapse', async () => {
+  const { context, page, log } = await open();
+  await page.click('.preset >> nth=0');
+  await waitForTitle(page, /Zamenhofstraat/);
+  const open1 = (await page.locator('#sheet').boundingBox()).height;
+  await page.click('.handle');
+  await page.waitForTimeout(300);
+  const closed = (await page.locator('#sheet').boundingBox()).height;
+  check(closed < open1 / 2, `collapsing shrinks the sheet (${Math.round(open1)}px -> ${Math.round(closed)}px)`);
+  check(await page.locator('#sheet-body h1').isVisible(), 'title stays visible when collapsed');
+  check(await page.getAttribute('.handle', 'aria-expanded') === 'false', 'handle reports collapsed state');
+  await page.screenshot({ path: `${OUT}/sheet-collapsed.png` });
+  await page.click('.handle');
+  await page.waitForTimeout(300);
+  check(Math.abs((await page.locator('#sheet').boundingBox()).height - open1) < 2, 'expanding restores the sheet');
+  await page.click('.handle');
+  await page.fill('#q', 'Rijndijk 33 Hazerswoude');
+  await page.locator('#suggestions li[data-id]').first().waitFor({ timeout: 10000 });
+  await page.press('#q', 'Enter');
+  await waitForTitle(page, /Rijndijk 33/);
+  check(await page.getAttribute('.handle', 'aria-expanded') === 'true', 'choosing a new place expands the sheet again');
+  check(log.errors.length === 0, `no errors${log.errors.length ? ': ' + log.errors.join(' | ') : ''}`);
+  await context.close();
+});
+
+// 7. Offline: the service worker keeps the app shell available.
 await test('Offline app shell (service worker)', async () => {
   const { context, page } = await open();
   await page.evaluate(() => navigator.serviceWorker.ready);

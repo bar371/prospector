@@ -89,6 +89,15 @@ function renderPlace(doc) {
     ${PRESETS}`;
 }
 
+const sheet = document.getElementById('sheet');
+const handle = sheet.querySelector('.handle');
+function setCollapsed(collapsed) {
+  sheet.classList.toggle('collapsed', collapsed);
+  handle.setAttribute('aria-expanded', String(!collapsed));
+  handle.setAttribute('aria-label', collapsed ? 'Details tonen' : 'Kaart vergroten');
+}
+handle.addEventListener('click', () => setCollapsed(!sheet.classList.contains('collapsed')));
+
 async function select(id) {
   list.hidden = true;
   try {
@@ -106,6 +115,7 @@ async function select(id) {
       if (near) Object.assign(doc, pick(near, ['buurtnaam', 'buurtcode', 'wijknaam', 'wijkcode', 'postcode', 'provincienaam']));
     }
     renderPlace(doc);
+    setCollapsed(false);
   } catch (err) {
     sheetBody.innerHTML = `<h1>Niet gelukt</h1><p class="muted">${esc(err.message)}</p>`;
   }
