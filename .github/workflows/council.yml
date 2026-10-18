@@ -1,0 +1,31 @@
+name: Council
+
+# Council meetings: find meetings about the test areas, transcribe the relevant parts and
+# publish quotes with timestamps. Runs on GitHub's runners; output goes to the council-build branch.
+on:
+  push:
+    branches-ignore: [main]
+    paths: ['pipeline/council/**', '.github/workflows/council.yml']
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python pipeline/council/probe.py out/probe
+      - name: Publish to the council-build branch
+        if: always()
+        run: |
+          cd out
+          git init -q -b council-build
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A && git commit -qm "Council build for $GITHUB_SHA"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" council-build
