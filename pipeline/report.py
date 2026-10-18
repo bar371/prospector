@@ -472,8 +472,11 @@ def markdown(d):
         add(f"- Owner-occupied {fmt(k.get('percentageKoopwoningen'), '%')}, rented {fmt(k.get('percentageHuurwoningen'), '%')} "
             f"(housing association {fmt(k.get('percHuurwoningenInBezitWoningcorporaties'), '%')}); "
             f"single-family homes {fmt(k.get('percentageEengezinswoning'), '%')}")
-        add(f"- Built before 2000: {fmt(k.get('percentageBouwjaarklasseTot2000'), '%')}; from 2000: {fmt(k.get('percentageBouwjaarklasseVanaf2000'), '%')}")
-        add(f"- Average income per resident: {fmt_eur(num(k.get('gemiddeldInkomenPerInwoner')) * 1000 if num(k.get('gemiddeldInkomenPerInwoner')) else None)}; "
+        if k.get("percentageBouwjaarklasseTot2000") is not None:
+            add(f"- Built before 2000: {fmt(k.get('percentageBouwjaarklasseTot2000'), '%')}; from 2000: {fmt(k.get('percentageBouwjaarklasseVanaf2000'), '%')}")
+        income = num(k.get("gemiddeldInkomenPerInwoner"))
+        income_text = fmt_eur(income * 1000) if income else f"not yet published by CBS for {k.get('jaar')}"
+        add(f"- Average income per resident: {income_text}; "
             f"households with children {fmt(k.get('percentageHuishoudensMetKinderen'), '%')}, single-person {fmt(k.get('percentageEenpersoonshuishoudens'), '%')}")
         add("")
         add("**Safety**")

@@ -443,9 +443,18 @@ RIVM_WFS = "https://data.rivm.nl/geo/alo/wfs"
 @step
 def rivm():
     """RIVM Gezondheidsmonitor 2024 per buurt: noise nuisance, sleep disturbance, satisfaction, heat."""
-    params = {"service": "WFS", "version": "2.0.0", "request": "GetFeature",
-              "typeNames": "alo:rivm_20251201_geluidhinder_bu_weg_2024", "outputFormat": "application/json"}
-    rows = [f["properties"] for f in fetch_json(f"{RIVM_WFS}?{urllib.parse.urlencode(params)}")["features"]]
+    rows, start = [], 0
+    while True:  # pages of 2000; one request for all buurten gets 503s
+        params = {"service": "WFS", "version": "2.0.0", "request": "GetFeature", "count": "2000", "startIndex": str(start),
+                  "typeNames": "alo:rivm_20251201_geluidhinder_bu_weg_2024", "outputFormat": "application/json",
+                  "propertyName": "buurtcode,buurtnaam,wijkcode,gemeenteco,gemeentena,jaar,b_gel_weg,b_gel_lt50,b_gel_gt50,"
+                                  "b_gel_trei,b_gel_vv,b_gel_wtn,b_gel_bu,b_sv_weg,b_sv_trein,b_sv_vv,b_sv_bu,b_tevr_won,"
+                                  "b_tevr_wo,b_tevr_gr,b_verk_bi,b_verk_bu,b_vold_br,b_nverk_bi,b_nverk_bu"}
+        batch = [f["properties"] for f in fetch_json(f"{RIVM_WFS}?{urllib.parse.urlencode(params)}")["features"]]
+        rows += batch
+        if len(batch) < 2000:
+            break
+        start += 2000
     log(f"  {len(rows)} buurten nationally; fields {list(rows[0])}")
     write("national/rivm_buurten.json", rows)
     write("rivm/buurten.json", [r for r in rows if r.get("gemeenteco") in GEMEENTEN])

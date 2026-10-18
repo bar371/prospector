@@ -51,3 +51,19 @@ npm ci && npx playwright install chromium
 npm run serve &   # then:
 npm test -- http://localhost:8000/
 ```
+
+## Data pipeline
+
+[`pipeline/build.py`](pipeline/build.py) fetches official open data for the test areas:
+- CBS wijken en buurten, crime, house prices;
+- Leefbaarometer, the RIVM Gezondheidsmonitor;
+- DUO schools, BAG, the BRO Bodemkaart;
+- official publications, Open Raadsinformatie.
+
+[`pipeline/report.py`](pipeline/report.py) turns that data into a due-diligence dossier per area.
+
+It runs on GitHub Actions (the **Data** workflow), because the official sources are reachable there. Raw output goes to the `data-build` branch. To run only some steps, start the workflow by hand and fill in `steps`.
+
+- Reports: [`docs/dd/`](docs/dd/)
+- App data: [`app/data/`](app/data/), with a dossier per area and `buurten-scores.geojson` for the map
+- Hand-collected data: [`data/listings/`](data/listings/) (asking prices found online) and [`data/regelingen/`](data/regelingen/) (starter loans and buyer rules)
