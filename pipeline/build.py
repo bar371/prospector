@@ -226,9 +226,13 @@ def crime():
         log(f"  {table}: {len(rows)} rows")
         write(f"crime/{table}.json", rows)
         if kind == "jaar":
+            # National totals per buurt for ranking; split by gemeente-code range to stay under 10 000 rows a call.
             last_full = periods[-1]
-            nat = cbs_rows(CBS_DERDEN, table, "TypedDataSet",
-                           f"substringof('BU',{geo_key}) and Perioden eq '{last_full}' and SoortMisdrijf eq '0.0.0 '")
+            nat = []
+            for prefix in [f"BU{i:02d}" for i in range(20)]:
+                nat += cbs_rows(CBS_DERDEN, table, "TypedDataSet",
+                                f"substringof('{prefix}',{geo_key}) and Perioden eq '{last_full}' and SoortMisdrijf eq '0.0.0 '")
+            log(f"  national {last_full}: {len(nat)} buurten")
             write("national/crime_totals.json", {"periode": last_full, "rows": {r[geo_key].strip(): r.get("GeregistreerdeMisdrijven_1") for r in nat}})
 
 
@@ -304,14 +308,19 @@ def schools():
             v["_geo"] = None
     write("schools/vestigingen.json", vest)
 
+    # Results files carry no gemeente; join them on school code (INSTELLINGSCODE + VESTIGINGSCODE).
+    local_codes = {(v["INSTELLINGSCODE"].strip(), v["VESTIGINGSCODE"].strip()) for v in vest}
     for pkg, needle in (("wpo-eindscores", "eindscores"), ("wpoadvies-v1", "advies"), ("wporeferentieniveau-v1", "referentieniveau")):
         rows = duo_csv(resource(pkg, needle))
-        gem_col = next((c for c in rows[0] if "GEMEENTENAAM" in c.upper()), None)
-        keep = [r for r in rows if gem_col and r[gem_col].strip().upper() in names]
-        log(f"  {pkg}: {len(rows)} rows nationally, {len(keep)} in test gemeenten; columns {list(rows[0])}")
+        keep = [r for r in rows if (r["INSTELLINGSCODE"].strip(), r["VESTIGINGSCODE"].strip()) in local_codes
+                or (r["INSTELLINGSCODE"].strip(), r["INSTELLINGSCODE"].strip() + r["VESTIGINGSCODE"].strip()[-2:]) in local_codes]
+        log(f"  {pkg}: {len(rows)} rows nationally, {len(keep)} for local schools; sample codes {[(r['INSTELLINGSCODE'], r['VESTIGINGSCODE']) for r in rows[:2]]}")
         write(f"schools/{pkg}.json", keep)
         if pkg == "wpo-eindscores":
-            write("national/eindscores_sample.json", rows[:5])
+            # national distribution of the latest year, for ranking local schools
+            last = max(r["PEILJAAR"] for r in rows)
+            write("national/eindscores.json", [{k: r[k] for k in ("PEILJAAR", "DOORSTROOMTOETS_PO", "GEMIDDELDE_UITSLAG", "AANTAL_LEERLINGEN")}
+                                               for r in rows if r["PEILJAAR"] == last])
 
 
 @step
@@ -395,7 +404,7 @@ def publications():
         creator = {"GM0546": "Leiden", "GM0484": "Alphen aan den Rijn"}[a["gemeentecode"]]
         query = f'cql.textAndIndexes="{a["straat"]}" and dt.creator="{creator}"'
         records, start = [], 1
-        while start <= 200:
+        while start <= 2000:
             xml = fetch(f"https://repository.overheid.nl/sru?query={q(query)}&maximumRecords=50&startRecord={start}")
             root = ET.fromstring(xml)
             recs = [el for el in root.iter() if el.tag.endswith("}recordData")]
@@ -413,8 +422,16 @@ def publications():
             start += 50
             if start > total:
                 break
-        log(f"  {key}: {len(records)} of {total} publications; keys {sorted(records[0])[:40] if records else []}")
-        result[key] = {"query": query, "total": total, "records": records}
+        # "Rijndijk" also matches the village name Hazerswoude-Rijndijk; keep records about the street itself.
+        street = a["straat"].lower()
+        def about_street(r):
+            if (r.get("straatnaam") or "").lower() == street:
+                return True
+            text = f"{r.get('title', '')} {r.get('abstract', '')}".lower().replace(f"-{street}", "")
+            return street in text
+        kept = sorted((r for r in records if about_street(r)), key=lambda r: r.get("available") or r.get("date") or "", reverse=True)
+        log(f"  {key}: {len(records)} of {total} fetched, {len(kept)} about the street")
+        result[key] = {"query": query, "total": total, "records": kept}
     write("publications/bekendmakingen.json", result)
 
 
