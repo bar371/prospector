@@ -2,8 +2,8 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main, claude/prospect-neighborhood-app-wp549p]
-    paths: ['app/**', '.github/workflows/deploy.yml']
+    branches: [main]
+    paths: ['app/**', 'tests/**', 'package*.json', '.github/workflows/deploy.yml']
   workflow_dispatch:
 
 permissions:
@@ -21,6 +21,8 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
@@ -29,3 +31,28 @@ jobs:
           path: app
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # Opens the live site in a real browser and checks the map, the PDOK search and both test areas.
+  smoke-test:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Wait for the new version to be served
+        run: |
+          for i in $(seq 1 30); do
+            curl -fsS "${{ needs.deploy.outputs.page_url }}" >/dev/null && break
+            sleep 5
+          done
+      - run: node tests/smoke.mjs "${{ needs.deploy.outputs.page_url }}" smoke-output
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-screenshots
+          path: smoke-output
