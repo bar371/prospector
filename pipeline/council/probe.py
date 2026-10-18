@@ -1,57 +1,48 @@
-"""Find where Leiden and Alphen aan den Rijn publish council meetings, agendas and video."""
-import json
+"""Find where Leiden and Alphen aan den Rijn publish council meetings, agendas, video and subtitles."""
 import re
 import sys
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
 OUT = Path(sys.argv[1] if len(sys.argv) > 1 else "out/council-probe")
 OUT.mkdir(parents=True, exist_ok=True)
-UA = {"User-Agent": "prospect-pipeline/0.1 (+https://github.com/bar371/prospector)", "Accept": "application/json, text/html;q=0.9"}
+UA = {"User-Agent": "Mozilla/5.0 (prospect-pipeline/0.1; +https://github.com/bar371/prospector)"}
+MEDIA = r'(https?:)?//[^"\'\s<>]*(?:m3u8|mp4|\.vtt|webcast|player|stream|video|ondertitel|transcript|caption)[^"\'\s<>]*'
 
 
-def get(url, data=None, headers=None, limit=3_000_000):
-    req = urllib.request.Request(url, data=data, headers={**UA, **(headers or {})})
+def get(url):
+    req = urllib.request.Request(url, headers=UA)
     with urllib.request.urlopen(req, timeout=60) as r:
-        return r.status, r.headers.get("content-type", ""), r.read(limit).decode("utf-8", "replace")
+        return r.read(5_000_000).decode("utf-8", "replace")
 
 
-def probe(name, url, data=None, headers=None, keep=40_000, pattern=None):
+def probe(name, url):
     try:
-        status, ctype, text = get(url, data, headers)
-        found = sorted(set(re.findall(pattern, text)))[:300] if pattern else []
-        (OUT / f"{name}.txt").write_text(f"{status} {ctype} {len(text)}\n{url}\n\nMATCHES:\n" + "\n".join(found) + "\n\nBODY:\n" + text[:keep])
-        print(f"OK   {name}: {status} {len(text)} chars, {len(found)} matches")
+        text = get(url)
+        hrefs = sorted(set(re.findall(r'(?:href|src)="([^"]+)"', text)))
+        media = sorted(set(m.group(0) for m in re.finditer(MEDIA, text, re.I)))
+        (OUT / f"{name}.html").write_text(text)
+        (OUT / f"{name}.links.txt").write_text(url + "\n\nMEDIA:\n" + "\n".join(media) + "\n\nLINKS:\n" + "\n".join(hrefs))
+        print(f"OK   {name}: {len(text)} chars, {len(hrefs)} links, {len(media)} media")
+        return text, hrefs
     except Exception as e:
-        (OUT / f"{name}.txt").write_text(f"ERROR {e}\n{url}\n")
+        (OUT / f"{name}.links.txt").write_text(f"ERROR {e}\n{url}\n")
         print(f"FAIL {name}: {e}")
+        return "", []
 
 
-ORI = "https://api.openraadsinformatie.nl/v1/elastic"
-q = {"query": {"bool": {"must": [{"term": {"@type": "Meeting"}}]}}, "size": 3, "sort": [{"start_date": {"order": "desc", "unmapped_type": "date"}}]}
-probe("ori_leiden_meetings", f"{ORI}/ori_leiden_*/_search", json.dumps(q).encode(), {"Content-Type": "application/json"})
-q = {"query": {"bool": {"must": [{"term": {"@type": "AgendaItem"}}, {"match": {"name": "Energiepark"}}]}}, "size": 3}
-probe("ori_leiden_agendaitems", f"{ORI}/ori_leiden_*/_search", json.dumps(q).encode(), {"Content-Type": "application/json"})
-q = {"size": 0, "aggs": {"types": {"terms": {"field": "@type", "size": 50}}}}
-probe("ori_leiden_types", f"{ORI}/ori_leiden_*/_search", json.dumps(q).encode(), {"Content-Type": "application/json"})
-q = {"query": {"bool": {"must": [{"term": {"@type": "MediaObject"}}, {"wildcard": {"content_type": "*video*"}}]}}, "size": 3}
-probe("ori_leiden_video", f"{ORI}/ori_leiden_*/_search", json.dumps(q).encode(), {"Content-Type": "application/json"})
+LEIDEN = "https://gemeenteraad.leiden.nl"
+_, links = probe("leiden_agendas", f"{LEIDEN}/gemeenteraad/agendas-en-stukken")
+_, vlinks = probe("leiden_vergaderingen", f"{LEIDEN}/actueel/vergaderingen")
+meetings = [l for l in links + vlinks if re.search(r"vergadering|agenda|meeting|event", l, re.I) and l.startswith(("/", LEIDEN))]
+for i, l in enumerate(meetings[:4]):
+    probe(f"leiden_meeting_{i}", urllib.parse.urljoin(LEIDEN, l))
+probe("leiden_search", f"{LEIDEN}/zoeken?q=Energiepark")
 
-# Notubiz (Leiden): public API and site
-for name, url in {
-    "notubiz_orgs": "https://api.notubiz.nl/organisations?format=json",
-    "notubiz_leiden_site": "https://leiden.notubiz.nl/",
-    "notubiz_leiden_events": "https://api.notubiz.nl/events?organisation_id=344&format=json&version=1.10.8",
-    "leiden_raad_site": "https://leiden.raadsinformatie.nl/",
-    "gemeenteraad_leiden": "https://gemeenteraad.leiden.nl/",
-}.items():
-    probe(name, url, pattern=r'(https?://[^"\'\s<>]+(?:m3u8|mp4|webcast|video|media|vergadering|event)[^"\'\s<>]*)')
-
-# Alphen aan den Rijn: bestuurlijkeinformatie.nl
-for name, url in {
-    "alphen_home": "https://alphenaandenrijn.bestuurlijkeinformatie.nl/",
-    "alphen_calendar": "https://alphenaandenrijn.bestuurlijkeinformatie.nl/Calendar",
-    "alphen_search": "https://alphenaandenrijn.bestuurlijkeinformatie.nl/Search?searchString=Rijndijk",
-    "alphen_reports": "https://alphenaandenrijn.bestuurlijkeinformatie.nl/Reports",
-}.items():
-    probe(name, url, pattern=r'href="([^"]+)"')
+ALPHEN = "https://alphenaandenrijn.bestuurlijkeinformatie.nl"
+_, alinks = probe("alphen_calendar", f"{ALPHEN}/Calendar")
+for i, l in enumerate([l for l in alinks if l.startswith("/Agenda/Index/")][:4]):
+    probe(f"alphen_agenda_{i}", ALPHEN + l)
+probe("alphen_search", f"{ALPHEN}/Search?searchString=Rijndijk")
+probe("alphen_search_results", f"{ALPHEN}/Search/Results?searchString=Rijndijk")
