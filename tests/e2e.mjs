@@ -434,7 +434,8 @@ await test('Village: building card from a searched address', async () => {
     return m.queryRenderedFeatures({ layers: ['buildings-fill'] }).some((x) => m.getFeatureState({ source: 'buildings', id: x.properties.pand }).selected);
   });
   check(selected, 'the building is highlighted on the map');
-  check(/foundation risk/i.test(await page.locator('#legend').innerText()), 'legend explains the building colours');
+  check(await page.waitForFunction(() => /foundation risk/i.test(document.querySelector('#legend').innerText), null, { timeout: 8000 }).then(() => true, () => false),
+    'legend explains the building colours');
   await page.screenshot({ path: `${OUT}/village-building.png` });
   await page.click('[data-street]');
   await waitForTitle(page, /^Valeriusstraat, Hazerswoude-Rijndijk$/);
@@ -493,9 +494,11 @@ await test('Village: value estimate carries building and street data', async () 
   await waitForTitle(page, /^Schutterstraat 34$/);
   await page.click('[data-valuation-building]');
   await waitForTitle(page, /Estimate a value/);
+  await page.selectOption('select[name=type]', { index: 0 });
   await page.fill('input[name=apikey]', 'sk-ant-test-key');
   await page.click('#valuation-form button[type=submit]');
   await page.locator('.estimate').waitFor({ timeout: 15000 }).catch(() => {});
+  await page.screenshot({ path: `${OUT}/village-valuation.png` });
   const text = body ? body.messages[0].content.map((c) => c.text).join('\n') : '';
   check(/building level/.test(text) && /"foundation_flag"/.test(text), 'request carries the building facts');
   check(/Schutterstraat 34/.test(text) && /475000/.test(text), 'request carries the street listings');

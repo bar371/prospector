@@ -285,7 +285,8 @@ function renderLegend() {
     <div class="legend-compact" aria-hidden="true"><span>${ends[0]}</span>${colors.map((c) => `<span class="swatch" style="background:${c}"></span>`).join('')}<span>${ends[1]}</span></div>
     ${isValue ? '' : '<div class="legend-note">Compared with all Dutch neighbourhoods</div>'}
     ${buildingsVisible() ? `<div class="legend-buildings"><div class="legend-title">Buildings: foundation risk</div>
-      <ol class="legend-scale">${Object.values(FOUNDATION).map((f) => `<li><span class="swatch" style="background:${f.color}"></span>${esc(f.label)}</li>`).join('')}</ol></div>` : ''}`;
+      <ol class="legend-scale">${Object.values(FOUNDATION).map((f) => `<li><span class="swatch" style="background:${f.color}"></span>${esc(f.label)}</li>`).join('')}</ol>
+      <div class="legend-compact" aria-hidden="true"><span>Higher</span>${Object.values(FOUNDATION).map((f) => `<span class="swatch" style="background:${f.color}"></span>`).join('')}<span>Lower</span></div></div>` : ''}`;
 }
 
 // ---------------------------------------------------------------- search (PDOK Locatieserver)
@@ -917,7 +918,8 @@ async function openValuation(d, options = {}) {
   });
   try {
     await valuationScript;
-    const preset = state.current.kind === 'place' ? state.current.doc.weergavenaam : state.current.title;
+    const c = state.current;
+    const preset = c.kind === 'place' ? c.doc.weergavenaam : c.kind === 'building' ? c.address?.weergavenaam : c.title;
     await window.prospectValuation.open(sheetBody, d, { presetAddress: preset, ...options });
     sheet.scrollTop = 0;
   } catch (err) {
