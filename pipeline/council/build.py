@@ -148,15 +148,21 @@ def connected_views_subtitles(embed_html, start, end):
     fmt = lambda d: urllib.parse.quote(d.strftime("%Y-%m-%dT%H:%M:%S.0000000+00:00"))
     a, b = t0 + dt.timedelta(seconds=start), t0 + dt.timedelta(seconds=end)
     url = f"{CV_HLS}/{t0:%Y-%m-%d}/{room}/subtitles/nl-pol_Live.m3u8?start={fmt(a)}&end={fmt(b)}&sourcetimestamps=1&returnType=hls"
-    cues, pos, dur = [], float(start), 4.0
+    segments, pos, dur = [], float(start), 4.0
     for line in fetch(url).splitlines():
         if line.startswith("#EXTINF:"):
             dur = float(line.split(":")[1].split(",")[0])
         elif line and not line.startswith("#"):
-            for t in vtt_text(fetch(urllib.parse.urljoin(url, line))):
-                if not cues or cues[-1]["text"] != t:  # live subtitles repeat across segments
-                    cues.append({"start": pos, "end": pos + dur, "text": t})
+            segments.append((pos, dur, urllib.parse.urljoin(url, line)))
             pos += dur
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(16) as pool:
+        texts = list(pool.map(lambda seg: vtt_text(fetch(seg[2])), segments))
+    cues = []
+    for (pos, dur, _), lines in zip(segments, texts):
+        for t in lines:
+            if not cues or cues[-1]["text"] != t:  # live subtitles repeat across segments
+                cues.append({"start": pos, "end": pos + dur, "text": t})
     return cues
 
 
@@ -287,6 +293,10 @@ def leiden(key, area):
                 if s.get("name") and s["name"] not in speakers:
                     speakers.append(s["name"])
             quotes = passages(cues, area["match"], entry)
+            words = sum(len(c["text"].split()) for c in cues)
+            if words < 150 and not quotes:
+                log(f"  skip {label}: procedural ({words} words)")
+                continue
             fragments.append({
                 "date": item["date"], "commission": item["commission"], "agenda_item": item["title"],
                 "video": f"{QUALIGRAF}/app/public/agenda/{item['ag']}/vod/{point.get('ap_rule_hexkey')}",
@@ -297,28 +307,94 @@ def leiden(key, area):
         except Exception as e:
             log(f"  {label} failed: {e}")
             log(traceback.format_exc().splitlines()[-3] if traceback.format_exc() else "")
+    fragments += scan_recent_meetings(key, area, {(f["date"], f["agenda_item"]) for f in fragments})
+    fragments.sort(key=lambda f: parse_date(f["date"]), reverse=True)
     return {"gemeente": area["gemeente"], "documents": docs[:60], "documents_total": len(docs),
             "agenda_items_total": len(items), "fragments": fragments}
+
+
+def scan_recent_meetings(key, area, done):
+    """Recent meetings with Leiden's own subtitles: search the whole meeting, so residents speaking under
+    'Burger aan het woord' or police and aldermen under any agenda item are found too."""
+    home = fetch_json(f"{QUALIGRAF}/vji/public/homepage/action=detaildata")
+    meetings = [m for m in home.get("past_tab", []) if (m.get("video") or {}).get("has_vod")]
+    found = []
+    for m in meetings[:12]:
+        ag = m.get("agenda_hexkey") or m.get("hexkey")
+        try:
+            video = agenda_video(ag)
+            embed_path = ((video.get("player") or {}).get("VIDEO_PLAYER") or {}).get("url")
+            embed = fetch(urllib.parse.urljoin(QUALIGRAF, embed_path)) if embed_path else ""
+            if "connectedviews" not in embed:
+                continue
+            ndx = (video.get("indexdata") or {}).get("ndx") or []
+            end = max([e.get("end", 0) for e in ndx] + [video.get("duration") or 0])
+            cues = connected_views_subtitles(embed, 0, end) or []
+            log(f"  scan {m['date']} {m['title']}: {len(cues)} subtitle lines")
+            for e in ndx:
+                title = re.sub(r"^Speel video af vanaf agendapunt (.*) om [0-9:]+$", r"\1", e.get("play_label") or "")
+                part = [c for c in cues if e.get("start", 0) <= c["start"] < e.get("end", 0)]
+                quotes = passages(part, area["match"], e)
+                if not quotes or (m["date"], title) in done:
+                    continue
+                speakers = []
+                for sp in e.get("mb", []):
+                    if sp.get("name") and sp["name"] not in speakers:
+                        speakers.append(sp["name"])
+                fname = f"{parse_date(m['date']):%Y%m%d}-{(e.get('point') or 'x')[:8]}.json"
+                (OUT / "transcripts" / key / fname).write_text(json.dumps(part, ensure_ascii=False))
+                found.append({"date": m["date"], "commission": m["title"], "agenda_item": title,
+                              "video": f"{QUALIGRAF}/app/public/agenda/{ag}/vod/{e.get('point')}",
+                              "video_start": hhmmss(e.get("start", 0)), "duration_min": round((e.get("end", 0) - e.get("start", 0)) / 60),
+                              "source": "Leiden's own subtitles", "speakers": speakers, "quotes": quotes[:12],
+                              "transcript": f"transcripts/{key}/{fname}", "words": sum(len(c["text"].split()) for c in part)})
+                log(f"    {title[:70]}: {len(quotes)} passages")
+        except Exception as ex:
+            log(f"  scan {m.get('date')} failed: {ex}")
+    return found
 
 
 # ---------------------------------------------------------------- Alphen aan den Rijn (iBabs)
 
 def alphen():
-    """Alphen aan den Rijn publishes through iBabs with Company Webcast video. Collect the documents and
-    meetings that mention the Rijndijk from the public iBabs search."""
+    """Alphen aan den Rijn publishes through iBabs with Company Webcast video. Search its public portal for
+    the street; the results form posts with an anti-forgery token tied to a session cookie."""
+    import http.cookiejar
     base = "https://alphenaandenrijn.bestuurlijkeinformatie.nl"
+    jar = http.cookiejar.CookieJar()
+    opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
+    opener.addheaders = list(UA.items())
     results = []
-    for term in ("Rijndijk", "Hazerswoude-Rijndijk"):
+    for term in ("Rijndijk",):
         try:
-            page = fetch(f"{base}/Search?searchString={urllib.parse.quote(term)}")
-            (OUT / "explore").mkdir(exist_ok=True)
-            (OUT / "explore" / f"alphen-search-{term}.html").write_text(page)
-            for m in re.finditer(r'href="(/(?:Agenda|Document|Reports)/[^"]+)"[^>]*>(.*?)</a>', page, re.S):
-                results.append({"term": term, "url": base + html.unescape(m.group(1)), "title": strip_tags(m.group(2))})
-            log(f"  Alphen search '{term}': {len(results)} links so far")
+            page = opener.open(f"{base}/Search?searchString={urllib.parse.quote(term)}", timeout=60).read().decode("utf-8", "replace")
+            token = re.search(r'name="__RequestVerificationToken" type="hidden" value="([^"]+)"', page).group(1)
+            order = re.search(r'<select[^>]*id="OrderBy"[^>]*>\s*<option[^>]*value="([^"]*)"', page)
+            for pageno in range(1, 6):
+                data = urllib.parse.urlencode({"Page": pageno, "Query": term, "OrderBy": order.group(1) if order else "0",
+                                               "__RequestVerificationToken": token}).encode()
+                req = urllib.request.Request(f"{base}/Search/Results", data=data,
+                                             headers={"X-Requested-With": "XMLHttpRequest", "Content-Type": "application/x-www-form-urlencoded"})
+                body = opener.open(req, timeout=60).read().decode("utf-8", "replace")
+                (OUT / "explore").mkdir(exist_ok=True)
+                (OUT / "explore" / f"alphen-results-{term}-{pageno}.html").write_text(body)
+                found = 0
+                for m in re.finditer(r'<a[^>]+href="(/(?:Document/View|Agenda/Index|Reports/Item)[^"]+)"[^>]*>(.*?)</a>', body, re.S):
+                    title = strip_tags(m.group(2))
+                    if title:
+                        results.append({"term": term, "url": base + html.unescape(m.group(1)), "title": title})
+                        found += 1
+                log(f"  Alphen '{term}' page {pageno}: {found} results ({len(body)} chars)")
+                if not found:
+                    break
         except Exception as e:
             log(f"  Alphen search '{term}' failed: {e}")
-    return results
+    seen, unique = set(), []
+    for r in results:
+        if r["url"] not in seen:
+            seen.add(r["url"])
+            unique.append(r)
+    return unique
 
 
 def main():
