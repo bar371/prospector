@@ -42,7 +42,7 @@ def log(msg):
     log_lines.append(msg)
 
 
-def fetch(url, binary=False, timeout=120, retries=3):
+def fetch(url, binary=False, timeout=120, retries=4):
     for attempt in range(retries):
         try:
             req = urllib.request.Request(url, headers=UA)
@@ -52,7 +52,7 @@ def fetch(url, binary=False, timeout=120, retries=3):
         except Exception:
             if attempt == retries - 1:
                 raise
-            time.sleep(2 * (attempt + 1))
+            time.sleep(5 * (attempt + 1))
 
 
 def fetch_json(url):
@@ -348,7 +348,11 @@ def schools_extra():
         for res in notes[pkg]["resources"]:
             if not res["url"].lower().endswith(".csv"):
                 continue
-            rows = duo_csv(res["url"])
+            try:
+                rows = duo_csv(res["url"])
+            except Exception as e:
+                log(f"  {pkg}: could not download {res['url']}: {e}")
+                continue
             code_col = next((c for c in rows[0] if c.upper() in ("INSTELLINGSCODE", "BRIN NUMMER", "BRINNUMMER", "BRIN")), None)
             keep = [r for r in rows if code_col and r[code_col].strip() in instellingen]
             name = res["url"].rsplit("/", 1)[-1].replace(".csv", "")
@@ -375,14 +379,15 @@ def bag():
                 vbo = fetch_json(f"{BAG}/verblijfsobject/items?identificatie={vbo_id}&f=json")["features"]
                 if vbo:
                     p = vbo[0]["properties"]
-                    item.update({k: p.get(k) for k in ("gebruiksdoel", "oppervlakte", "status", "pand_identificatie", "pandidentificatie")})
-                    if not rows:
-                        log(f"  verblijfsobject fields: {sorted(p)}")
-                    pid = p.get("pand_identificatie") or p.get("pandidentificatie")
-                    pid = pid[0] if isinstance(pid, list) else pid
+                    item.update({k: p.get(k) for k in ("gebruiksdoel", "oppervlakte", "status")})
+                    # the verblijfsobject links its building(s) by URL
+                    href = p.get("pand.href")
+                    href = href[0] if isinstance(href, list) else href
+                    pid = href.rstrip("/").split("/")[-1].split("?")[0] if href else None
                     if pid and pid not in panden:
-                        pand = fetch_json(f"{BAG}/pand/items?identificatie={pid}&f=json")["features"]
-                        panden[pid] = pand[0]["properties"] if pand else {}
+                        url = href + ("&" if "?" in href else "?") + "f=json"
+                        pand = fetch_json(url)
+                        panden[pid] = pand.get("properties", pand)
                         if len(panden) == 1:
                             log(f"  pand fields: {sorted(panden[pid])}")
                     if pid:
