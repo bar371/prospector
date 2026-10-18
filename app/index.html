@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="nl">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Prospect</title>
-  <meta name="description" content="Prospect — inzicht in een buurt of woning op basis van officiële open data.">
+  <meta name="description" content="Prospect: understand a Dutch neighbourhood or home, based on official open data.">
   <meta name="theme-color" content="#0f172a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
@@ -17,38 +17,55 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="map" aria-label="Kaart"></div>
+  <div id="map" aria-label="Map"></div>
 
   <header class="top">
     <div class="brand">Prospect</div>
     <form class="search" role="search" autocomplete="off">
-      <input id="q" type="search" placeholder="Zoek adres, straat of buurt" aria-label="Zoek adres">
+      <input id="q" type="search" placeholder="Search an address, street or neighbourhood" aria-label="Search an address">
       <ul id="suggestions" role="listbox" hidden></ul>
     </form>
-    <nav class="chips" aria-label="Lagen">
-      <button class="chip" data-layer="score" disabled>Prospect score</button>
-      <button class="chip" data-layer="education" disabled>Onderwijs</button>
-      <button class="chip" data-layer="safety" disabled>Veiligheid</button>
-      <button class="chip" data-layer="liveability" disabled>Leefbaarheid</button>
-      <button class="chip" data-layer="mobility" disabled>Bereikbaarheid &amp; autoluw</button>
-      <button class="chip" data-layer="soil" disabled>Bodem &amp; fundering</button>
-      <button class="chip" data-layer="climate" disabled>Klimaat</button>
-      <button class="chip" data-layer="development" disabled>Ontwikkeling</button>
-      <button class="chip" data-layer="value" disabled>Waarde</button>
+    <nav class="chips" aria-label="Map layer">
+      <button class="chip" data-layer="overall" aria-pressed="true">Prospect score</button>
+      <button class="chip" data-layer="veiligheid" aria-pressed="false">Safety</button>
+      <button class="chip" data-layer="leefbaarheid" aria-pressed="false">Liveability</button>
+      <button class="chip" data-layer="bereikbaarheid" aria-pressed="false">Accessibility</button>
+      <button class="chip" data-layer="autoluw" aria-pressed="false">Car-light</button>
+      <button class="chip" data-layer="voorzieningen" aria-pressed="false">Amenities</button>
+      <button class="chip" data-layer="rust" aria-pressed="false">Quiet</button>
+      <button class="chip" data-layer="woz" aria-pressed="false">Home value</button>
+      <button class="chip chip-icon" id="open-weights" type="button" aria-label="Adjust what matters to you">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="6" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="10" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="18" r="2" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        Weights
+      </button>
     </nav>
   </header>
 
+  <div id="legend" class="legend" aria-live="polite"></div>
+
   <section id="sheet" class="sheet" aria-live="polite">
-    <button class="handle" type="button" aria-label="Kaart vergroten" aria-expanded="true" aria-controls="sheet-body"></button>
+    <button class="handle" type="button" aria-label="Show more map" aria-expanded="true" aria-controls="sheet-body"></button>
     <div id="sheet-body">
-      <h1>Kies een plek</h1>
-      <p class="muted">Zoek een adres of kies een testgebied. Datalagen komen in de volgende fase.</p>
+      <h1>Pick a place</h1>
+      <p class="muted">Search an address or open one of the test areas. Tap a neighbourhood on the map to see how it scores.</p>
       <div class="presets">
-        <button class="preset" data-q="Zamenhofstraat Leiden">Zamenhofstraat, Leiden</button>
-        <button class="preset" data-q="Rijndijk, Hazerswoude-Rijndijk">Rijndijk, Hazerswoude-Rijndijk</button>
+        <button class="preset" data-area="zamenhofstraat-leiden">Zamenhofstraat, Leiden</button>
+        <button class="preset" data-area="rijndijk-hazerswoude-rijndijk">Rijndijk, Hazerswoude-Rijndijk</button>
       </div>
     </div>
   </section>
+
+  <dialog id="weights" class="weights" aria-labelledby="weights-title">
+    <form method="dialog">
+      <h2 id="weights-title">What matters to you?</h2>
+      <p class="muted">The Prospect score is a weighted average of the themes. Set a theme to 0 to leave it out.</p>
+      <div id="weight-sliders"></div>
+      <div class="dialog-actions">
+        <button type="button" id="reset-weights" class="link-button">Reset</button>
+        <button value="close" class="primary">Done</button>
+      </div>
+    </form>
+  </dialog>
 
   <script src="vendor/maplibre-gl-4.7.1/maplibre-gl.js"></script>
   <script src="app.js"></script>
