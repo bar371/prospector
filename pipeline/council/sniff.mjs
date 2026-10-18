@@ -19,13 +19,15 @@ async function sniff(name, url, actions = async () => {}) {
     if (/json|text|vtt|mpegurl|xml/.test(ct) || /m3u8|\.vtt/.test(u)) {
       body = await r.text().catch(() => '');
     }
-    reqs.push({ url: u, status: r.status(), type, ct, size: body.length, body: body.slice(0, 4000) });
+    reqs.push({ url: u, method: r.request().method(), post: (r.request().postData() || '').slice(0, 2000),
+      status: r.status(), type, ct, size: body.length, body: body.slice(0, 6000) });
   });
   try {
     await page.goto(url, { waitUntil: 'networkidle', timeout: 60000 });
     await actions(page);
     await page.waitForTimeout(4000);
-    await page.screenshot({ path: `${OUT}/${name}.png` });
+    await page.screenshot({ path: `${OUT}/${name}.png`, fullPage: true });
+    reqs.push({ final_url: page.url() });
     writeFileSync(`${OUT}/${name}.html`, await page.content());
   } catch (e) {
     reqs.push({ error: String(e) });
@@ -36,20 +38,29 @@ async function sniff(name, url, actions = async () => {}) {
   await page.close();
 }
 
-// Leiden: Qualigraf public app
-await sniff('leiden_home', 'https://leiden.qualigraf.nl/app/public/');
+// Leiden: Qualigraf public app. Search, then open the latest council meeting that has video.
 await sniff('leiden_search', 'https://leiden.qualigraf.nl/app/public/', async (page) => {
   const box = page.locator('input[type=search], input[type=text]').first();
   if (await box.count()) { await box.fill('Energiepark'); await box.press('Enter'); await page.waitForTimeout(5000); }
 });
-
-// Alphen aan den Rijn: iBabs agenda page with a Company Webcast player
-await sniff('alphen_raad', 'https://alphenaandenrijn.bestuurlijkeinformatie.nl/Agenda/Index/25a330d4-a480-483d-8395-41c407f6752f', async (page) => {
-  const play = page.locator('button:has-text("Afspelen"), button[aria-label*="lay"], .cwc-play, video').first();
-  if (await play.count()) await play.click({ timeout: 5000 }).catch(() => {});
+await sniff('leiden_meeting', 'https://leiden.qualigraf.nl/app/public/', async (page) => {
+  await page.getByText('Laatste vergaderingen').first().click().catch(() => {});
+  await page.waitForTimeout(1500);
+  await page.getByText('Gemeenteraad', { exact: true }).first().click().catch(() => {});
+  await page.waitForTimeout(6000);
+  const video = page.getByText(/video/i).first();
+  if (await video.count()) await video.click().catch(() => {});
   await page.waitForTimeout(8000);
 });
-await sniff('alphen_search', 'https://alphenaandenrijn.bestuurlijkeinformatie.nl/Search?searchString=Rijndijk', async (page) => {
-  await page.waitForTimeout(5000);
+
+// Alphen aan den Rijn: iBabs agenda page; the Company Webcast player sits under "Uitzending".
+await sniff('alphen_raad', 'https://alphenaandenrijn.bestuurlijkeinformatie.nl/Agenda/Index/25a330d4-a480-483d-8395-41c407f6752f', async (page) => {
+  await page.getByText('Uitzending').first().scrollIntoViewIfNeeded().catch(() => {});
+  await page.waitForTimeout(12000);
+  const frames = page.frames().map((f) => f.url());
+  writeFileSync(`${OUT}/alphen_frames.json`, JSON.stringify(frames, null, 1));
+  const play = page.locator('button[aria-label*="lay" i], button[title*="lay" i], .vjs-big-play-button').first();
+  if (await play.count()) await play.click({ timeout: 5000 }).catch(() => {});
+  await page.waitForTimeout(10000);
 });
 await browser.close();
