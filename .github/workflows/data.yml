@@ -1,0 +1,48 @@
+name: Data
+
+# Runs the data pipeline on GitHub's runners (the official sources are reachable there)
+# and publishes the output to the data-build branch for review.
+on:
+  push:
+    branches-ignore: [main]
+    paths: ['pipeline/**', '.github/workflows/data.yml']
+  workflow_dispatch:
+    inputs:
+      steps:
+        description: 'Comma-separated pipeline steps to run (empty = all)'
+        required: false
+        default: ''
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Start from the previous build, so a partial run keeps the other outputs
+        run: |
+          mkdir -p out
+          if git ls-remote --exit-code origin data-build >/dev/null; then
+            git fetch -q origin data-build
+            git archive origin/data-build | tar -x -C out
+          fi
+      - run: python pipeline/build.py out/data
+        env:
+          STEPS: ${{ github.event.inputs.steps }}
+      - run: python pipeline/report.py out/data out/report
+      - name: Publish to the data-build branch
+        if: always()
+        run: |
+          cd out
+          rm -rf .git
+          git init -q -b data-build
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          printf '# Data build\n\nCommit %s, run %s, steps: %s\n' "$GITHUB_SHA" "$GITHUB_RUN_ID" "${{ github.event.inputs.steps || 'all' }}" > README.md
+          git add -A && git commit -qm "Data build for $GITHUB_SHA"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" data-build

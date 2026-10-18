@@ -1,0 +1,30 @@
+[
+ {
+  "key": "zamenhofstraat-leiden",
+  "straat": "Zamenhofstraat",
+  "woonplaats": "Leiden",
+  "scores": {
+   "veiligheid": 4,
+   "leefbaarheid": 34,
+   "onderwijs": 54,
+   "bereikbaarheid": 68,
+   "autoluw": 58,
+   "voorzieningen": 80,
+   "rust": 21
+  }
+ },
+ {
+  "key": "rijndijk-hazerswoude-rijndijk",
+  "straat": "Rijndijk",
+  "woonplaats": "Hazerswoude-Rijndijk",
+  "scores": {
+   "veiligheid": 48,
+   "leefbaarheid": 47,
+   "onderwijs": 34,
+   "bereikbaarheid": 51,
+   "autoluw": 40,
+   "voorzieningen": 40,
+   "rust": 28
+  }
+ }
+]

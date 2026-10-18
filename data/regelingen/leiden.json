@@ -1,0 +1,29 @@
+{
+  "gemeente": "Leiden",
+  "gemeentecode": "GM0546",
+  "checked_on": "2026-10-18",
+  "method": "Online search. Official sources first (gemeente.leiden.nl, lokaleregelgeving.overheid.nl), others marked as such.",
+  "regelingen": [
+    {
+      "naam": "Starterslening (SVn)",
+      "status": "onbevestigd",
+      "samenvatting": "Not clear whether it is currently open. A third-party site says it is not available, and that the gemeente intends to reserve about €2.6 million once the council adopts a new verordening. The older Leiden verordening allowed up to €40,000; the same site mentions €30,000 and a requirement of at least 3 of the last 10 years registered in Leiden.",
+      "bronnen": [
+        {"titel": "Verordening starterslening gemeente Leiden (older version)", "url": "https://lokaleregelgeving.overheid.nl/CVDR296697", "officieel": true},
+        {"titel": "Starterslening Leiden (HomeFinance)", "url": "https://www.homefinance.nl/hypotheek/starters/leiden/", "officieel": false}
+      ],
+      "actie": "Check with gemeente Leiden or the SVn leningzoeker before relying on it."
+    },
+    {
+      "naam": "Opkoopbescherming en zelfbewoningsplicht",
+      "status": "van kracht",
+      "samenvatting": "Applies throughout Leiden since 1 January 2024 under the Huisvestingsverordening 2024. It covers homes with a WOZ value at or below the NHG cost limit (€435,000 in 2024; third-party sources give €470,000 for 2026). The buyer must live in the home for 4 years after transfer. One temporary rental of up to 12 months is allowed, after living there for at least 12 months. Tourist rental is not allowed. Homes bought while already rented for more than 6 months are exempt.",
+      "drempel_woz_eur": {"2024": 435000, "2026_onbevestigd": 470000},
+      "bronnen": [
+        {"titel": "Opkoopbescherming, gemeente Leiden", "url": "https://gemeente.leiden.nl/inwoners-en-ondernemers/wonen-en-bouwen/wonen/verhuurvergunning-opkoopbescherming/", "officieel": true},
+        {"titel": "Huisvestingsverordening, onderdeel woonruimtevoorraad, Leiden 2024", "url": "https://lokaleregelgeving.overheid.nl/CVDR711669", "officieel": true},
+        {"titel": "Opkoopbescherming per gemeente (financieren.nl)", "url": "https://financieren.nl/opkoopbescherming/", "officieel": false}
+      ]
+    }
+  ]
+}
