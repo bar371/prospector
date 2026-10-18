@@ -96,7 +96,7 @@ await test('Map and PDOK basemap', async () => {
 });
 
 // 3. Search behaviour.
-await test('Search: address result', async () => {
+await test('Search: address on a test street opens its dossier', async () => {
   const { context, page, log } = await open();
   await page.fill('#q', 'Zamenhofstraat 25 Leiden');
   await page.locator('#suggestions li[data-id]').first().waitFor({ timeout: 10000 });
@@ -104,16 +104,12 @@ await test('Search: address result', async () => {
   check(/Zamenhofstraat 25/.test(first), `first suggestion is the address: "${first.replace(/\s+/g, ' ')}"`);
   await page.locator('#suggestions li[data-id]').first().click();
   await waitForTitle(page, /Zamenhofstraat 25/);
-  const f = await facts(page);
-  check(f.Type === 'adres', `type adres (${f.Type})`);
-  check(f.Postcode === '2312NX', `postcode 2312NX (${f.Postcode})`);
-  check(/Noordvest/.test(f.Buurt || ''), `buurt Noordvest (${f.Buurt})`);
-  check(/Binnenstad-Noord/.test(f.Wijk || ''), `wijk Binnenstad-Noord (${f.Wijk})`);
-  check(f.Gemeente === 'Leiden', `gemeente Leiden (${f.Gemeente})`);
   check(await page.locator('#suggestions').isHidden(), 'suggestion list closes after choosing');
   check(await page.inputValue('#q') === 'Zamenhofstraat 25, 2312NX Leiden', `search box shows the choice ("${await page.inputValue('#q')}")`);
+  check(await page.locator('#sheet-body .score-row').count() === 7, 'dossier shows 7 theme scores');
+  check(/Noordvest/.test(await page.locator('#sheet-body .muted').first().innerText()), 'dossier names buurt Noordvest');
   await page.waitForTimeout(2500);
-  const marker = await page.locator('.maplibregl-marker').boundingBox();
+  const marker = await page.locator('.maplibregl-marker:not(.school-marker)').first().boundingBox();
   const vp = page.viewportSize();
   check(marker && marker.x > 0 && marker.x < vp.width && marker.y > 0 && marker.y < vp.height * 0.7,
     `marker visible above the bottom sheet (${marker ? `${Math.round(marker.x)},${Math.round(marker.y)}` : 'none'})`);
@@ -123,16 +119,42 @@ await test('Search: address result', async () => {
   await context.close();
 });
 
+await test('Search: other address in Leiden shows its buurt scores', async () => {
+  const { context, page, log } = await open();
+  await page.fill('#q', 'Breestraat 70 Leiden');
+  await page.locator('#suggestions li[data-id]').first().waitFor({ timeout: 10000 });
+  await page.locator('#suggestions li[data-id]').first().click();
+  await waitForTitle(page, /Breestraat 70/);
+  const f = await facts(page);
+  check(/^2311/.test(f.Postcode || ''), `postcode shown (${f.Postcode})`);
+  check(f.Gemeente === 'Leiden', `gemeente Leiden (${f.Gemeente})`);
+  check(!!f.Buurt, `buurt shown (${f.Buurt})`);
+  check(await page.locator('#sheet-body .score-row').count() === 6, 'buurt scores shown (6 map themes)');
+  check(log.errors.length === 0, `no errors${log.errors.length ? ': ' + log.errors.join(' | ') : ''}`);
+  await context.close();
+});
+
+await test('Search: address outside the covered gemeenten', async () => {
+  const { context, page, log } = await open();
+  await page.fill('#q', 'Dam 1 Amsterdam');
+  await page.locator('#suggestions li[data-id]').first().waitFor({ timeout: 10000 });
+  await page.press('#q', 'Enter');
+  await waitForTitle(page, /Dam 1/);
+  check(/No Prospect data for this area yet/.test(await sheetText(page)), 'explains there is no data yet');
+  check((await facts(page)).Gemeente === 'Amsterdam', 'still shows the location facts');
+  check(log.errors.length === 0, `no errors${log.errors.length ? ': ' + log.errors.join(' | ') : ''}`);
+  await context.close();
+});
+
 await test('Search: street result gets buurt from nearest address', async () => {
   const { context, page } = await open();
-  await page.fill('#q', 'Zamenhofstraat Leiden');
+  await page.fill('#q', 'Langegracht Leiden');
   await page.locator('#suggestions li[data-id]').first().waitFor({ timeout: 10000 });
   await page.locator('#suggestions li', { hasText: 'weg' }).first().click();
-  await waitForTitle(page, /^Zamenhofstraat, Leiden$/);
+  await waitForTitle(page, /^Langegracht, Leiden$/);
   await page.locator('#sheet-body dt', { hasText: 'Buurt' }).waitFor({ timeout: 10000 }).catch(() => {});
   const f = await facts(page);
-  check(f.Type === 'weg', `type weg (${f.Type})`);
-  check(/Noordvest/.test(f.Buurt || ''), `buurt filled in (${f.Buurt})`);
+  check(!!f.Buurt, `buurt filled in (${f.Buurt})`);
   await context.close();
 });
 
@@ -145,9 +167,7 @@ await test('Search: Enter key, short and unknown queries', async () => {
   await page.locator('#suggestions li[data-id]').first().waitFor({ timeout: 10000 });
   await page.press('#q', 'Enter');
   await waitForTitle(page, /Rijndijk 33/);
-  const f = await facts(page);
-  check(f.Postcode === '2394AC', `Enter opens first result: Rijndijk 33, ${f.Postcode}`);
-  check(f.Gemeente === 'Alphen aan den Rijn', `gemeente Alphen aan den Rijn (${f.Gemeente})`);
+  check(/Alphen aan den Rijn/.test(await page.locator('#sheet-body .muted').first().innerText()), 'Enter opens the Rijndijk dossier (Alphen aan den Rijn)');
   await page.fill('#q', 'qxqxqxzzzy');
   await page.waitForTimeout(1500);
   check(await page.locator('#suggestions').isHidden(), 'nonsense query shows no suggestions');
@@ -176,37 +196,110 @@ await test('Search: Locatieserver down', async () => {
   await page.waitForTimeout(1500);
   check(await page.locator('#suggestions').isHidden(), 'no broken suggestion list when the service is down');
   await page.click('.preset >> nth=0');
-  await page.waitForTimeout(1500);
+  await waitForTitle(page, /Zamenhofstraat/).catch(() => {});
+  check(/Zamenhofstraat/.test(await page.locator('#sheet-body h1').innerText()), 'test areas still open (they use local data)');
   const pageErrors = log.errors.filter((e) => !/503|Failed to load resource/.test(e));
   check(pageErrors.length === 0, `app does not crash${pageErrors.length ? ': ' + pageErrors.join(' | ') : ''}`);
   await context.close();
 });
 
-// 4. Test-area presets.
-for (const [label, title, buurtRe, gemeente] of [
-  ['Zamenhofstraat', /^Zamenhofstraat, Leiden$/, /Noordvest/, 'Leiden'],
-  ['Rijndijk', /^Rijndijk, Hazerswoude-Rijndijk$/, /./, 'Alphen aan den Rijn'],
+// 4. Map layers, legend and tapping a neighbourhood.
+await test('Map: buurt layer, legend and layer chips', async () => {
+  const { context, page, log } = await open();
+  await page.waitForFunction(() => window.prospectMap.getLayer('buurten-fill') && window.prospectMap.querySourceFeatures('buurten').length > 0, null, { timeout: 15000 });
+  const n = await page.evaluate(() => new Set(window.prospectMap.querySourceFeatures('buurten').map((f) => f.properties.buurtcode)).size);
+  check(n >= 100, `buurt polygons loaded (${n})`);
+  check(/Prospect score/.test(await page.locator('#legend').innerText()), 'legend shows the Prospect score');
+  check(await page.locator('#legend .legend-scale .swatch').count() === 5, 'legend has 5 classes');
+  const before = await page.evaluate(() => JSON.stringify(window.prospectMap.getPaintProperty('buurten-fill', 'fill-color')));
+  await page.click('.chip[data-layer="veiligheid"]');
+  const after = await page.evaluate(() => JSON.stringify(window.prospectMap.getPaintProperty('buurten-fill', 'fill-color')));
+  check(before !== after && after.includes('score_veiligheid'), 'Safety chip recolours the map by safety');
+  check(await page.getAttribute('.chip[data-layer="veiligheid"]', 'aria-pressed') === 'true', 'Safety chip is marked as pressed');
+  check(/Safety/.test(await page.locator('#legend').innerText()), 'legend follows the layer');
+  await page.click('.chip[data-layer="woz"]');
+  check(/home value/i.test(await page.locator('#legend').innerText()), 'Home value layer uses its own legend');
+  await page.waitForTimeout(1500);
+  await page.screenshot({ path: `${OUT}/map-home-value.png` });
+  check(log.errors.length === 0, `no errors${log.errors.length ? ': ' + log.errors.join(' | ') : ''}`);
+  await context.close();
+});
+
+await test('Map: tapping a neighbourhood opens its scores', async () => {
+  const { context, page, log } = await open();
+  await page.waitForFunction(() => window.prospectMap.getLayer('buurten-fill') && window.prospectMap.loaded(), null, { timeout: 15000 });
+  await page.evaluate(() => window.prospectMap.jumpTo({ center: [4.490699, 52.163989], zoom: 16 }));
+  await page.waitForTimeout(1500);
+  const pt = await page.evaluate(() => window.prospectMap.project([4.490699, 52.163989]));
+  await page.mouse.click(pt.x, pt.y);
+  await waitForTitle(page, /Noordvest/).catch(() => {});
+  check(/Noordvest/.test(await page.locator('#sheet-body h1').innerText()), 'tap opens buurt Noordvest');
+  check(await page.locator('#sheet-body .score-row').count() === 6, 'buurt card shows 6 theme scores');
+  check(log.errors.length === 0, `no errors${log.errors.length ? ': ' + log.errors.join(' | ') : ''}`);
+  await context.close();
+});
+
+// 5. Test-area dossiers.
+for (const [key, title, buurten, councilRe] of [
+  ['zamenhofstraat-leiden', /^Zamenhofstraat, Leiden$/, 1, /Energiepark/],
+  ['rijndijk-hazerswoude-rijndijk', /^Rijndijk, Hazerswoude-Rijndijk$/, 4, /not in Open Raadsinformatie/],
 ]) {
-  await test(`Preset: ${label}`, async () => {
+  await test(`Dossier: ${key}`, async () => {
     const { context, page, log } = await open();
-    await page.click(`.preset[data-q^="${label}"]`);
+    await page.click(`.preset[data-area="${key}"]`);
     await waitForTitle(page, title).catch(() => {});
     const t = await page.locator('#sheet-body h1').innerText();
-    check(title.test(t), `opens the street, not the town ("${t}")`);
-    await page.locator('#sheet-body dt', { hasText: 'Buurt' }).waitFor({ timeout: 10000 }).catch(() => {});
-    const f = await facts(page);
-    check(f.Type === 'weg', `type weg (${f.Type})`);
-    check(buurtRe.test(f.Buurt || ''), `buurt shown (${f.Buurt})`);
-    check(f.Gemeente === gemeente, `gemeente ${gemeente} (${f.Gemeente})`);
-    check(await page.locator('#sheet-body .preset').count() === 2, 'both presets still available on the card');
-    await page.waitForTimeout(2500);
-    await page.screenshot({ path: `${OUT}/preset-${label.toLowerCase()}.png` });
+    check(title.test(t), `title "${t}"`);
+    check(await page.locator('#sheet-body .score-row').count() === 7, 'shows 7 theme scores');
+    const overall = await page.locator('.overall-value').innerText();
+    check(/^\d+$/.test(overall), `overall Prospect score shown (${overall})`);
+    for (const id of ['s-safety', 's-liveability', 's-schools', 's-buildings', 's-market', 's-rules', 's-development']) {
+      await page.click(`#${id} summary`);
+      const txt = await page.locator(`#${id} .section-body`).innerText();
+      check(txt.length > 80, `section ${id} has content (${txt.length} chars)`);
+    }
+    check(await page.locator('#s-safety h3').count() === buurten, `safety covers ${buurten} buurt(en)`);
+    check(await page.locator('.school-marker').count() > 0, `school markers on the map (${await page.locator('.school-marker').count()})`);
+    await page.screenshot({ path: `${OUT}/dossier-${key}.png`, fullPage: false });
+    await page.click('[data-council]');
+    await waitForTitle(page, /What does the council say/);
+    check(councilRe.test(await sheetText(page)), `council view content matches ${councilRe}`);
+    await page.screenshot({ path: `${OUT}/council-${key}.png` });
+    await page.click('[data-back]');
+    await waitForTitle(page, title);
+    check(true, 'back returns to the dossier');
+    check(await page.locator('#sheet-body .preset').count() === 2, 'both test areas still available');
     check(log.errors.length === 0, `no errors${log.errors.length ? ': ' + log.errors.join(' | ') : ''}`);
     await context.close();
   });
 }
 
-// 5. Layout on different screens and colour schemes.
+await test('Weights change the Prospect score and are remembered', async () => {
+  const { context, page, log } = await open();
+  await page.click('.preset[data-area="zamenhofstraat-leiden"]');
+  await waitForTitle(page, /Zamenhofstraat/);
+  const before = Number(await page.locator('.overall-value').innerText());
+  await page.click('#open-weights');
+  check(await page.locator('#weights').isVisible(), 'weights dialog opens');
+  check(await page.locator('#weights input[type=range]').count() === 7, 'a slider per theme');
+  await page.locator('input[data-weight="veiligheid"]').fill('0');
+  await page.locator('input[data-weight="voorzieningen"]').fill('3');
+  await page.click('#weights button[value=close]');
+  const after = Number(await page.locator('.overall-value').innerText());
+  check(after > before, `ignoring safety and stressing amenities raises Zamenhofstraat's score (${before} -> ${after})`);
+  await page.reload({ waitUntil: 'load' });
+  await page.click('.preset[data-area="zamenhofstraat-leiden"]');
+  await waitForTitle(page, /Zamenhofstraat/);
+  check(Number(await page.locator('.overall-value').innerText()) === after, 'weights are remembered after a reload');
+  await page.click('#open-weights');
+  await page.click('#reset-weights');
+  await page.click('#weights button[value=close]');
+  check(Number(await page.locator('.overall-value').innerText()) === before, 'reset restores the default score');
+  check(log.errors.length === 0, `no errors${log.errors.length ? ': ' + log.errors.join(' | ') : ''}`);
+  await context.close();
+});
+
+// 6. Layout on different screens and colour schemes.
 const SCREENS = [
   ['iphone-se', { width: 320, height: 568 }, true],
   ['iphone-15', { width: 393, height: 852 }, true],
@@ -228,6 +321,9 @@ for (const [name, viewport, mobile] of SCREENS) {
       const sheet = await page.locator('#sheet').boundingBox();
       check(sheet && sheet.y + sheet.height <= viewport.height + 1 && sheet.height <= viewport.height * 0.6, `sheet fits (${Math.round(sheet?.height)}px of ${viewport.height}px)`);
       check(sheet && sheet.y > search.y + search.height, 'sheet does not cover the search box');
+      const legend = await page.locator('#legend').boundingBox();
+      const overlap = legend && sheet && !(legend.y + legend.height <= sheet.y || legend.x >= sheet.x + sheet.width || legend.x + legend.width <= sheet.x);
+      check(legend && !overlap, `legend visible and clear of the sheet (${legend ? `${Math.round(legend.x)},${Math.round(legend.y)} ${Math.round(legend.width)}x${Math.round(legend.height)}` : 'none'})`);
       check(search.width <= 520, `search box keeps a readable width (${Math.round(search.width)}px)`);
       const brandBg = await page.evaluate(() => getComputedStyle(document.querySelector('.brand')).backgroundColor);
       check(brandBg !== 'rgba(0, 0, 0, 0)', `title has its own background, readable over the map (${brandBg})`);
@@ -247,7 +343,7 @@ for (const [name, viewport, mobile] of SCREENS) {
   }
 }
 
-// 6. Bottom sheet can be collapsed to give the map the screen.
+// 7. Bottom sheet can be collapsed to give the map the screen.
 await test('Bottom sheet collapse', async () => {
   const { context, page, log } = await open();
   await page.click('.preset >> nth=0');
@@ -273,7 +369,7 @@ await test('Bottom sheet collapse', async () => {
   await context.close();
 });
 
-// 7. Offline: the service worker keeps the app shell available.
+// 8. Offline: the service worker keeps the app shell available.
 await test('Offline app shell (service worker)', async () => {
   const { context, page } = await open();
   await page.evaluate(() => navigator.serviceWorker.ready);
