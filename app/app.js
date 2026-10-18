@@ -580,7 +580,7 @@ function homeFacts(e) {
     ['Back garden faces', e.achtertuin_richting ? `${e.achtertuin_richting}${e.achtertuin_zuid ? ' (sunny side)' : ''}` : null],
     ['Back access', yesNo(e.achterom) && (e.achterom ? 'Yes, path or road behind the garden' : 'No path or road behind the garden')],
     ['Water', water],
-    ['Noise', e.lden_db != null ? `${num(e.lden_db)} dB Lden (${e.lden_bron})` : null],
+    ['Noise', e.lden_db != null ? `${num(e.lden_db)} dB Lden${e.lden_band ? `, EU map band ${e.lden_band}` : ''} (${e.lden_bron})` : null],
     ['Cars at the door', e.afstand_autoweg_m != null ? (e.afstand_autoweg_m <= 3 ? 'Front door on a road with cars' : `${num(e.afstand_autoweg_m)} m to the nearest car lane`) : null],
     ['Main road', e.afstand_hoofdweg_m != null ? `${num(e.afstand_hoofdweg_m)} m` : null],
     ['Railway', e.afstand_spoor_m != null ? `${num(e.afstand_spoor_m)} m` : null],

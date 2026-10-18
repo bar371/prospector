@@ -145,6 +145,22 @@ def lden_at(base, layer, lon, lat):
 
 # NWB functional road class -> typical Lden at 10 m from the road axis: motorway, provincial road (N11), collector roads,
 # then residential streets (30 km/h, a few hundred cars a day), which hardly add noise.
+# EU Environmental Noise Directive maps (EEA, updated April 2026): Lden bands for major roads, 10 m pixels.
+# A road appears when it carries more than about 8,000 vehicles a day; no data means below 55 dB from those roads.
+EEA_ROAD = "https://noise.discomap.eea.europa.eu/arcgis/rest/services/noiseStoryMap/NoiseContours_road_lden/ImageServer/identify"
+EEA_BAND_DB = {1: 57, 2: 62, 3: 67, 4: 72, 5: 77}  # band 1 = 55-59 dB ... band 5 = 75 dB and more (band middles)
+
+
+def eea_road_band(lon, lat):
+    q = urllib.parse.urlencode({"geometry": json.dumps({"x": lon, "y": lat, "spatialReference": {"wkid": 4326}}),
+                                "geometryType": "esriGeometryPoint", "returnGeometry": "false", "returnCatalogItems": "false", "f": "json"})
+    try:
+        value = fetch_json(f"{EEA_ROAD}?{q}", retries=3).get("value")
+    except Exception:
+        return "error"
+    return int(value) if str(value).isdigit() else None
+
+
 ROAD_DB_AT_10M = {0: 78, 1: 77, 2: 74, 3: 71, 4: 64, 5: 60, 6: 51, 7: 48}
 RAIL_DB_AT_10M = 68  # regional line with sprinter trains (Leiden-Alphen)
 
@@ -371,15 +387,29 @@ def build(key):
                 out["aan_het_water"] = False
 
         # noise: measured map if reachable, else estimated from road and rail distances
-        cell = (round(a["lon"] / 0.0004), round(a["lat"] / 0.00025))
+        cell = (round(a["lon"] / 0.00015), round(a["lat"] / 0.0001))  # about 10 m, the map's pixel size
         if noise_layer.get("all") or noise_layer.get("road"):
-            if cell not in noise_cache:
-                noise_cache[cell] = lden_at(noise_base, noise_layer.get("all") or noise_layer["road"], a["lon"], a["lat"])
-            out["lden_db"] = noise_cache[cell]
-            out["lden_bron"] = "RIVM noise map"
+            if ("rivm", cell) not in noise_cache:
+                noise_cache[("rivm", cell)] = lden_at(noise_base, noise_layer.get("all") or noise_layer["road"], a["lon"], a["lat"])
+            out["lden_db"] = noise_cache[("rivm", cell)]
+            out["lden_bron"] = "RIVM noise map (all sources)"
         if out.get("lden_db") is None:
-            out["lden_db"] = estimated_lden({k: v for k, v in dist_by_frc.items()}, out.get("afstand_spoor_m"))
-            out["lden_bron"] = "estimated from road class and distance"
+            if ("eea", cell) not in noise_cache:
+                noise_cache[("eea", cell)] = eea_road_band(a["lon"], a["lat"])
+            band = noise_cache[("eea", cell)]
+            # smaller roads and the railway are not on the EU map: estimate them, staying below the map's 55 dB threshold
+            minor = estimated_lden({k: v for k, v in dist_by_frc.items() if k >= 4}, out.get("afstand_spoor_m"))
+            if band == "error":
+                out["lden_db"] = estimated_lden(dist_by_frc, out.get("afstand_spoor_m"))
+                out["lden_bron"] = "estimated from road class and distance (EU noise map unreachable)"
+            elif band:
+                major = EEA_BAND_DB.get(band, 57)
+                out["lden_db"] = round(10 * math.log10(10 ** (major / 10) + 10 ** (min(minor, 54) / 10)), 1)
+                out["lden_band"] = f"{40 + 5 * (band + 2)}-{44 + 5 * (band + 2)} dB" if band < 5 else "75 dB or more"
+                out["lden_bron"] = "EU noise map for major roads, plus an estimate for small roads and rail"
+            else:
+                out["lden_db"] = round(min(minor, 54.5), 1)
+                out["lden_bron"] = "below 55 dB on the EU noise map; small roads and rail estimated"
         out["score_rust"] = quiet_score(out["lden_db"])
         # car-light: quiet own street, far from main roads
         own_class = out.get("straat_klasse")
@@ -402,7 +432,11 @@ def build(key):
     t0 = time.time()
     with ThreadPoolExecutor(8) as pool:
         result = dict(pool.map(one, homes))
-    log(f"  enriched {len(result)} homes in {time.time() - t0:.0f}s; noise source: {noise_layer or 'estimated'}")
+    bands = {}
+    for k, v in noise_cache.items():
+        if k[0] == "eea":
+            bands[v] = bands.get(v, 0) + 1
+    log(f"  enriched {len(result)} homes in {time.time() - t0:.0f}s; RIVM layers {noise_layer or 'unavailable'}; EU road bands per 10 m cell {bands}")
 
     # per street
     streets = {}
