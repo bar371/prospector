@@ -36,8 +36,8 @@ const PRESETS = document.querySelector('.presets').outerHTML;
 const pick = (obj, keys) => Object.fromEntries(keys.filter((k) => obj[k]).map((k) => [k, obj[k]]));
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-async function suggest(q) {
-  const url = `${LOCATIESERVER}/suggest?rows=7&fq=type:(adres OR weg OR buurt OR wijk OR woonplaats)&q=${encodeURIComponent(q)}`;
+async function suggest(q, types = 'adres OR weg OR buurt OR wijk OR woonplaats') {
+  const url = `${LOCATIESERVER}/suggest?rows=7&fq=${encodeURIComponent(`type:(${types})`)}&q=${encodeURIComponent(q)}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Locatieserver ${res.status}`);
   return (await res.json()).response.docs;
@@ -132,7 +132,8 @@ document.querySelector('.search').addEventListener('submit', async (e) => {
 document.addEventListener('click', async (e) => {
   const btn = e.target.closest('.preset');
   if (!btn) return;
-  const docs = await suggest(btn.dataset.q).catch(() => []);
+  // Presets name a street; without the type filter the town can outrank it.
+  const docs = await suggest(btn.dataset.q, 'weg').catch(() => []);
   if (docs[0]) select(docs[0].id);
 });
 

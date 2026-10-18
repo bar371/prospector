@@ -22,21 +22,32 @@ python3 -m http.server -d app 8000
 
 One-time setup: Settings → Pages → Source: **GitHub Actions**.
 
-## Smoke test
+## Tests
 
-After each deploy, the `smoke-test` job opens the live site in headless Chromium (phone-sized). It checks that:
+[`tests/e2e.mjs`](tests/e2e.mjs) is an end-to-end suite that runs in headless Chromium against the real PDOK services. It covers:
 
-- the page and MapLibre load;
-- PDOK map tiles arrive;
-- the PDOK address search finds Zamenhofstraat;
-- both test areas open a place card.
+- **Assets:** assets and install metadata (manifest, icons, apple-touch-icon size).
+- **Map:** basemap tiles, including panning.
+- **Search:**
+  - address and street results, including buurt, wijk and gemeente;
+  - the Enter key, short and nonsense queries;
+  - HTML injection;
+  - the Locatieserver being down.
+- **Test areas:** both test-area presets.
+- **Layout:** 5 screen sizes (iPhone SE up to desktop) in light and dark mode.
+- **Offline:** the app shell loads offline via the service worker.
 
-Screenshots are uploaded as the `smoke-screenshots` artifact.
+Where it runs:
+
+- **Test** workflow: on every branch push and pull request, against that commit's `app/` served on the runner.
+- **Deploy** workflow: after every deploy, against the live site.
+
+Screenshots and `results.json` are uploaded as artifacts.
 
 Run it locally:
 
 ```sh
 npm ci && npx playwright install chromium
 npm run serve &   # then:
-npm run smoke -- http://localhost:8000/
+npm test -- http://localhost:8000/
 ```

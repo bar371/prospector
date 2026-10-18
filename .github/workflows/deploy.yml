@@ -32,8 +32,8 @@ jobs:
       - id: deployment
         uses: actions/deploy-pages@v4
 
-  # Opens the live site in a real browser and checks the map, the PDOK search and both test areas.
-  smoke-test:
+  # Runs the end-to-end suite against the live site.
+  live-test:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
@@ -50,9 +50,9 @@ jobs:
             curl -fsS "${{ needs.deploy.outputs.page_url }}" >/dev/null && break
             sleep 5
           done
-      - run: node tests/smoke.mjs "${{ needs.deploy.outputs.page_url }}" smoke-output
+      - run: node tests/e2e.mjs "${{ needs.deploy.outputs.page_url }}" test-output
       - if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: smoke-screenshots
-          path: smoke-output
+          name: e2e-live
+          path: test-output
