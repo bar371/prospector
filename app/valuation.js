@@ -188,7 +188,7 @@ This is an indicative estimate, not a formal taxatie.`;
           <input name="apikey" type="password" autocomplete="off" placeholder="sk-ant-..." value="${esc(key)}" required>
           <label class="check"><input type="checkbox" name="remember"${key ? ' checked' : ''}> Remember on this device</label>
           <p class="source">The key goes straight from this browser to Anthropic and is never stored anywhere else.
-            One estimate uses Claude Opus 5.5 and costs roughly a few cents.</p>
+            One estimate uses Claude Opus 5.5 and costs about €0.10–0.20 in API usage.</p>
         </fieldset>
         <button type="submit" class="primary wide">Estimate value</button>
       </form>
