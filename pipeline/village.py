@@ -107,7 +107,11 @@ def bag(docs):
         d["gebruiksdoel"] = ",".join(v.get("gebruiksdoel")) if isinstance(v.get("gebruiksdoel"), list) else v.get("gebruiksdoel")
         href = v.get("pand.href")
         href = href[0] if isinstance(href, list) else href
-        pid = href.rstrip("/").split("/")[-1].split("?")[0] if href else None
+        # ".../collections/pand/items/<id>" or ".../collections/pand/items?identificatie=<id>"
+        m = re.search(r"identificatie=(\d+)|/items/(\d+)", href or "")
+        pid = (m.group(1) or m.group(2)) if m else None
+        if pid is None and len(log_lines) < 40:
+            log(f"  unparsed pand.href: {href}")
         if pid in panden:
             d["pand"] = pid
             d["bouwjaar"] = panden[pid]["properties"].get("bouwjaar")
@@ -256,13 +260,14 @@ def build(key, v):
     mons = monuments(bbox)
     mon_by_pand = {}
     for m in mons:
-        pt = Point(m["geometry"]["coordinates"][:2]) if m.get("geometry", {}).get("type") == "Point" else None
-        if not pt:
+        g = m.get("geometry") or {}
+        if g.get("type") not in ("Point", "MultiPoint"):
             continue
+        pt = shape(g).representative_point()
         for pid, s in shapes.items():
             if s.buffer(0.00015).contains(pt):
                 mon_by_pand[pid] = {k: m["properties"].get(k) for k in m["properties"] if k.lower() in (
-                    "monumentnummer", "rijksmonumentnummer", "rijksmonument_nummer", "text", "naam", "omschrijving", "hoofdcategorie", "url", "rijksmonumenturl")}
+                    "monumentnummer", "rijksmonumentnummer", "rijksmonument_nummer", "localid", "text", "naam", "omschrijving", "hoofdcategorie", "url", "rijksmonumenturl")}
                 break
     log(f"  {len(mon_by_pand)} buildings are rijksmonumenten")
 
