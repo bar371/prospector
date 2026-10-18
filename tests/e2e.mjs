@@ -40,6 +40,26 @@ const facts = (page) => page.evaluate(() =>
   Object.fromEntries([...document.querySelectorAll('#sheet-body dl.facts dt')].map((dt) => [dt.textContent, dt.nextElementSibling.textContent])));
 const waitForTitle = (page, re) =>
   page.waitForFunction((src) => new RegExp(src).test(document.querySelector('#sheet-body h1')?.textContent || ''), re.source, { timeout: 15000 });
+// Value estimate, against a mocked Anthropic API (no key or network call to Anthropic in tests).
+const MOCK_RESULT = {
+  value_low_eur: 255000, value_estimate_eur: 275000, value_high_eur: 295000, confidence: 'medium',
+  summary: 'Small 1985 apartment in Noordvest; WOZ and buurt averages point to the high 200s.',
+  comparables: [{ description: 'Zamenhofstraat 25 WOZ', price_eur: 301000, kind: 'WOZ value', date: '2025', relevance: 'Same building' }],
+  drivers_up: [{ factor: 'Location', effect: 'Walking distance to Leiden Centraal', source: 'CBS distances' }],
+  drivers_down: [{ factor: 'Crime', effect: 'High registered crime in the buurt', source: 'Politie/CBS 2025' }],
+  risks_to_check: ['VvE reserves'], missing_information: ['Energy label'],
+};
+function sse(result) {
+  const ev = (type, data) => `event: ${type}\ndata: ${JSON.stringify({ type, ...data })}\n\n`;
+  return ev('message_start', { message: { id: 'msg_test', type: 'message', role: 'assistant', model: 'claude-opus-5-5', content: [],
+    stop_reason: null, stop_sequence: null, usage: { input_tokens: 1200, output_tokens: 1 } } })
+    + ev('content_block_start', { index: 0, content_block: { type: 'text', text: '' } })
+    + ev('content_block_delta', { index: 0, delta: { type: 'text_delta', text: JSON.stringify(result) } })
+    + ev('content_block_stop', { index: 0 })
+    + ev('message_delta', { delta: { stop_reason: 'end_turn', stop_sequence: null }, usage: { output_tokens: 400 } })
+    + ev('message_stop', {});
+}
+
 async function test(name, fn) {
   current = name;
   console.log(`\n${name}`);
@@ -134,14 +154,39 @@ await test('Search: other address in Leiden shows its buurt scores', async () =>
   await context.close();
 });
 
-await test('Search: address outside the covered gemeenten', async () => {
+await test('Search: any address in the Netherlands shows its buurt scores', async () => {
   const { context, page, log } = await open();
-  await page.fill('#q', 'Dam 1 Amsterdam');
+  let captured = null;
+  await context.route('**/v1/messages**', async (route) => {
+    captured = JSON.parse(route.request().postData());
+    await route.fulfill({ status: 200, headers: { 'content-type': 'text/event-stream' }, body: sse(MOCK_RESULT) });
+  });
+  await page.fill('#q', 'Eerste Helmersstraat 100 Amsterdam');
   await page.locator('#suggestions li[data-id]').first().waitFor({ timeout: 10000 });
   await page.press('#q', 'Enter');
-  await waitForTitle(page, /Dam 1/);
-  check(/No Prospect data for this area yet/.test(await sheetText(page)), 'explains there is no data yet');
-  check((await facts(page)).Gemeente === 'Amsterdam', 'still shows the location facts');
+  await waitForTitle(page, /Eerste Helmersstraat 100/);
+  await page.locator('#sheet-body .score-row').first().waitFor({ timeout: 15000 }).catch(() => {});
+  check((await facts(page)).Gemeente === 'Amsterdam', 'shows the location facts');
+  check(await page.locator('#sheet-body .score-row').count() === 6, `Amsterdam buurt scores shown (${await page.locator('#sheet-body .score-row').count()} rows)`);
+  await page.waitForTimeout(1500);
+  const n = await page.evaluate(() => new Set(window.prospectMap.querySourceFeatures('buurten').map((f) => f.properties.gemeentenaam)).size);
+  check(n >= 1, `map loaded the gemeenten in view (${n})`);
+  await page.screenshot({ path: `${OUT}/amsterdam.png` });
+  await page.click('[data-valuation-place]');
+  await waitForTitle(page, /Estimate a value/);
+  check(/neighbourhood-level data only/.test(await sheetText(page)), 'explains the estimate is less certain outside the test streets');
+  await page.waitForTimeout(2500);
+  const area = await page.inputValue('input[name=oppervlakte]');
+  check(Number(area) > 0, `floor area fetched live from BAG (${area || 'empty'})`);
+  await page.fill('input[name=apikey]', 'sk-ant-test-key');
+  await page.click('#valuation-form button[type=submit]');
+  await page.locator('.estimate').waitFor({ timeout: 15000 }).catch(() => {});
+  const text = captured ? captured.messages[0].content.map((c) => c.text).join('\n') : '';
+  check(/buurt and gemeente level only/.test(text) && /Eerste Helmersstraat 100/.test(text), 'request carries the light dossier and the address');
+  check(await page.locator('.estimate').count() === 1, 'estimate shown');
+  await page.click('[data-back]');
+  await waitForTitle(page, /Eerste Helmersstraat 100/);
+  check(true, 'back returns to the address card');
   check(log.errors.length === 0, `no errors${log.errors.length ? ': ' + log.errors.join(' | ') : ''}`);
   await context.close();
 });
@@ -241,8 +286,8 @@ await test('Map: tapping a neighbourhood opens its scores', async () => {
 
 // 5. Test-area dossiers.
 for (const [key, title, buurten, councilRe] of [
-  ['zamenhofstraat-leiden', /^Zamenhofstraat, Leiden$/, 1, /Energiepark/],
-  ['rijndijk-hazerswoude-rijndijk', /^Rijndijk, Hazerswoude-Rijndijk$/, 4, /not in Open Raadsinformatie/],
+  ['zamenhofstraat-leiden', /^Zamenhofstraat, Leiden$/, 1, /Said in meetings[\s\S]*Energiepark/],
+  ['rijndijk-hazerswoude-rijndijk', /^Rijndijk, Hazerswoude-Rijndijk$/, 4, /Elektriciteitsstation Hazerswoude-Rijndijk/],
 ]) {
   await test(`Dossier: ${key}`, async () => {
     const { context, page, log } = await open();
@@ -269,6 +314,7 @@ for (const [key, title, buurten, councilRe] of [
     await waitForTitle(page, title);
     check(true, 'back returns to the dossier');
     check(await page.locator('#sheet-body .preset').count() === 2, 'both test areas still available');
+    check(await page.locator('[data-valuation]').count() === 1, 'value estimate button present');
     check(log.errors.length === 0, `no errors${log.errors.length ? ': ' + log.errors.join(' | ') : ''}`);
     await context.close();
   });
@@ -296,6 +342,74 @@ await test('Weights change the Prospect score and are remembered', async () => {
   await page.click('#weights button[value=close]');
   check(Number(await page.locator('.overall-value').innerText()) === before, 'reset restores the default score');
   check(log.errors.length === 0, `no errors${log.errors.length ? ': ' + log.errors.join(' | ') : ''}`);
+  await context.close();
+});
+
+await test('Value estimate: request, result and remembered key', async () => {
+  const { context, page, log } = await open();
+  let captured = null;
+  await context.route('**/v1/messages**', async (route) => {
+    captured = { url: route.request().url(), headers: route.request().headers(), body: JSON.parse(route.request().postData()) };
+    await route.fulfill({ status: 200, headers: { 'content-type': 'text/event-stream' }, body: sse(MOCK_RESULT) });
+  });
+  await page.fill('#q', 'Zamenhofstraat 25 Leiden');
+  await page.locator('#suggestions li[data-id]').first().waitFor({ timeout: 10000 });
+  await page.locator('#suggestions li[data-id]').first().click();
+  await waitForTitle(page, /Zamenhofstraat 25/);
+  await page.click('[data-valuation]');
+  await waitForTitle(page, /Estimate a value/);
+  check(await page.inputValue('select[name=adres]') === 'Zamenhofstraat 25, 2312NX Leiden', 'the searched address is preselected');
+  check(/BAG: \d+ m²/.test(await page.locator('#bag-facts').innerText()), `BAG facts shown (${await page.locator('#bag-facts').innerText()})`);
+  check(Number(await page.inputValue('input[name=oppervlakte]')) > 0, 'floor area prefilled from BAG');
+  check(await page.inputValue('input[name=bouwjaar]') === '1985' || await page.inputValue('input[name=bouwjaar]') === '1986' || await page.inputValue('input[name=bouwjaar]') === '1987',
+    `building year prefilled (${await page.inputValue('input[name=bouwjaar]')})`);
+  await page.selectOption('select[name=type]', { index: 0 });
+  await page.fill('input[name=apikey]', 'sk-ant-test-key');
+  await page.check('input[name=remember]');
+  await page.click('#valuation-form button[type=submit]');
+  await page.locator('.estimate').waitFor({ timeout: 15000 }).catch(() => {});
+  check(captured !== null, 'a request went to the Anthropic Messages API');
+  if (captured) {
+    const b = captured.body;
+    check(b.model === 'claude-opus-5-5', `model ${b.model}`);
+    check(b.thinking?.type === 'adaptive', 'adaptive thinking');
+    check(b.output_config?.effort === 'high' && b.output_config?.format?.type === 'json_schema', 'effort high and a JSON schema for the answer');
+    check(b.fallbacks === 'default' && /server-side-fallback-2026-07-01/.test(captured.headers['anthropic-beta'] || ''), 'server-side refusal fallback enabled');
+    check(captured.headers['x-api-key'] === 'sk-ant-test-key', 'the typed key is sent as x-api-key');
+    check(captured.headers['anthropic-dangerous-direct-browser-access'] === 'true', 'browser access header set by the SDK');
+    const text = b.messages[0].content.map((c) => c.text).join('\n');
+    check(/Noordvest/.test(text) && /Zamenhofstraat 25, 2312NX Leiden/.test(text), 'request carries the dossier and the property');
+    check(b.messages[0].content[0].cache_control?.type === 'ephemeral', 'dossier block is marked for prompt caching');
+  }
+  const est = await page.locator('.estimate-range strong').innerText().catch(() => '');
+  check(/275\.000/.test(est), `estimate shown (${est})`);
+  check(/Zamenhofstraat 25 WOZ/.test(await sheetText(page)), 'evidence table shown');
+  await page.screenshot({ path: `${OUT}/valuation-result.png` });
+  await page.reload({ waitUntil: 'load' });
+  await page.click('.preset[data-area="zamenhofstraat-leiden"]');
+  await waitForTitle(page, /Zamenhofstraat/);
+  await page.click('[data-valuation]');
+  await waitForTitle(page, /Estimate a value/);
+  check(await page.inputValue('input[name=apikey]') === 'sk-ant-test-key', 'remembered key is filled in after a reload');
+  check(log.errors.length === 0, `no errors${log.errors.length ? ': ' + log.errors.join(' | ') : ''}`);
+  await context.close();
+});
+
+await test('Value estimate: a rejected key gives a clear message', async () => {
+  const { context, page } = await open();
+  await context.route('**/v1/messages**', (route) => route.fulfill({ status: 401, headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ type: 'error', error: { type: 'authentication_error', message: 'invalid x-api-key' } }) }));
+  await page.click('.preset[data-area="rijndijk-hazerswoude-rijndijk"]');
+  await waitForTitle(page, /Rijndijk/);
+  await page.click('[data-valuation]');
+  await waitForTitle(page, /Estimate a value/);
+  await page.selectOption('select[name=adres]', { index: 1 });
+  await page.fill('input[name=apikey]', 'sk-ant-wrong');
+  await page.click('#valuation-form button[type=submit]');
+  await page.locator('#valuation-result .notice').waitFor({ timeout: 15000 }).catch(() => {});
+  const msg = await page.locator('#valuation-result').innerText();
+  check(/rejected the API key/.test(msg), `clear error (${msg.slice(0, 120)})`);
+  check(await page.evaluate(() => localStorage.getItem('prospect.anthropicKey')) === null, 'key not stored when "remember" is off');
   await context.close();
 });
 

@@ -171,7 +171,7 @@ NATIONAL_FIELDS = [
     "voortgezetOnderwijsGemAfstandInKm", "huisartsenpraktijkGemiddeldeAfstandInKm",
     "groteSupermarktGemiddeldeAfstandInKm", "kinderdagverblijfGemiddeldeAfstandInKm",
     "afstandTotOpenbaarGroenTotaal", "afstandTotParkOfPlantsoen", "bevolkingsdichtheidInwonersPerKm2",
-    "percentageBouwjaarklasseVanaf2000", "percentageWoningenMetZonnestroom",
+    "percentageBouwjaarklasseVanaf2000", "percentageWoningenMetZonnestroom", "wijkcode", "gemeentecode",
 ]
 
 
@@ -253,6 +253,35 @@ def prices():
         rows += cbs_rows(CBS, table, "TypedDataSet", f"RegioS eq '{c}'")
     log(f"  {len(rows)} rows for {codes}")
     write("prices/83625NED.json", rows)
+    # every gemeente, last 12 years, for the national map and the value estimate anywhere
+    perioden = [p["Key"] for p in cbs_rows(CBS, table, "Perioden")][-12:]
+    nat = []
+    for per in perioden:
+        nat += cbs_rows(CBS, table, "TypedDataSet", f"substringof('GM',RegioS) and Perioden eq '{per}'")
+    log(f"  national: {len(nat)} gemeente-year rows {perioden[0]}..{perioden[-1]}")
+    write("national/prices_gemeenten.json", [{"gm": r["RegioS"].strip(), "jaar": r["Perioden"][:4], "prijs": r["GemiddeldeVerkoopprijs_1"]} for r in nat])
+
+
+@step
+def national_geo():
+    """Boundaries of every buurt in the Netherlands, simplified for a web map (about 20 m tolerance)."""
+    from shapely.geometry import mapping, shape
+    feats = wfs_features("buurten")  # all attributes: the geometry field name is not documented
+    out = []
+    for f in feats:
+        p = f["properties"]
+        if p.get("water") == "J" or not f.get("geometry"):
+            continue
+        g = shape(f["geometry"]).simplify(0.0002, preserve_topology=True)
+        if g.is_empty:
+            continue
+        geom = mapping(g)
+        def r(c):
+            return [round(c[0], 5), round(c[1], 5)] if isinstance(c[0], (int, float)) else [r(x) for x in c]
+        out.append({"type": "Feature", "properties": {k: p.get(k) for k in ("buurtcode", "buurtnaam", "gemeentecode", "gemeentenaam")},
+                    "geometry": {"type": geom["type"], "coordinates": r(geom["coordinates"])}})
+    log(f"  {len(out)} land buurten with simplified geometry")
+    write("national/buurten-geo.geojson", {"type": "FeatureCollection", "features": out})
 
 
 def duo_package(query):
@@ -554,7 +583,7 @@ def council():
     write("council/ori_leiden.json", result)
 
 
-STEPS = [areas, buurten, national, crime, prices, schools, schools_extra, bag, leefbaarometer, rivm, soil,
+STEPS = [areas, buurten, national, national_geo, crime, prices, schools, schools_extra, bag, leefbaarometer, rivm, soil,
          publications, council]
 
 if __name__ == "__main__":

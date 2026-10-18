@@ -664,7 +664,75 @@ def map_layer():
     return {"type": "FeatureCollection", "features": features}
 
 
+def national_layers():
+    """Per-gemeente map files covering every Dutch buurt, plus an index the app uses to load them on demand.
+    Same themes and national percentiles as the test areas, from the national tables."""
+    geo = load("national/buurten-geo.geojson")
+    if not geo:
+        print("no national geometry; skipping national layers")
+        return
+    lbm_by = {r["bu_code"]: r for r in lbm_nat}
+    prices_by = {}
+    for r in load("national/prices_gemeenten.json", []):
+        if r.get("prijs"):
+            prices_by.setdefault(r["gm"], []).append((r["jaar"], r["prijs"]))
+
+    def avg(*vals):
+        vals = [v for v in vals if v is not None]
+        return round(sum(vals) / len(vals)) if vals else None
+
+    def pct(field, row):
+        return R[field].percentile((row or {}).get(field))
+
+    out_dir = OUT / "gemeenten"
+    out_dir.mkdir(exist_ok=True)
+    by_gm = {}
+    for f in geo["features"]:
+        p = f["properties"]
+        code = p["buurtcode"]
+        n = nat_by_code.get(code, {})
+        lb = lbm_by.get(code, {})
+        rv = rivm_by_code.get(code, {})
+        rate = crime_rate_nat.get(code)
+        props = {
+            "buurtcode": code, "buurtnaam": p["buurtnaam"], "gemeentenaam": p["gemeentenaam"],
+            "inwoners": num(n.get("aantalInwoners")), "woz": num(n.get("gemiddeldeWoningwaarde")),
+            "misdrijven_per_1000": round(rate, 1) if rate is not None else None,
+            "leefbaarometer": num(lb.get("lbm")),
+            "score_veiligheid": avg(R["crime_rate"].percentile(rate) if rate is not None else None, R["lbm_onv"].percentile(lb.get("onv"))),
+            "score_leefbaarheid": avg(R["lbm_lbm"].percentile(lb.get("lbm")), pct("b_tevr_wo", rv)),
+            "score_bereikbaarheid": avg(pct("opritHoofdverkeerswegGemiddeldeAfstandInKm", n), pct("treinstationGemiddeldeAfstandInKm", n),
+                                        pct("overstapstationGemiddeldeAfstandInKm", n)),
+            "score_autoluw": avg(pct("personenautosPerHuishouden", n), pct("b_gel_weg", rv)),
+            "score_voorzieningen": avg(pct("groteSupermarktGemiddeldeAfstandInKm", n), pct("huisartsenpraktijkGemiddeldeAfstandInKm", n),
+                                       pct("kinderdagverblijfGemiddeldeAfstandInKm", n), pct("afstandTotOpenbaarGroenTotaal", n)),
+            "score_rust": avg(pct("b_gel_weg", rv), pct("b_gel_trei", rv), pct("b_gel_vv", rv), pct("b_gel_bu", rv)),
+        }
+        if not props["inwoners"]:
+            continue
+        by_gm.setdefault(p["gemeentecode"], {"naam": p["gemeentenaam"], "features": []})["features"].append(
+            {"type": "Feature", "properties": props, "geometry": f["geometry"]})
+    index = {}
+    for gm, g in sorted(by_gm.items()):
+        xs, ys = [], []
+        def walk(c):
+            if isinstance(c[0], (int, float)):
+                xs.append(c[0]); ys.append(c[1])
+            else:
+                for x in c:
+                    walk(x)
+        for f in g["features"]:
+            walk(f["geometry"]["coordinates"])
+        (out_dir / f"{gm}.geojson").write_text(json.dumps({"type": "FeatureCollection", "features": g["features"]},
+                                                          ensure_ascii=False, separators=(",", ":")))
+        index[gm] = {"naam": g["naam"], "bbox": [round(min(xs), 4), round(min(ys), 4), round(max(xs), 4), round(max(ys), 4)],
+                     "buurten": len(g["features"]), "prijzen": sorted(prices_by.get(gm, []))}
+    (out_dir / "index.json").write_text(json.dumps(index, ensure_ascii=False, separators=(",", ":")))
+    print(f"national layers: {len(index)} gemeenten, {sum(v['buurten'] for v in index.values())} buurten")
+
+
 if __name__ == "__main__":
+    national_layers()
     (OUT / "buurten-scores.geojson").write_text(json.dumps(map_layer(), ensure_ascii=False))
     index = []
     for key, a in areas.items():
@@ -672,5 +740,9 @@ if __name__ == "__main__":
         (OUT / f"{key}.json").write_text(json.dumps(dossier, ensure_ascii=False, indent=1))
         (OUT / f"{key}.md").write_text(markdown(dossier))
         index.append({"key": key, "straat": dossier["straat"], "woonplaats": dossier["woonplaats"], "scores": dossier["scores"]})
+        # per-address building facts for the valuation form
+        addresses = [{k: r.get(k) for k in ("adres", "postcode", "huisnummer", "buurtcode", "oppervlakte", "bouwjaar", "gebruiksdoel")}
+                     for r in bag.get(key, [])]
+        (OUT / f"{key}-addresses.json").write_text(json.dumps(addresses, ensure_ascii=False))
         print(key, dossier["scores"])
     (OUT / "index.json").write_text(json.dumps(index, ensure_ascii=False, indent=1))

@@ -1,6 +1,6 @@
 // Caches the app shell so the home-screen app opens offline. Map tiles and search stay online.
-const CACHE = 'prospect-v9';
-const SHELL = ['./', 'index.html', 'styles.css', 'app.js', 'manifest.webmanifest', 'icons/icon.svg', 'vendor/maplibre-gl-4.7.1/maplibre-gl.js', 'vendor/maplibre-gl-4.7.1/maplibre-gl.css'];
+const CACHE = 'prospect-v13';
+const SHELL = ['./', 'index.html', 'styles.css', 'app.js', 'valuation.js', 'manifest.webmanifest', 'icons/icon.svg', 'vendor/maplibre-gl-4.7.1/maplibre-gl.js', 'vendor/maplibre-gl-4.7.1/maplibre-gl.css'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));

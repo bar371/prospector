@@ -1,0 +1,64 @@
+name: Monthly refresh
+
+# Rebuild all data and council transcripts, test the app on the new data, and publish it to main.
+on:
+  schedule:
+    - cron: '17 3 3 * *'  # 03:17 UTC on the 3rd of every month (CBS and police data update monthly)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: sudo apt-get install -y -qq ffmpeg >/dev/null
+      - run: pip install -q shapely==2.0.6 faster-whisper==1.1.1 requests
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: whisper-small
+      - run: python pipeline/build.py out/data
+      - run: python pipeline/report.py out/data out/report
+      - run: python pipeline/council/build.py out/council
+      - run: python tools/publish_data.py out/report out/council
+      - run: npm ci && npx playwright install --with-deps chromium
+      - name: Test the app on the new data
+        run: |
+          python3 -m http.server 8000 -d app >/dev/null 2>&1 &
+          for i in $(seq 1 20); do curl -fsS http://localhost:8000/ >/dev/null && break; sleep 0.5; done
+          node tests/e2e.mjs http://localhost:8000/ test-output
+      - name: Commit and deploy
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/data docs/dd
+          if git diff --cached --quiet; then echo "No data changes"; exit 0; fi
+          git commit -qm "Monthly data refresh $(date -u +%Y-%m)"
+          git push origin HEAD:main
+          # pushes made with this token do not trigger workflows; start the deploy explicitly
+          gh workflow run deploy.yml --ref main
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: refresh-test-output
+          path: test-output
