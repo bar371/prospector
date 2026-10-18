@@ -163,7 +163,8 @@ This is an indicative estimate, not a formal taxatie.`;
 
   function formHtml(d, addresses, preset) {
     const key = storedKey();
-    const homes = addresses.filter((a) => (a.gebruiksdoel || '').includes('woon'));
+    // A street list shows homes only; a single searched address is always shown (its BAG use is in the facts line).
+    const homes = addresses.length === 1 ? addresses : addresses.filter((a) => (a.gebruiksdoel || '').includes('woon'));
     const presetAddr = homes.find((a) => preset && a.adres === preset) || null;
     return `<button type="button" class="link-button back" data-back>← Back to ${esc(d.straat)}</button>
       <h1>Estimate a value</h1>
@@ -242,7 +243,6 @@ This is an indicative estimate, not a formal taxatie.`;
     let addresses = [];
     if (given) {
       addresses = await Promise.all(given.map(bagLive));
-      addresses = addresses.map((a) => ({ ...a, gebruiksdoel: a.gebruiksdoel || 'woonfunctie' }));
     } else {
       try { addresses = await (await fetch(`data/${dossier.key}-addresses.json`)).json(); } catch { /* form still works without BAG prefill */ }
     }

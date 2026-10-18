@@ -161,10 +161,10 @@ await test('Search: any address in the Netherlands shows its buurt scores', asyn
     captured = JSON.parse(route.request().postData());
     await route.fulfill({ status: 200, headers: { 'content-type': 'text/event-stream' }, body: sse(MOCK_RESULT) });
   });
-  await page.fill('#q', 'Prinsengracht 263 Amsterdam');
+  await page.fill('#q', 'Eerste Helmersstraat 100 Amsterdam');
   await page.locator('#suggestions li[data-id]').first().waitFor({ timeout: 10000 });
   await page.press('#q', 'Enter');
-  await waitForTitle(page, /Prinsengracht 263/);
+  await waitForTitle(page, /Eerste Helmersstraat 100/);
   await page.locator('#sheet-body .score-row').first().waitFor({ timeout: 15000 }).catch(() => {});
   check((await facts(page)).Gemeente === 'Amsterdam', 'shows the location facts');
   check(await page.locator('#sheet-body .score-row').count() === 6, `Amsterdam buurt scores shown (${await page.locator('#sheet-body .score-row').count()} rows)`);
@@ -182,10 +182,10 @@ await test('Search: any address in the Netherlands shows its buurt scores', asyn
   await page.click('#valuation-form button[type=submit]');
   await page.locator('.estimate').waitFor({ timeout: 15000 }).catch(() => {});
   const text = captured ? captured.messages[0].content.map((c) => c.text).join('\n') : '';
-  check(/buurt and gemeente level only/.test(text) && /Prinsengracht 263/.test(text), 'request carries the light dossier and the address');
+  check(/buurt and gemeente level only/.test(text) && /Eerste Helmersstraat 100/.test(text), 'request carries the light dossier and the address');
   check(await page.locator('.estimate').count() === 1, 'estimate shown');
   await page.click('[data-back]');
-  await waitForTitle(page, /Prinsengracht 263/);
+  await waitForTitle(page, /Eerste Helmersstraat 100/);
   check(true, 'back returns to the address card');
   check(log.errors.length === 0, `no errors${log.errors.length ? ': ' + log.errors.join(' | ') : ''}`);
   await context.close();
