@@ -11,6 +11,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: write
     steps:
@@ -18,8 +19,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python pipeline/probe.py out/probe
-      - run: python pipeline/probe2.py out/probe2
+      - run: python pipeline/build.py out/data
       - name: Publish to the data-build branch
         if: always()
         run: |
