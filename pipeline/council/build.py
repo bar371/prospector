@@ -173,7 +173,12 @@ def whisper_transcribe(mp4_url, start, end):
         wav = Path(tmp) / "part.wav"
         subprocess.run(["ffmpeg", "-loglevel", "error", "-ss", str(start), "-t", str(end - start), "-i", mp4_url,
                         "-vn", "-ac", "1", "-ar", "16000", str(wav)], check=True, timeout=1800)
-        segments, _ = _whisper.transcribe(str(wav), language="nl", vad_filter=True, beam_size=1)
+        # Pass samples rather than a path: faster-whisper's own decoder breaks on current PyAV releases.
+        import numpy as np
+        import wave
+        with wave.open(str(wav)) as w:
+            audio = np.frombuffer(w.readframes(w.getnframes()), dtype=np.int16).astype(np.float32) / 32768.0
+        segments, _ = _whisper.transcribe(audio, language="nl", vad_filter=True, beam_size=1)
         return [{"start": start + s.start, "end": start + s.end, "text": s.text.strip()} for s in segments if s.text.strip()]
 
 
@@ -290,7 +295,8 @@ def leiden(key, area):
                 "words": sum(len(c["text"].split()) for c in cues)})
             log(f"  {label}: {len(cues)} cues ({source}), {len(quotes)} passages, speakers {speakers[:6]}")
         except Exception as e:
-            log(f"  {label} failed: {e}\n{traceback.format_exc()}")
+            log(f"  {label} failed: {e}")
+            log(traceback.format_exc().splitlines()[-3] if traceback.format_exc() else "")
     return {"gemeente": area["gemeente"], "documents": docs[:60], "documents_total": len(docs),
             "agenda_items_total": len(items), "fragments": fragments}
 
