@@ -474,20 +474,57 @@ function developmentSection(d) {
     <p class="source">Source: Gemeenteblad and Staatscourant (officielebekendmakingen.nl).</p>`;
 }
 
-function councilView(d) {
-  const items = d.raad || [];
-  const body = items.length ? `<ul class="plain council">${items.slice(0, 20).map((h) => {
+function oriDocuments(d) {
+  return (d.raad || []).slice(0, 12).map((h) => {
     const quote = (h.highlight?.[0] || '').replace(/<\/?em>/g, (t) => (t === '<em>' ? '\u0001' : '\u0002'));
     return `<li><span class="muted">${esc((h.date || '').slice(0, 10))}</span>
       <a href="${esc(h.url)}" target="_blank" rel="noopener">${esc(h.name)}</a>
       ${quote ? `<blockquote>${esc(quote).replace(/\u0001/g, '<mark>').replace(/\u0002/g, '</mark>').slice(0, 400)}</blockquote>` : ''}</li>`;
-  }).join('')}</ul>` : `<p class="notice">Council documents for ${esc(d.gemeente)} are not in Open Raadsinformatie yet.
-     Its own council system is the next source to add, together with meeting transcripts.</p>`;
+  }).join('');
+}
+
+function highlight(text, terms) {
+  let out = esc(text);
+  for (const t of terms || []) out = out.replace(new RegExp(`(${t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\w*)`, 'gi'), '<mark>$1</mark>');
+  return out;
+}
+
+function councilView(d, council) {
+  const fragments = council?.fragments || [];
+  const docs = council?.documents || [];
+  const said = fragments.length ? fragments.map((f) => `
+    <article class="fragment">
+      <h3>${esc(f.agenda_item)}</h3>
+      <p class="muted">${esc(f.date)} · ${esc(f.commission || '')} · ${f.duration_min} min of debate
+        · <a href="${esc(f.video)}" target="_blank" rel="noopener">watch from ${esc(f.video_start)}</a></p>
+      ${f.speakers.length ? `<p class="speakers">Speakers: ${f.speakers.slice(0, 10).map(esc).join(', ')}${f.speakers.length > 10 ? '…' : ''}</p>` : ''}
+      ${f.quotes.length ? `<ul class="plain council">${f.quotes.slice(0, 6).map((q) => `<li>
+        <span class="muted">${esc(q.time)}${q.speaker ? ` · ${esc(q.speaker)}` : ''}</span>
+        <blockquote>${highlight(q.text, q.terms)}</blockquote></li>`).join('')}</ul>`
+        : '<p class="muted">The area is on the agenda, but the transcript does not name the street or buurt.</p>'}
+      <p class="source">${esc(f.source)}</p>
+    </article>`).join('') : '';
+  const docList = docs.length ? `<ul class="plain council">${docs.slice(0, 15).map((x) => `<li><span class="muted">${esc(x.date)} · ${esc(x.type || x.module || '')}</span>
+      ${x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title)}</a>` : esc(x.title)}
+      ${x.snippet ? `<blockquote>${highlight(x.snippet, x.terms)}</blockquote>` : ''}</li>`).join('')}</ul>` : '';
+  const ori = !docs.length ? oriDocuments(d) : '';
+  const empty = !said && !docList && !ori;
   return `<button type="button" class="link-button back" data-back>← Back to ${esc(d.straat)}</button>
     <h1>What does the council say?</h1>
-    <p class="muted">Gemeenteraad documents that mention ${esc(d.straat)} or its neighbourhood, newest first. Transcripts of council meetings come in a later version.</p>
-    ${body}
-    <p class="source">Source: Open Raadsinformatie (Open State Foundation).</p>`;
+    <p class="muted">What the gemeenteraad of ${esc(d.gemeente)} said about ${esc(d.straat)} and its surroundings, newest first.</p>
+    ${said ? `<h2 class="section-title">Said in meetings</h2>${said}` : ''}
+    ${docList ? `<h2 class="section-title">Council documents</h2>${docList}<p class="source">Source: raadsinformatie ${esc(d.gemeente)} (${council.documents_total ?? docs.length} documents found).</p>` : ''}
+    ${ori ? `<h2 class="section-title">Council documents</h2><ul class="plain council">${ori}</ul><p class="source">Source: Open Raadsinformatie (Open State Foundation).</p>` : ''}
+    ${empty ? `<p class="notice">No council documents or meeting transcripts for ${esc(d.gemeente)} yet.</p>` : ''}`;
+}
+
+async function loadCouncil(key) {
+  try {
+    const res = await fetch(`data/council-${key}.json`);
+    return res.ok ? await res.json() : null;
+  } catch {
+    return null;
+  }
 }
 
 async function openArea(key, { point = null, title = null } = {}) {
@@ -527,8 +564,10 @@ function renderArea(d, title) {
 sheetBody.addEventListener('click', (e) => {
   const d = state.current?.kind === 'area' ? state.dossiers[state.current.key] : null;
   if (e.target.closest('[data-council]') && d) {
-    sheetBody.innerHTML = councilView(d);
-    sheet.scrollTop = 0;
+    loadCouncil(d.key).then((council) => {
+      sheetBody.innerHTML = councilView(d, council);
+      sheet.scrollTop = 0;
+    });
   } else if (e.target.closest('[data-valuation]') && d) {
     openValuation(d);
   } else if (e.target.closest('[data-back]') && d) {
