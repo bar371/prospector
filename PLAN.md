@@ -30,7 +30,9 @@ All polygons are the **CBS wijk- en buurtkaart** (via PDOK). Most Dutch statisti
 | Parcel boundaries, plot size, ownership type (erfpacht!) | **BRK / Kadastrale kaart** (PDOK) | Plot geometry is open. Owner and erfpacht details are paid per lookup via Kadaster |
 | WOZ value per address, with history | **WOZ-waardeloket** (wozwaardeloket.nl) | Public per address. Use carefully, without bulk scraping |
 | Average WOZ per buurt, share of owner-occupied homes | **CBS Kerncijfers Wijken en Buurten** (StatLine) | Open |
-| Transaction prices (koopsommen) | **Kadaster** (koopsominformatie, paid per lookup) and CBS/Kadaster price index per region | Real comparable sales. Small cost per lookup |
+| Listing history: original asking price, date listed, date sold or withdrawn | **Online search** of public listing pages and archives (estate-agent sites, Funda, Huispedia, Walter Living, Jaap.nl, news), recorded by hand per property with the source URL and the date found | **Free.** These are asking prices, not sale prices, and are always labelled that way. No bulk scraping |
+| Regional price trend | **CBS / Kadaster** price index per region (StatLine, free) | Used to bring older asking prices up to today's level |
+| Transaction prices (koopsommen) | **Kadaster** koopsominformatie | **Not used for now** (paid). The budget decision is "strictly free" |
 | Energy label | **EP-Online** (RVO) open API | Free API key |
 | Listing details | **Funda**, entered manually by the user (paste the URL or the fields) | Funda's terms forbid scraping, so we don't build on it |
 
@@ -191,7 +193,7 @@ Whether someone can buy here, and what it costs them, depends partly on the geme
   - plot and erfpacht;
   - foundation and soil risk;
   - buurt scores;
-  - comparable Kadaster sales from the last 12–24 months within about 500 m with similar type and size;
+  - comparable homes from the last 12–24 months within about 500 m with similar type and size. These are asking prices and dates found through online search, adjusted to today's level with the CBS index;
   - development plans;
   - council signals;
   - accessibility and autoluw scores;
@@ -220,12 +222,12 @@ PLAN.md
 | **1 – Data & DD** | Pipeline scripts for the open sources (CBS KWB, buurt polygons, politie/CBS crime, DUO + Inspectie, Leefbaarometer, BAG, EP-Online, BRO soil, Bodemloket, Klimaateffectatlas, RIVM, ruimtelijke plannen), the mobility layer (CBS nabijheid, NWB, NDOV GTFS isochrones, verkeersbesluiten, RDW parking, autoluw score), plus the municipal buyer-rules table for Leiden and Alphen aan den Rijn. Output: `/data` for both areas plus a written **DD report per area** in `/docs` |
 | **2 – App** | The map app with layers, bottom sheet, search, weights and PWA install, using the phase-1 data. Deployed on GitHub Pages |
 | **3 – Raad** | The council-transcript pipeline for both test areas, pre-populated, plus the "Wat zegt de raad?" view |
-| **4 – Valuation** | The dossier builder for any address, Kadaster comparables, the LLM valuation call, and the result card |
+| **4 – Valuation** | The dossier builder for any address, comparables from online search, the LLM valuation call, and the result card |
 | **5 – Scale** | Any address in the Netherlands on demand, a monthly refresh job (GitHub Actions) for the council data and statistics |
 
 ## 7. Risks and limits
 - **Crime** is only available per buurt, never per address. We say so in the UI.
-- **Transaction prices** cost money per lookup at Kadaster, and **Funda can't be scraped**. We start with CBS indices and WOZ, and add paid comparables on purpose.
+- **Transaction prices** cost money at Kadaster, and **Funda can't be scraped**. We stay free: WOZ, CBS indices, and asking prices with dates found through online search. Asking prices can differ from final prices, especially when buyers overbid, so the valuation must treat them as an indication and say so.
 - **WOZ-waardeloket** is meant for individual lookups. We respect that and don't bulk-scrape.
 - **Council transcripts** often don't exist. Transcription costs compute, and speakers are hard to identify automatically.
 - **Freshness:** CBS buurt data lags 1–2 years. Every value shows its reference date.
@@ -234,7 +236,7 @@ PLAN.md
 
 ## 8. Open questions
 1. ~~**"Oudewaarde-Rijndijk"**: which place exactly?~~ **Answered:** Hazerswoude-Rijndijk, gemeente Alphen aan den Rijn.
-2. **Paid sources:** may we spend a small budget on Kadaster koopsom and erfpacht lookups for the test areas, or should we stay strictly free for now?
+2. ~~**Paid sources**~~ **Answered:** strictly free for now. Comparables come from online search of public listings (asking prices and dates).
 3. **LLM key handling (phase 4):** a serverless proxy, or a key the user pastes on the device?
 4. **UI language:** Dutch, English, or both?
 5. **Scope of phase 1:** do the DD reports and data first and then the app (as planned), or a clickable app skeleton first?
