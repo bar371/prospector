@@ -13,6 +13,8 @@ on:
         required: false
         default: ''
 
+concurrency: village-build
+
 jobs:
   build:
     runs-on: ubuntu-latest
