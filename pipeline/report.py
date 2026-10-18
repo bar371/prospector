@@ -334,9 +334,9 @@ def bag_summary(rows):
             if u:
                 uses[u] = uses.get(u, 0) + 1
     return {"adressen": len(rows), "met_bouwjaar": len(years),
-            "bouwjaar_mediaan": statistics.median(years) if years else None,
+            "bouwjaar_mediaan": round(statistics.median(years)) if years else None,
             "bouwjaar_min": years[0] if years else None, "bouwjaar_max": years[-1] if years else None,
-            "bouwjaar_klassen": buckets, "oppervlakte_mediaan_m2": statistics.median(areas_m2) if areas_m2 else None,
+            "bouwjaar_klassen": buckets, "oppervlakte_mediaan_m2": round(statistics.median(areas_m2)) if areas_m2 else None,
             "gebruiksdoelen": uses}
 
 
@@ -557,7 +557,24 @@ def markdown(d):
     if so["niet_gekarteerd"]:
         add(f"- {so['niet_gekarteerd']} of {so['monsters']} sample points are not mapped. The Bodemkaart does not cover built-up urban areas, "
             "so soil type there needs another source (GeoTOP, local soil investigations).")
-    add("- Soil contamination (Bodemloket) and foundation risk are not yet included; see open items.")
+    b = d["bebouwing"]
+    old = sum(v for k, v in b.get("bouwjaar_klassen", {}).items() if k in ("voor 1900", "1900-1944", "1945-1969"))
+    soft = any(w in t["naam"].lower() for t in so["bodemtypen"] for w in ("klei", "veen", "zavel"))
+    add("")
+    add("**Foundation risk indication**")
+    add("")
+    if b.get("met_bouwjaar"):
+        if old and soft:
+            add(f"- {old} of {b['met_bouwjaar']} addresses are in buildings from before 1970, on clay or peat soils. Buildings of that age on soft "
+                "soil often stand on wooden piles or shallow foundations, which can deteriorate with falling groundwater "
+                "(pile rot) or subsidence. Ask for a foundation survey (funderingsonderzoek) for any pre-1970 property here.")
+        elif old:
+            add(f"- {old} of {b['met_bouwjaar']} addresses are in buildings from before 1970. The soil here is not mapped, so check the "
+                "foundation type for older properties.")
+        else:
+            add(f"- All buildings date from {b['bouwjaar_min']} or later. Buildings of this age normally stand on concrete piles; "
+                "foundation risk is low.")
+    add("- Soil contamination (Bodemloket) is not yet included; see open items.")
     add("")
     add("## Market: asking prices found online")
     add("")
@@ -612,6 +629,9 @@ def markdown(d):
     add("- **Autoluw** is approximated by cars per household and road-noise nuisance. Traffic decisions (verkeersbesluiten), "
         "speed limits and parking regimes are planned additions.")
     add("- **Energy labels** (EP-Online) need an API key and are not included yet.")
+    add("- **School inspection verdicts**: DUO's published download link does not resolve; to be fetched from the Inspectie directly. "
+        "Secondary-school exam grades on DUO stop at 2017, so they are not used.")
+    add("- **Soil contamination** (Bodemloket) and a 100 m Leefbaarometer grid are planned.")
     add("- **Crime** is published per buurt, never per address.")
     add("- **Asking prices** come from public listing pages found through online search and are not sale prices.")
     add("")
