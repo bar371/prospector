@@ -7,6 +7,11 @@ on:
     branches-ignore: [main]
     paths: ['pipeline/council/**', '.github/workflows/council.yml']
   workflow_dispatch:
+    inputs:
+      max_items:
+        description: 'Agenda items to transcribe per area'
+        required: false
+        default: '8'
 
 jobs:
   build:
@@ -19,7 +24,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - run: sudo apt-get install -y -qq ffmpeg >/dev/null
+      - run: pip install -q faster-whisper==1.1.1
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: whisper-small
       - run: python pipeline/council/build.py out/council
+        env:
+          MAX_ITEMS: ${{ github.event.inputs.max_items || '8' }}
       - name: Publish to the council-build branch
         if: always()
         run: |

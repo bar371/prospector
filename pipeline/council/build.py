@@ -1,18 +1,26 @@
-"""Council intelligence for the test areas.
+"""Council intelligence for the test areas: what is said in the gemeenteraad about the neighbourhood.
 
-Leiden (Qualigraf + Connected Views):
-  1. search council documents and agenda items for the area's terms;
-  2. for each meeting with video, read the agenda-item start and stop times from the meeting event log;
-  3. download the Dutch subtitles for those time windows (published two days after a meeting);
-  4. keep the passages that mention the area, with timestamps and a link to the video.
+Leiden (Qualigraf):
+  1. search council agenda items and documents for the area's terms (street, buurt, area plans);
+  2. pick the agenda items that are about the area, newest first;
+  3. get each item's place in the meeting video, and the named speakers, from Qualigraf's video index;
+  4. get the words spoken: Leiden's own subtitles where the meeting has them (Connected Views player),
+     otherwise transcribe that part of the published MP4 with Whisper (Dutch);
+  5. keep the passages that mention the area, with speaker, timestamp and a link to the video.
+
+Alphen aan den Rijn uses iBabs with Company Webcast; see alphen() for what is collected there.
 
 Usage: python pipeline/council/build.py <output-dir>
+Environment: MAX_ITEMS (agenda items to transcribe per area, default 8), WHISPER_MODEL (default "small").
 """
 import datetime as dt
 import html
 import json
+import os
 import re
+import subprocess
 import sys
+import tempfile
 import time
 import traceback
 import urllib.parse
@@ -22,19 +30,24 @@ from pathlib import Path
 OUT = Path(sys.argv[1] if len(sys.argv) > 1 else "out/council")
 OUT.mkdir(parents=True, exist_ok=True)
 UA = {"User-Agent": "Mozilla/5.0 (prospect-pipeline/0.1; +https://github.com/bar371/prospector)"}
+MAX_ITEMS = int(os.environ.get("MAX_ITEMS", "8"))
+MAX_ITEM_SECONDS = 50 * 60  # cap per agenda item, to bound transcription time
+WHISPER_MODEL = os.environ.get("WHISPER_MODEL", "small")
 
 QUALIGRAF = "https://leiden.qualigraf.nl"
 CV_API = "https://amcpwe-quali-cc-apim.azure-api.net/api"
-CV_TENANT = "06cf837c-02ca-4956-8ee6-eecf2c3554e7"  # Leiden's tenant in Connected Views (public)
-HLS = "https://amcpwequalihls.azurewebsites.net"
+CV_TENANT = "06cf837c-02ca-4956-8ee6-eecf2c3554e7"  # Leiden's public tenant in Connected Views
+CV_HLS = "https://amcpwequalihls.azurewebsites.net"
 
 AREAS = {
     "zamenhofstraat-leiden": {
         "gemeente": "Leiden",
-        # search terms: the street, its buurt, and the area plans that border it
-        "search": ["Zamenhofstraat", "Noordvest", "Energiepark", "Binnenvestgracht"],
-        # words that make a subtitle passage relevant to this area
-        "match": ["zamenhof", "noordvest", "energiepark", "binnenvestgracht", "langegracht", "maresingel"],
+        "search": ["Zamenhofstraat", "Noordvest", "Energiepark", "Binnenvestgracht", "Langegracht"],
+        # an agenda item counts as "about the area" when its title has one of these
+        "title_terms": ["zamenhof", "noordvest", "energiepark", "binnenvestgracht", "langegracht", "maredorp", "stationsgebied"],
+        # a spoken passage is relevant when it has one of these
+        "match": ["zamenhof", "noordvest", "energiepark", "binnenvestgracht", "binnenvest", "langegracht", "maresingel",
+                  "maredorp", "reineveststeeg", "oude vest"],
     },
 }
 SINCE = "01-01-2023"
@@ -51,7 +64,7 @@ def fetch(url, data=None, headers=None, binary=False, retries=3):
     for attempt in range(retries):
         try:
             req = urllib.request.Request(url, data=data, headers={**UA, **(headers or {})})
-            with urllib.request.urlopen(req, timeout=90) as r:
+            with urllib.request.urlopen(req, timeout=120) as r:
                 body = r.read()
             return body if binary else body.decode("utf-8", "replace")
         except Exception:
@@ -64,6 +77,21 @@ def fetch_json(url, data=None, headers=None):
     return json.loads(fetch(url, data, headers))
 
 
+def strip_tags(s):
+    return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", s or ""))).strip()
+
+
+def hhmmss(sec):
+    sec = int(sec)
+    return f"{sec // 3600}:{sec % 3600 // 60:02d}:{sec % 60:02d}"
+
+
+def parse_date(d):
+    return dt.datetime.strptime(d, "%d-%m-%Y")
+
+
+# ---------------------------------------------------------------- Leiden: search and agenda
+
 def qualigraf_search(term):
     body = {"text": term, "where": "", "categories": [], "commissions": [], "modules": [],
             "dates": {"from": SINCE, "until": dt.date.today().strftime("%d-%m-%Y")}, "documentTypes": [], "locations": [],
@@ -72,104 +100,235 @@ def qualigraf_search(term):
                       {"Content-Type": "application/json"})
 
 
-def strip_tags(s):
-    return html.unescape(re.sub(r"<[^>]+>", " ", s or "")).strip()
+def agenda(ag):
+    return fetch_json(f"{QUALIGRAF}/vji/public/agenda/agendaview/action=detaildata/ag={ag}")
 
 
-def parse_vtt(text):
-    """WebVTT -> list of (start_seconds, end_seconds, text)."""
-    cues = []
+def agenda_video(ag):
+    return fetch_json(f"{QUALIGRAF}/vji/public/agendavideo/action=detaildata/ag={ag}")
+
+
+def find_index_entry(video, point, title):
+    """The video index entry for an agenda point: match on the point's rule key, else on its title."""
+    ndx = (video.get("indexdata") or {}).get("ndx") or []
+    rule = point.get("ap_rule_hexkey")
+    for e in ndx:
+        if rule and e.get("point") == rule:
+            return e
+    t = (title or "").lower()[:40]
+    for e in ndx:
+        if t and t in (e.get("play_label") or "").lower():
+            return e
+    return None
+
+
+# ---------------------------------------------------------------- spoken words
+
+def vtt_text(text):
+    """All cue text in a WebVTT segment."""
+    lines = []
     for block in re.split(r"\n\s*\n", text.replace("\r", "")):
-        m = re.search(r"(\d+:)?(\d+):(\d+)\.(\d+)\s*-->\s*(\d+:)?(\d+):(\d+)\.(\d+)", block)
-        if not m:
-            continue
-        def secs(h, mi, s, ms):
-            return int((h or "0:")[:-1] or 0) * 3600 + int(mi) * 60 + int(s) + int(ms) / 1000
-        start = secs(m.group(1), m.group(2), m.group(3), m.group(4))
-        end = secs(m.group(5), m.group(6), m.group(7), m.group(8))
-        lines = block[m.end():].strip().splitlines()
-        txt = strip_tags(" ".join(lines))
-        if txt:
-            cues.append((start, end, txt))
+        m = re.search(r"-->.*", block)
+        if m:
+            t = strip_tags(" ".join(block[m.end():].strip().splitlines()))
+            if t:
+                lines.append(t)
+    return lines
+
+
+def connected_views_subtitles(embed_html, start, end):
+    """Subtitles for [start, end] seconds into the meeting, from the Connected Views HLS subtitle track.
+    Cues are placed at their 4-second segment, which is precise enough to find the moment in the video."""
+    m = re.search(r"connectedviews\.nl/embed/meeting/([0-9a-f-]{36})", embed_html)
+    if not m:
+        return None
+    meeting = fetch_json(f"{CV_API}/FullMeeting?api-version=1.0&tenantId={CV_TENANT}&key={m.group(1)}")
+    t0 = dt.datetime.fromisoformat(meeting["startDateTime"]).astimezone(dt.timezone.utc)
+    room = meeting["roomLayout"]["room"]["label"]
+    fmt = lambda d: urllib.parse.quote(d.strftime("%Y-%m-%dT%H:%M:%S.0000000+00:00"))
+    a, b = t0 + dt.timedelta(seconds=start), t0 + dt.timedelta(seconds=end)
+    url = f"{CV_HLS}/{t0:%Y-%m-%d}/{room}/subtitles/nl-pol_Live.m3u8?start={fmt(a)}&end={fmt(b)}&sourcetimestamps=1&returnType=hls"
+    cues, pos, dur = [], float(start), 4.0
+    for line in fetch(url).splitlines():
+        if line.startswith("#EXTINF:"):
+            dur = float(line.split(":")[1].split(",")[0])
+        elif line and not line.startswith("#"):
+            for t in vtt_text(fetch(urllib.parse.urljoin(url, line))):
+                if not cues or cues[-1]["text"] != t:  # live subtitles repeat across segments
+                    cues.append({"start": pos, "end": pos + dur, "text": t})
+            pos += dur
     return cues
 
 
-def explore_meeting(ag_hexkey):
-    """Log the shape of each source for one meeting (used while building the pipeline)."""
-    detail = fetch_json(f"{QUALIGRAF}/vji/public/agenda/agendaview/action=detaildata/ag={ag_hexkey}")
-    video = fetch_json(f"{QUALIGRAF}/vji/public/agendavideo/action=detaildata/ag={ag_hexkey}")
-    (OUT / "explore").mkdir(exist_ok=True)
-    (OUT / "explore" / f"agendavideo-{ag_hexkey}.json").write_text(json.dumps(video, indent=1, ensure_ascii=False)[:200000])
-    log(f"  agendavideo keys: {list(video) if isinstance(video, dict) else type(video)}")
-    for k in ("player", "settings", "starttime", "date", "duration", "AGENDA_DATE", "AGENDA_TIME", "title"):
-        log(f"  agendavideo[{k}] = {json.dumps(video.get(k), ensure_ascii=False)[:1500]}")
-    ndx = video.get("indexdata", {}).get("ndx", [])
-    log(f"  {len(ndx)} agenda points in video index; transcripts present: {sum(1 for p in ndx if p.get('transcript'))}")
-    return detail, video
+_whisper = None
 
 
-def check_connected_views():
-    """Confirm the Connected Views endpoints answer without a browser (known meeting of 15 Oct 2026)."""
-    mid = "0378b8e5-94df-49a0-f3fe-08df252bc936"
-    for name, url in {
-        "eventlog": f"{CV_API}/EventLog/HighPerformance?api-version=1.0&tenantId={CV_TENANT}&meetingId={mid}",
-        "subs_playlist": f"{HLS}/2026-10-15/leidenraadzaal/subtitles/nl-pol_Live.m3u8?start=2026-10-15T18%3A02%3A01.0000000%2B00%3A00&end=2026-10-15T18%3A12%3A01.0000000%2B00%3A00&sourcetimestamps=1&returnType=hls",
-    }.items():
+def whisper_transcribe(mp4_url, start, end):
+    """Cut [start, end] seconds of audio from the published MP4 and transcribe it in Dutch."""
+    global _whisper
+    if _whisper is None:
+        from faster_whisper import WhisperModel
+        _whisper = WhisperModel(WHISPER_MODEL, device="cpu", compute_type="int8")
+    with tempfile.TemporaryDirectory() as tmp:
+        wav = Path(tmp) / "part.wav"
+        subprocess.run(["ffmpeg", "-loglevel", "error", "-ss", str(start), "-t", str(end - start), "-i", mp4_url,
+                        "-vn", "-ac", "1", "-ar", "16000", str(wav)], check=True, timeout=1800)
+        segments, _ = _whisper.transcribe(str(wav), language="nl", vad_filter=True, beam_size=1)
+        return [{"start": start + s.start, "end": start + s.end, "text": s.text.strip()} for s in segments if s.text.strip()]
+
+
+def speaker_at(index_entry, t):
+    for s in (index_entry or {}).get("mb", []):
+        if s.get("start", 0) <= t < s.get("end", 0) + 1:
+            return s.get("name")
+    return None
+
+
+def passages(cues, terms, index_entry, context=2):
+    """Cues that mention one of the terms, with a little context, merged when they overlap."""
+    hits = [i for i, c in enumerate(cues) if any(t in c["text"].lower() for t in terms)]
+    groups = []
+    for i in hits:
+        lo, hi = max(0, i - context), min(len(cues), i + context + 1)
+        if groups and lo <= groups[-1][1]:
+            groups[-1][1] = hi
+        else:
+            groups.append([lo, hi])
+    out = []
+    for lo, hi in groups:
+        part = cues[lo:hi]
+        text = " ".join(c["text"] for c in part)
+        out.append({"start": round(part[0]["start"]), "time": hhmmss(part[0]["start"]),
+                    "speaker": speaker_at(index_entry, part[0]["start"]),
+                    "terms": sorted({t for t in terms if t in text.lower()}), "text": text})
+    return out
+
+
+# ---------------------------------------------------------------- Leiden pipeline
+
+def leiden(key, area):
+    hits = []
+    for term in area["search"]:
         try:
-            text = fetch(url)
-            (OUT / "explore").mkdir(exist_ok=True)
-            (OUT / "explore" / f"cv-{name}.txt").write_text(text[:300000])
-            log(f"  connected views {name}: OK, {len(text)} chars: {text[:300]!r}")
-            if name == "subs_playlist":
-                segs = [l for l in text.splitlines() if l and not l.startswith("#")]
-                if segs:
-                    first = urllib.parse.urljoin(url, segs[0])
-                    vtt = fetch(first)
-                    (OUT / "explore" / "cv-first-segment.vtt").write_text(vtt)
-                    log(f"  first subtitle segment ({len(segs)} segments): {vtt[:600]!r}")
-            if name == "eventlog":
-                events = json.loads(text)
-                kinds = {}
-                for e in events:
-                    kinds[(e.get("entityType"), e.get("eventType"))] = kinds.get((e.get("entityType"), e.get("eventType")), 0) + 1
-                log(f"  event types: {kinds}")
+            found = qualigraf_search(term)
         except Exception as e:
-            log(f"  connected views {name}: FAILED {e}")
+            log(f"  search '{term}' failed: {e}")
+            continue
+        for h in found:
+            h["term"] = term
+        hits += found
+        log(f"  '{term}': {len(found)} results")
+
+    documents = {}
+    for h in hits:
+        url = h.get("url") or ""
+        doc = documents.setdefault(url or h.get("title"), {
+            "date": h.get("date"), "title": strip_tags(h.get("title")), "type": h.get("type"), "module": h.get("module_name"),
+            "commission": h.get("commission"), "agenda_item": strip_tags(h.get("ap_title")),
+            "url": urllib.parse.urljoin(QUALIGRAF, url) if url else None,
+            "snippet": strip_tags(h.get("description"))[:400], "terms": set()})
+        doc["terms"].add(h["term"])
+    docs = sorted(documents.values(), key=lambda d: parse_date(d["date"]), reverse=True)
+    for d in docs:
+        d["terms"] = sorted(d["terms"])
+
+    # agenda items whose title is about the area, newest first
+    items = {}
+    for h in hits:
+        title = strip_tags(h.get("ap_title"))
+        if h.get("ag_hexkey") and h.get("ap_hexkey") and any(t in title.lower() for t in area["title_terms"]):
+            items.setdefault((h["ag_hexkey"], h["ap_hexkey"]), {
+                "ag": h["ag_hexkey"], "ap": h["ap_hexkey"], "title": title, "date": h["date"], "commission": h.get("commission")})
+    items = sorted(items.values(), key=lambda i: parse_date(i["date"]), reverse=True)
+    log(f"  {len(docs)} documents, {len(items)} agenda items about the area")
+
+    fragments = []
+    transcripts_dir = OUT / "transcripts" / key
+    transcripts_dir.mkdir(parents=True, exist_ok=True)
+    for item in items:
+        if len(fragments) >= MAX_ITEMS:
+            break
+        label = f"{item['date']} {item['title'][:70]}"
+        try:
+            ag = agenda(item["ag"])
+            point = next((p for p in ag.get("points", []) if p.get("ap_hexkey") == item["ap"]), None)
+            if not point or not ag.get("ag_actions", {}).get("has_vod"):
+                log(f"  skip {label}: no video")
+                continue
+            video = agenda_video(item["ag"])
+            entry = find_index_entry(video, point, item["title"])
+            if not entry or entry.get("end", 0) <= entry.get("start", 0):
+                log(f"  skip {label}: not in the video index")
+                continue
+            start = entry["start"]
+            end = min(entry["end"], start + MAX_ITEM_SECONDS)
+            player = video.get("player") or {}
+            source, cues = None, []
+            embed_path = (player.get("VIDEO_PLAYER") or {}).get("url")
+            embed = fetch(urllib.parse.urljoin(QUALIGRAF, embed_path)) if embed_path else ""
+            if "connectedviews" in embed:
+                cues = connected_views_subtitles(embed, start, end) or []
+                source = "Leiden's own subtitles"
+            if not cues and player.get("VIDEO_DOWNLOAD"):
+                cues = whisper_transcribe(player["VIDEO_DOWNLOAD"], start, end)
+                source = f"Transcribed from the published video (Whisper {WHISPER_MODEL}, Dutch)"
+            if not cues:
+                log(f"  skip {label}: no subtitles and no downloadable video")
+                continue
+            fname = f"{parse_date(item['date']):%Y%m%d}-{item['ap'][:8]}.json"
+            (transcripts_dir / fname).write_text(json.dumps(cues, ensure_ascii=False))
+            speakers = []
+            for s in entry.get("mb", []):
+                if s.get("name") and s["name"] not in speakers:
+                    speakers.append(s["name"])
+            quotes = passages(cues, area["match"], entry)
+            fragments.append({
+                "date": item["date"], "commission": item["commission"], "agenda_item": item["title"],
+                "video": f"{QUALIGRAF}/app/public/agenda/{item['ag']}/vod/{point.get('ap_rule_hexkey')}",
+                "video_start": hhmmss(start), "duration_min": round((end - start) / 60), "source": source,
+                "speakers": speakers, "quotes": quotes[:12], "transcript": f"transcripts/{key}/{fname}",
+                "words": sum(len(c["text"].split()) for c in cues)})
+            log(f"  {label}: {len(cues)} cues ({source}), {len(quotes)} passages, speakers {speakers[:6]}")
+        except Exception as e:
+            log(f"  {label} failed: {e}\n{traceback.format_exc()}")
+    return {"gemeente": area["gemeente"], "documents": docs[:60], "documents_total": len(docs),
+            "agenda_items_total": len(items), "fragments": fragments}
+
+
+# ---------------------------------------------------------------- Alphen aan den Rijn (iBabs)
+
+def alphen():
+    """Alphen aan den Rijn publishes through iBabs with Company Webcast video. Collect the documents and
+    meetings that mention the Rijndijk from the public iBabs search."""
+    base = "https://alphenaandenrijn.bestuurlijkeinformatie.nl"
+    results = []
+    for term in ("Rijndijk", "Hazerswoude-Rijndijk"):
+        try:
+            page = fetch(f"{base}/Search?searchString={urllib.parse.quote(term)}")
+            (OUT / "explore").mkdir(exist_ok=True)
+            (OUT / "explore" / f"alphen-search-{term}.html").write_text(page)
+            for m in re.finditer(r'href="(/(?:Agenda|Document|Reports)/[^"]+)"[^>]*>(.*?)</a>', page, re.S):
+                results.append({"term": term, "url": base + html.unescape(m.group(1)), "title": strip_tags(m.group(2))})
+            log(f"  Alphen search '{term}': {len(results)} links so far")
+        except Exception as e:
+            log(f"  Alphen search '{term}' failed: {e}")
+    return results
 
 
 def main():
-    check_connected_views()
     result = {}
     for key, area in AREAS.items():
-        hits = []
-        for term in area["search"]:
-            try:
-                found = qualigraf_search(term)
-            except Exception as e:
-                log(f"  search '{term}' failed: {e}")
-                continue
-            for h in found:
-                h["term"] = term
-            hits += found
-            log(f"  {key}: '{term}' -> {len(found)} results")
-        (OUT / f"{key}-search.json").write_text(json.dumps(hits, indent=1, ensure_ascii=False))
-        meetings = {}
-        for h in hits:
-            if h.get("ag_hexkey"):
-                meetings.setdefault(h["ag_hexkey"], {"date": h.get("date"), "commission": h.get("commission"), "items": set()})
-                meetings[h["ag_hexkey"]]["items"].add(h.get("ap_title") or h.get("title"))
-        log(f"  {key}: {len(meetings)} meetings with matching agenda items")
-        result[key] = {"meetings": {k: {**v, "items": sorted(x for x in v["items"] if x)} for k, v in meetings.items()}}
-        # explore the most recent meeting in depth
-        recent = sorted(meetings, key=lambda k: dt.datetime.strptime(meetings[k]["date"], "%d-%m-%Y"), reverse=True)
-        for ag in recent[:1]:
-            try:
-                explore_meeting(ag)
-            except Exception as e:
-                log(f"  explore {ag} failed: {e}\n{traceback.format_exc()}")
+        log(f"\n== {key}")
+        result[key] = leiden(key, area)
+    log("\n== rijndijk-hazerswoude-rijndijk (Alphen aan den Rijn)")
+    result["rijndijk-hazerswoude-rijndijk"] = {"gemeente": "Alphen aan den Rijn", "documents": alphen(), "fragments": []}
     (OUT / "council.json").write_text(json.dumps(result, indent=1, ensure_ascii=False))
 
 
 if __name__ == "__main__":
-    main()
-    (OUT / "build.log").write_text("\n".join(log_lines))
+    t0 = time.time()
+    try:
+        main()
+    finally:
+        log(f"\ndone in {time.time() - t0:.0f}s")
+        (OUT / "build.log").write_text("\n".join(log_lines))
