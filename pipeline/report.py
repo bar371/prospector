@@ -672,5 +672,9 @@ if __name__ == "__main__":
         (OUT / f"{key}.json").write_text(json.dumps(dossier, ensure_ascii=False, indent=1))
         (OUT / f"{key}.md").write_text(markdown(dossier))
         index.append({"key": key, "straat": dossier["straat"], "woonplaats": dossier["woonplaats"], "scores": dossier["scores"]})
+        # per-address building facts for the valuation form
+        addresses = [{k: r.get(k) for k in ("adres", "postcode", "huisnummer", "buurtcode", "oppervlakte", "bouwjaar", "gebruiksdoel")}
+                     for r in bag.get(key, [])]
+        (OUT / f"{key}-addresses.json").write_text(json.dumps(addresses, ensure_ascii=False))
         print(key, dossier["scores"])
     (OUT / "index.json").write_text(json.dumps(index, ensure_ascii=False, indent=1))

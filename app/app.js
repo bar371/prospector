@@ -509,7 +509,10 @@ function renderArea(d, title) {
     <h1>${esc(title || `${d.straat}, ${d.woonplaats}`)}</h1>
     <p class="muted">${esc(d.gemeente)} · ${d.adressen} addresses · ${d.buurten.map((b) => esc(b.buurtnaam)).join(', ')}</p>
     ${scoreBars(d.scores)}
-    <button type="button" class="council-button" data-council>What does the council say?</button>
+    <div class="action-row">
+      <button type="button" class="council-button" data-council>What does the council say?</button>
+      <button type="button" class="council-button" data-valuation>Estimate a value</button>
+    </div>
     ${details('s-safety', 'Safety', safetySection(d))}
     ${details('s-liveability', 'Liveability & noise', liveabilitySection(d))}
     ${details('s-schools', 'Schools', schoolsSection(d))}
@@ -526,10 +529,31 @@ sheetBody.addEventListener('click', (e) => {
   if (e.target.closest('[data-council]') && d) {
     sheetBody.innerHTML = councilView(d);
     sheet.scrollTop = 0;
+  } else if (e.target.closest('[data-valuation]') && d) {
+    openValuation(d);
   } else if (e.target.closest('[data-back]') && d) {
     renderArea(d, state.current.title);
   }
 });
+
+// The value estimate (and the Anthropic SDK it uses) loads only when someone opens it.
+let valuationScript;
+async function openValuation(d) {
+  valuationScript ??= new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'valuation.js';
+    s.onload = resolve;
+    s.onerror = () => reject(new Error('Could not load the value estimate'));
+    document.head.append(s);
+  });
+  try {
+    await valuationScript;
+    await window.prospectValuation.open(sheetBody, d, { presetAddress: state.current.title });
+    sheet.scrollTop = 0;
+  } catch (err) {
+    sheetBody.innerHTML = `<h1>Something went wrong</h1><p class="muted">${esc(err.message)}</p>${PRESETS}`;
+  }
+}
 
 document.addEventListener('click', async (e) => {
   const btn = e.target.closest('.preset');
