@@ -600,6 +600,9 @@ def markdown(d):
     if d["raad"]:
         for h in d["raad"][:15]:
             add(f"- {(h.get('date') or '')[:10]}: [{h.get('name')}]({h.get('url')}) (matched \"{h.get('term')}\")")
+            if h.get("highlight"):
+                quote = " ".join(h["highlight"][0].replace("<em>", "**").replace("</em>", "**").split())
+                add(f"  > {quote[:280]}")
     else:
         add("- Not yet available for this gemeente: Alphen aan den Rijn is not in Open Raadsinformatie. "
             "Its council system (alphenaandenrijn.bestuurlijkeinformatie.nl) is the next source to add.")
@@ -619,7 +622,27 @@ def markdown(d):
     return "\n".join(L) + "\n"
 
 
+def map_layer():
+    """All buurten in the test gemeenten with per-theme scores, for colouring the map."""
+    features = []
+    for f in load("buurten.geojson", {"features": []})["features"]:
+        p = f["properties"]
+        if p.get("water") == "J" or not p.get("aantalInwoners"):
+            continue
+        sec = buurt_section(p["buurtcode"])
+        d = dimension_scores([sec], {p["buurtcode"]: 1}, [])
+        d.pop("onderwijs")  # needs a street location; shown on the street card only
+        f = {"type": "Feature", "geometry": f["geometry"], "properties": {
+            "buurtcode": p["buurtcode"], "buurtnaam": p["buurtnaam"], "gemeentenaam": p["gemeentenaam"],
+            "inwoners": sec["inwoners"], "woz": num(p.get("gemiddeldeWoningwaarde")),
+            "misdrijven_per_1000": sec["criminaliteit"]["per_1000_inwoners"],
+            "leefbaarometer": sec["leefbaarometer"]["score"], **{f"score_{k}": v for k, v in d.items()}}}
+        features.append(f)
+    return {"type": "FeatureCollection", "features": features}
+
+
 if __name__ == "__main__":
+    (OUT / "buurten-scores.geojson").write_text(json.dumps(map_layer(), ensure_ascii=False))
     index = []
     for key, a in areas.items():
         dossier = build(key, a)
