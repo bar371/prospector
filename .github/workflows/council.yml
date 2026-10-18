@@ -19,7 +19,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python pipeline/council/probe.py out/probe
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci && npx playwright install --with-deps chromium
+      - run: node pipeline/council/sniff.mjs out/sniff
       - name: Publish to the council-build branch
         if: always()
         run: |
