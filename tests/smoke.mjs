@@ -44,12 +44,13 @@ if (suggestions.length > 0) {
   const sheet = (await page.locator('#sheet-body').innerText()).replace(/\s+/g, ' ');
   check(/Leiden/.test(sheet), `place card shows Leiden: "${sheet.slice(0, 160)}"`);
   check(/Buurt/.test(sheet), 'place card shows buurt');
+  check((await page.locator('#sheet-body .preset').count()) === 2, 'test-area buttons stay available on the place card');
   await page.waitForTimeout(3000);
   await page.screenshot({ path: `${outDir}/2-zamenhofstraat.png` });
 }
 
-// Second test area preset.
-await page.click('.preset[data-q^="Rijndijk"]').catch(() => {});
+// Second test area preset, clicked from the place card.
+await page.click('.preset[data-q^="Rijndijk"]', { timeout: 5000 }).catch(() => {});
 await page.waitForFunction(() => /Rijndijk/.test(document.querySelector('#sheet-body h1')?.textContent), null, { timeout: 10000 }).catch(() => {});
 const title2 = await page.locator('#sheet-body h1').innerText();
 check(/Rijndijk/.test(title2), `preset Rijndijk opens a place card: "${title2}"`);

@@ -32,6 +32,8 @@ const input = document.getElementById('q');
 const list = document.getElementById('suggestions');
 const sheetBody = document.getElementById('sheet-body');
 
+const PRESETS = document.querySelector('.presets').outerHTML;
+const pick = (obj, keys) => Object.fromEntries(keys.filter((k) => obj[k]).map((k) => [k, obj[k]]));
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 async function suggest(q) {
@@ -45,6 +47,14 @@ async function lookup(id) {
   const res = await fetch(`${LOCATIESERVER}/lookup?id=${encodeURIComponent(id)}`);
   if (!res.ok) throw new Error(`Locatieserver ${res.status}`);
   return (await res.json()).response.docs[0];
+}
+
+// Streets and towns carry no buurt in the Locatieserver; take it from the nearest address.
+async function nearestAddress([lon, lat]) {
+  const res = await fetch(`${LOCATIESERVER}/reverse?lat=${lat}&lon=${lon}&type=adres&rows=1`);
+  if (!res.ok) return null;
+  const hit = (await res.json()).response.docs[0];
+  return hit ? lookup(hit.id) : null;
 }
 
 function parsePoint(wkt) {
@@ -75,7 +85,8 @@ function renderPlace(doc) {
     <dl class="facts">${rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
     <p class="soon">Onderwijs, veiligheid, leefbaarheid, bereikbaarheid &amp; autoluw, bodem, klimaat, ontwikkeling,
     startersregelingen en "Wat zegt de raad?" volgen in de volgende fases.</p>
-    <p class="muted" style="font-size:12px">Bron: PDOK Locatieserver (BAG / CBS wijk- en buurtindeling)</p>`;
+    <p class="muted" style="font-size:12px">Bron: PDOK Locatieserver (BAG / CBS wijk- en buurtindeling)</p>
+    ${PRESETS}`;
 }
 
 async function select(id) {
@@ -89,6 +100,10 @@ async function select(id) {
       marker.setLngLat(pt).addTo(map);
       const zoom = { adres: 17, weg: 16, buurt: 15, wijk: 14, woonplaats: 13 }[doc.type] ?? 15;
       map.flyTo({ center: pt, zoom, padding: { bottom: window.innerHeight * 0.3 } });
+    }
+    if (pt && !doc.buurtnaam) {
+      const near = await nearestAddress(pt).catch(() => null);
+      if (near) Object.assign(doc, pick(near, ['buurtnaam', 'buurtcode', 'wijknaam', 'wijkcode', 'postcode', 'provincienaam']));
     }
     renderPlace(doc);
   } catch (err) {
