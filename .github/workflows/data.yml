@@ -19,6 +19,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: python pipeline/probe.py out/probe
+      - run: python pipeline/probe2.py out/probe2
       - name: Publish to the data-build branch
         if: always()
         run: |
