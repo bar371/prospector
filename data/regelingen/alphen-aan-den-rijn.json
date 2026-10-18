@@ -1,0 +1,28 @@
+{
+  "gemeente": "Alphen aan den Rijn",
+  "gemeentecode": "GM0484",
+  "checked_on": "2026-10-18",
+  "method": "Online search. Official sources first, others marked as such.",
+  "regelingen": [
+    {
+      "naam": "Starterslening (SVn)",
+      "status": "onbevestigd, waarschijnlijk niet beschikbaar",
+      "samenvatting": "Two third-party sites (Libero, HomeFinance) say Alphen aan den Rijn does not currently offer an SVn starterslening. One other site says it does. No official gemeente page was found. Note: the €420,000 limit that shows up in searches belongs to Alphen-Chaam, a different municipality.",
+      "bronnen": [
+        {"titel": "Starterslening Alphen aan den Rijn (HomeFinance)", "url": "https://www.homefinance.nl/hypotheek/starters/starterslening-alphen-aan-den-rijn/", "officieel": false},
+        {"titel": "Starterslening Alphen aan den Rijn (Libero)", "url": "https://www.liberofinancieel.nl/starterslening/alphen-aan-den-rijn", "officieel": false}
+      ],
+      "actie": "Check with gemeente Alphen aan den Rijn or the SVn leningzoeker."
+    },
+    {
+      "naam": "Opkoopbescherming",
+      "status": "niet ingevoerd (volgens nieuwsberichten en een raadsvoorstel uit 2023)",
+      "samenvatting": "The council did not introduce opkoopbescherming; a 2023 raadsvoorstel called it disproportionate. A zelfbewoningsplicht (owner-occupancy obligation) applies to new-build. The regional Huisvestingsverordening Holland Rijnland 2026 has not yet been checked for buyer rules.",
+      "bronnen": [
+        {"titel": "Raadsvoorstel 2023, Alphen aan den Rijn", "url": "https://alphenaandenrijn.bestuurlijkeinformatie.nl/Document/View/22d038a1-20b3-4331-be82-0eda4b1fd897", "officieel": true},
+        {"titel": "Huisvestingsverordening Holland Rijnland 2026", "url": "https://alphenaandenrijn.bestuurlijkeinformatie.nl/Document/View/8d16fe58-431b-4f6a-91d8-cf0ac7f41b22", "officieel": true},
+        {"titel": "Grip op de woningmarkt: wel zelfbewoningsplicht, geen opkoopbescherming (Studio Alphen)", "url": "https://www.studioalphen.nl/nieuws/grip-op-de-woningmarkt-wel-zelfbewoningsplicht-geen-opkoopbescherming/", "officieel": false}
+      ]
+    }
+  ]
+}

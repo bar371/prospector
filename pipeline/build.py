@@ -7,6 +7,7 @@ Usage: python pipeline/build.py <output-dir>
 """
 import io
 import json
+import re
 import sys
 import time
 import traceback
@@ -70,6 +71,9 @@ def clean(props):
 
 
 def step(fn):
+    import functools
+
+    @functools.wraps(fn)
     def run(*args):
         log(f"\n== {fn.__name__}")
         try:
@@ -215,7 +219,7 @@ def crime():
         rows = []
         for gm in GEMEENTEN:
             for p in periods:
-                flt = f"(substringof('BU{gm[2:]}',{geo_key}) or {geo_key} eq '{gm}') and Perioden eq '{p}'"
+                flt = f"(substringof('BU{gm[2:]}',{geo_key}) or substringof('{gm}',{geo_key})) and Perioden eq '{p}'"
                 if kind == "maand":
                     flt += " and SoortMisdrijf eq '0.0.0 '"
                 got = cbs_rows(CBS_DERDEN, table, "TypedDataSet", flt)
@@ -317,10 +321,82 @@ def schools():
         log(f"  {pkg}: {len(rows)} rows nationally, {len(keep)} for local schools; sample codes {[(r['INSTELLINGSCODE'], r['VESTIGINGSCODE']) for r in rows[:2]]}")
         write(f"schools/{pkg}.json", keep)
         if pkg == "wpo-eindscores":
-            # national distribution of the latest year, for ranking local schools
+            # national distribution of the latest year (per test type), for ranking local schools
             last = max(r["PEILJAAR"] for r in rows)
             write("national/eindscores.json", [{k: r[k] for k in ("PEILJAAR", "DOORSTROOMTOETS_PO", "GEMIDDELDE_UITSLAG", "AANTAL_LEERLINGEN")}
                                                for r in rows if r["PEILJAAR"] == last])
+
+
+@step
+def schools_extra():
+    """Inspectie verdicts and secondary-school exam results (DUO), plus the dataset descriptions that
+    explain the codes used in the results files."""
+    vest = json.loads((OUT / "schools/vestigingen.json").read_text())
+    instellingen = {v["INSTELLINGSCODE"].strip() for v in vest}
+    notes = {}
+    for pkg in ("wpoadvies-v1", "wpo-eindscores", "wporeferentieniveau-v1", "oordelen-v02", "04_voex-v1", "03_voex-v1"):
+        try:
+            meta = fetch_json(f"https://onderwijsdata.duo.nl/api/3/action/package_show?id={pkg}")["result"]
+            notes[pkg] = {"title": meta.get("title"), "notes": meta.get("notes"),
+                          "resources": [{"name": r.get("name"), "url": r["url"], "description": r.get("description")} for r in meta.get("resources", [])]}
+        except Exception as e:
+            notes[pkg] = f"ERROR {e}"
+    write("schools/duo_notes.json", notes)
+    for pkg in ("oordelen-v02", "04_voex-v1"):
+        if not isinstance(notes.get(pkg), dict):
+            continue
+        for res in notes[pkg]["resources"]:
+            if not res["url"].lower().endswith(".csv"):
+                continue
+            rows = duo_csv(res["url"])
+            code_col = next((c for c in rows[0] if c.upper() in ("INSTELLINGSCODE", "BRIN NUMMER", "BRINNUMMER", "BRIN")), None)
+            keep = [r for r in rows if code_col and r[code_col].strip() in instellingen]
+            name = res["url"].rsplit("/", 1)[-1].replace(".csv", "")
+            log(f"  {pkg}/{name}: {len(rows)} rows, {len(keep)} local; columns {list(rows[0])}")
+            write(f"schools/{pkg}-{name}.json", keep)
+
+
+BAG = "https://api.pdok.nl/kadaster/bag/ogc/v2/collections"
+
+
+@step
+def bag():
+    """BAG building data for every address on the test streets: use, floor area, building year, status."""
+    areas_data = json.loads((OUT / "areas.json").read_text())
+    panden = {}
+    result = {}
+    for key, a in areas_data.items():
+        rows = []
+        for d in a["adressen"]:
+            vbo_id = d.get("adresseerbaarobject_id")
+            item = {"adres": d["weergavenaam"], "postcode": d.get("postcode"), "huisnummer": d.get("huisnummer"),
+                    "buurtcode": d.get("buurtcode"), "vbo": vbo_id}
+            try:
+                vbo = fetch_json(f"{BAG}/verblijfsobject/items?identificatie={vbo_id}&f=json")["features"]
+                if vbo:
+                    p = vbo[0]["properties"]
+                    item.update({k: p.get(k) for k in ("gebruiksdoel", "oppervlakte", "status", "pand_identificatie", "pandidentificatie")})
+                    if not rows:
+                        log(f"  verblijfsobject fields: {sorted(p)}")
+                    pid = p.get("pand_identificatie") or p.get("pandidentificatie")
+                    pid = pid[0] if isinstance(pid, list) else pid
+                    if pid and pid not in panden:
+                        pand = fetch_json(f"{BAG}/pand/items?identificatie={pid}&f=json")["features"]
+                        panden[pid] = pand[0]["properties"] if pand else {}
+                        if len(panden) == 1:
+                            log(f"  pand fields: {sorted(panden[pid])}")
+                    if pid:
+                        pp = panden.get(pid, {})
+                        item["pand"] = pid
+                        item["bouwjaar"] = pp.get("bouwjaar") or pp.get("oorspronkelijk_bouwjaar") or pp.get("oorspronkelijkBouwjaar")
+                        item["pand_status"] = pp.get("status")
+            except Exception as e:
+                item["error"] = str(e)
+            rows.append(item)
+        result[key] = rows
+        years = [r["bouwjaar"] for r in rows if r.get("bouwjaar")]
+        log(f"  {key}: {len(rows)} addresses, {len(years)} with building year, range {min(years) if years else '-'}..{max(years) if years else '-'}")
+    write("bag/adressen.json", result)
 
 
 @step
@@ -424,10 +500,13 @@ def publications():
                 break
         # "Rijndijk" also matches the village name Hazerswoude-Rijndijk; keep records about the street itself.
         street = a["straat"].lower()
+        # the village name in any spelling: "Hazerswoude-Rijndijk", "Hazerswoude Rijndijk", "Hazerswoude- Rijndijk"
+        village = re.compile(r"[\s-]*".join(map(re.escape, re.split(r"[\s-]+", a["woonplaats"].lower()))))
+
         def about_street(r):
             if (r.get("straatnaam") or "").lower() == street:
                 return True
-            text = f"{r.get('title', '')} {r.get('abstract', '')}".lower().replace(f"-{street}", "")
+            text = village.sub(" ", f"{r.get('title', '')} {r.get('abstract', '')}".lower())
             return street in text
         kept = sorted((r for r in records if about_street(r)), key=lambda r: r.get("available") or r.get("date") or "", reverse=True)
         log(f"  {key}: {len(records)} of {total} fetched, {len(kept)} about the street")
@@ -461,18 +540,15 @@ def council():
     write("council/ori_leiden.json", result)
 
 
+STEPS = [areas, buurten, national, crime, prices, schools, schools_extra, bag, leefbaarometer, rivm, soil,
+         publications, council]
+
 if __name__ == "__main__":
+    import os
+    only = [x for x in os.environ.get("STEPS", "").split(",") if x]
     t0 = time.time()
-    areas()
-    buurten()
-    national()
-    crime()
-    prices()
-    schools()
-    leefbaarometer()
-    rivm()
-    soil()
-    publications()
-    council()
+    for fn in STEPS:
+        if not only or fn.__name__ in only:
+            fn()
     log(f"\ndone in {time.time() - t0:.0f}s")
     (OUT / "build.log").write_text("\n".join(log_lines))
