@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Prospect</title>
+  <meta name="description" content="Prospect — inzicht in een buurt of woning op basis van officiële open data.">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Prospect">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="vendor/maplibre-gl-4.7.1/maplibre-gl.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="map" aria-label="Kaart"></div>
+
+  <header class="top">
+    <div class="brand">Prospect</div>
+    <form class="search" role="search" autocomplete="off">
+      <input id="q" type="search" placeholder="Zoek adres, straat of buurt" aria-label="Zoek adres">
+      <ul id="suggestions" role="listbox" hidden></ul>
+    </form>
+    <nav class="chips" aria-label="Lagen">
+      <button class="chip" data-layer="score" disabled>Prospect score</button>
+      <button class="chip" data-layer="education" disabled>Onderwijs</button>
+      <button class="chip" data-layer="safety" disabled>Veiligheid</button>
+      <button class="chip" data-layer="liveability" disabled>Leefbaarheid</button>
+      <button class="chip" data-layer="mobility" disabled>Bereikbaarheid &amp; autoluw</button>
+      <button class="chip" data-layer="soil" disabled>Bodem &amp; fundering</button>
+      <button class="chip" data-layer="climate" disabled>Klimaat</button>
+      <button class="chip" data-layer="development" disabled>Ontwikkeling</button>
+      <button class="chip" data-layer="value" disabled>Waarde</button>
+    </nav>
+  </header>
+
+  <section id="sheet" class="sheet" aria-live="polite">
+    <div class="handle"></div>
+    <div id="sheet-body">
+      <h1>Kies een plek</h1>
+      <p class="muted">Zoek een adres of kies een testgebied. Datalagen komen in de volgende fase.</p>
+      <div class="presets">
+        <button class="preset" data-q="Zamenhofstraat Leiden">Zamenhofstraat, Leiden</button>
+        <button class="preset" data-q="Rijndijk Hazerswoude-Rijndijk">Rijndijk, Hazerswoude-Rijndijk</button>
+      </div>
+    </div>
+  </section>
+
+  <script src="vendor/maplibre-gl-4.7.1/maplibre-gl.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
