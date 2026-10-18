@@ -317,7 +317,7 @@ def scan_recent_meetings(key, area, done):
     """Recent meetings with Leiden's own subtitles: search the whole meeting, so residents speaking under
     'Burger aan het woord' or police and aldermen under any agenda item are found too."""
     home = fetch_json(f"{QUALIGRAF}/vji/public/homepage/action=detaildata")
-    meetings = [m for m in home.get("past_tab", []) if (m.get("video") or {}).get("has_vod")]
+    meetings = [m for m in (home.get("events") or home).get("past_tab", []) if (m.get("video") or {}).get("has_vod")]
     found = []
     for m in meetings[:12]:
         ag = m.get("agenda_hexkey") or m.get("hexkey")
