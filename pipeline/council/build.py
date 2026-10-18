@@ -101,6 +101,10 @@ def explore_meeting(ag_hexkey):
     (OUT / "explore").mkdir(exist_ok=True)
     (OUT / "explore" / f"agendavideo-{ag_hexkey}.json").write_text(json.dumps(video, indent=1, ensure_ascii=False)[:200000])
     log(f"  agendavideo keys: {list(video) if isinstance(video, dict) else type(video)}")
+    for k in ("player", "settings", "starttime", "date", "duration", "AGENDA_DATE", "AGENDA_TIME", "title"):
+        log(f"  agendavideo[{k}] = {json.dumps(video.get(k), ensure_ascii=False)[:1500]}")
+    ndx = video.get("indexdata", {}).get("ndx", [])
+    log(f"  {len(ndx)} agenda points in video index; transcripts present: {sum(1 for p in ndx if p.get('transcript'))}")
     return detail, video
 
 
