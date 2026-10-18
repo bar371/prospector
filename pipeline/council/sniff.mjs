@@ -8,9 +8,10 @@ mkdirSync(OUT, { recursive: true });
 const browser = await chromium.launch();
 
 async function sniff(name, url, actions = async () => {}) {
-  const page = await browser.newPage({ viewport: { width: 1400, height: 1000 } });
+  const context = await browser.newContext({ viewport: { width: 1400, height: 1000 } });
+  const page = await context.newPage();
   const reqs = [];
-  page.on('response', async (r) => {
+  context.on('response', async (r) => {
     const u = r.url();
     const type = r.request().resourceType();
     if (!['xhr', 'fetch', 'media', 'other', 'document'].includes(type) && !/m3u8|\.vtt|\.mp4|json/.test(u)) return;
@@ -35,22 +36,34 @@ async function sniff(name, url, actions = async () => {}) {
   writeFileSync(`${OUT}/${name}.json`, JSON.stringify(reqs, null, 1));
   console.log(`${name}: ${reqs.length} responses`);
   for (const r of reqs) if (r.url) console.log(`  ${r.status} ${r.type} ${r.ct.slice(0, 30)} ${r.url.slice(0, 180)}`);
-  await page.close();
+  await context.close();
 }
 
-// Leiden: Qualigraf public app. Search, then open the latest council meeting that has video.
-await sniff('leiden_search', 'https://leiden.qualigraf.nl/app/public/', async (page) => {
-  const box = page.locator('input[type=search], input[type=text]').first();
-  if (await box.count()) { await box.fill('Energiepark'); await box.press('Enter'); await page.waitForTimeout(5000); }
+// Leiden: Qualigraf public app. Open an agenda-item video and capture the stream and subtitles.
+await sniff('leiden_video', 'https://leiden.qualigraf.nl/app/public/agenda/02a0800aa8882aa802822aa8263fa402', async (page) => {
+  await page.waitForTimeout(3000);
+  const [popup] = await Promise.all([
+    page.context().waitForEvent('page', { timeout: 15000 }).catch(() => null),
+    page.getByText('Video', { exact: true }).nth(2).click().catch(() => {}),
+  ]);
+  const target = popup || page;
+  target.on('response', () => {});
+  await target.waitForTimeout(15000);
+  writeFileSync(`${OUT}/leiden_video_url.txt`, target.url());
+  await target.screenshot({ path: `${OUT}/leiden_video_player.png` }).catch(() => {});
+  writeFileSync(`${OUT}/leiden_video_player.html`, await target.content().catch(() => ''));
 });
-await sniff('leiden_meeting', 'https://leiden.qualigraf.nl/app/public/', async (page) => {
-  await page.getByText('Laatste vergaderingen').first().click().catch(() => {});
-  await page.waitForTimeout(1500);
-  await page.getByText('Gemeenteraad', { exact: true }).first().click().catch(() => {});
-  await page.waitForTimeout(6000);
-  const video = page.getByText(/video/i).first();
-  if (await video.count()) await video.click().catch(() => {});
-  await page.waitForTimeout(8000);
+// Does search reach into the subtitles? Compare media=false and media=true.
+await sniff('leiden_mediasearch', 'https://leiden.qualigraf.nl/app/public/', async (page) => {
+  for (const media of [false, true]) {
+    const res = await page.evaluate(async (media) => {
+      const r = await fetch('/vji/public/search/action=doSearch', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: 'Zamenhofstraat', where: '', categories: [], commissions: [], modules: [], dates: { from: '01-01-2015', until: '18-10-2026' },
+          documentTypes: [], locations: [], casecode: '', media, party: [], person: [], onlyTitle: false, secties: '' }) });
+      return r.text();
+    }, media);
+    writeFileSync(`${OUT}/leiden_search_media_${media}.json`, res);
+  }
 });
 
 // Alphen aan den Rijn: iBabs agenda page; the Company Webcast player sits under "Uitzending".
