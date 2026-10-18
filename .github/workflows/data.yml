@@ -31,6 +31,7 @@ jobs:
             git fetch -q origin data-build
             git archive origin/data-build | tar -x -C out
           fi
+      - run: pip install -q shapely==2.0.6
       - run: python pipeline/build.py out/data
         env:
           STEPS: ${{ github.event.inputs.steps }}
