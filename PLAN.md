@@ -15,7 +15,7 @@ Every data point comes from an official or open public source and keeps its sour
 
 **Test areas (phase 1):**
 - **Zamenhofstraat, Leiden.** Merenwijk / Slaaghwijk area.
-- **"Oudewaarde-Rijndijk".** Still to confirm (see open questions). Working assumption: **Hazerswoude-Rijndijk** (gemeente Alphen aan den Rijn) along the Rijndijk. We need the exact buurt.
+- **Hazerswoude-Rijndijk** (gemeente Alphen aan den Rijn), along the Rijndijk. Confirmed. The exact CBS buurt codes are pinned down in phase 0.
 
 ---
 
@@ -233,7 +233,7 @@ PLAN.md
 - **Privacy:** we show only aggregates and public registers, and no personal data from BRK.
 
 ## 8. Open questions
-1. **"Oudewaarde-Rijndijk"**: which place exactly? Hazerswoude-Rijndijk (Alphen aan den Rijn), a street or buurt in Leiden, or somewhere else? A postcode would settle it.
+1. ~~**"Oudewaarde-Rijndijk"**: which place exactly?~~ **Answered:** Hazerswoude-Rijndijk, gemeente Alphen aan den Rijn.
 2. **Paid sources:** may we spend a small budget on Kadaster koopsom and erfpacht lookups for the test areas, or should we stay strictly free for now?
 3. **LLM key handling (phase 4):** a serverless proxy, or a key the user pastes on the device?
 4. **UI language:** Dutch, English, or both?
