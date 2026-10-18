@@ -1,6 +1,8 @@
 {
  "hazerswoude-rijndijk": {
   "key": "hazerswoude-rijndijk",
+  "naam": "Hazerswoude-Rijndijk",
+  "buurtcodes": null,
   "woonplaats": "Hazerswoude-Rijndijk",
   "gemeente": "Alphen aan den Rijn",
   "gemeentecode": "GM0484",

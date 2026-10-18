@@ -1,6 +1,6 @@
 """Copy village builds (pipeline/village.py output) into the app.
 
-Usage: python tools/publish_village.py <village-build-dir>
+Usage: python tools/publish_village.py <village-build-dir> [key,key,...]
 Writes app/data/villages/<key>/{buildings.geojson,streets.json,addresses.json,enrich.json,streets_enrich.json} and app/data/villages/index.json.
 Asking prices found online (data/listings/village-<key>.json) are added to the index entry.
 """
@@ -14,12 +14,15 @@ ROOT = Path(__file__).resolve().parent.parent
 DEST = ROOT / "app" / "data" / "villages"
 
 
-def main(build_dir):
+def main(build_dir, keys=""):
+    only = [k for k in keys.split(",") if k]
     index = {}
     for summary_file in sorted(Path(build_dir).glob("*/summary.json")):
         src = summary_file.parent
         summary = json.loads(summary_file.read_text())
         key = summary["key"]
+        if only and key not in only:
+            continue
         (DEST / key).mkdir(parents=True, exist_ok=True)
         for name in ("buildings.geojson", "streets.json", "addresses.json", "enrich.json", "streets_enrich.json"):
             if (src / name).exists():
