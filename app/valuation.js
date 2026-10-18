@@ -86,6 +86,10 @@ This is an indicative estimate, not a formal taxatie.`;
 
   // The parts of the dossier that matter for value, without the bulky raw series.
   function compactDossier(d) {
+    if (d.limited) {
+      return { street: `${d.straat}, ${d.woonplaats}`, gemeente: d.gemeente, data_coverage: 'buurt and gemeente level only',
+        scores_national_percentile: d.scores, buurt: d.buurten[0], gemeente_average_sale_price_by_year: d.gemeente_vergelijking.gemiddelde_verkoopprijs };
+    }
     return {
       street: `${d.straat}, ${d.woonplaats}`, gemeente: d.gemeente, addresses_on_street: d.adressen,
       scores_national_percentile: d.scores,
@@ -163,8 +167,9 @@ This is an indicative estimate, not a formal taxatie.`;
     const presetAddr = homes.find((a) => preset && a.adres === preset) || null;
     return `<button type="button" class="link-button back" data-back>← Back to ${esc(d.straat)}</button>
       <h1>Estimate a value</h1>
-      <p class="muted">Claude estimates the market value from this street's dossier and the details below. It is an
-        indication, not a formal valuation (taxatie).</p>
+      <p class="muted">Claude estimates the market value from ${d.limited ? 'the neighbourhood and gemeente data' : "this street's dossier"} and the
+        details below. It is an indication, not a formal valuation (taxatie).</p>
+      ${d.limited ? '<p class="notice">Outside the test streets Prospect has neighbourhood-level data only, so the estimate will be less certain. Add what you know below.</p>' : ''}
       <form id="valuation-form" class="valuation-form">
         <label>Address
           <select name="adres" required>
@@ -217,9 +222,30 @@ This is an indicative estimate, not a formal taxatie.`;
         Indicative only, not a taxatie.</p>`;
   }
 
-  async function open(container, dossier, { presetAddress = null } = {}) {
+  // Floor area, building year and use from the national BAG register (PDOK), for addresses outside the test streets.
+  async function bagLive(a) {
+    if (!a.vbo) return a;
+    try {
+      const base = 'https://api.pdok.nl/kadaster/bag/ogc/v2/collections';
+      const vbo = (await (await fetch(`${base}/verblijfsobject/items?identificatie=${encodeURIComponent(a.vbo)}&f=json`)).json()).features?.[0]?.properties;
+      if (!vbo) return a;
+      let bouwjaar = null;
+      const href = Array.isArray(vbo['pand.href']) ? vbo['pand.href'][0] : vbo['pand.href'];
+      if (href) bouwjaar = (await (await fetch(`${href}${href.includes('?') ? '&' : '?'}f=json`)).json()).properties?.bouwjaar ?? null;
+      return { ...a, oppervlakte: vbo.oppervlakte ?? null, gebruiksdoel: [].concat(vbo.gebruiksdoel || []).join(','), bouwjaar };
+    } catch {
+      return a; // the form still works; the user can fill these in
+    }
+  }
+
+  async function open(container, dossier, { presetAddress = null, addresses: given = null } = {}) {
     let addresses = [];
-    try { addresses = await (await fetch(`data/${dossier.key}-addresses.json`)).json(); } catch { /* form still works without BAG prefill */ }
+    if (given) {
+      addresses = await Promise.all(given.map(bagLive));
+      addresses = addresses.map((a) => ({ ...a, gebruiksdoel: a.gebruiksdoel || 'woonfunctie' }));
+    } else {
+      try { addresses = await (await fetch(`data/${dossier.key}-addresses.json`)).json(); } catch { /* form still works without BAG prefill */ }
+    }
     container.innerHTML = formHtml(dossier, addresses, presetAddress);
     const form = container.querySelector('#valuation-form');
     const out = container.querySelector('#valuation-result');

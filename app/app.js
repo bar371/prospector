@@ -105,27 +105,66 @@ function recomputeOverall() {
   map.getSource('buurten')?.setData(state.buurten);
 }
 
+// Buurt scores come per gemeente (data/gemeenten/GMxxxx.geojson) and load when they come into view.
+const loadedGemeenten = new Map(); // code -> Promise
+let gemeenteIndex = null;
+
+function addBuurtLayers() {
+  map.addSource('buurten', { type: 'geojson', data: state.buurten, promoteId: 'buurtcode' });
+  map.addLayer({ id: 'buurten-fill', type: 'fill', source: 'buurten',
+    paint: { 'fill-color': layerPaint(), 'fill-opacity': ['case', ['boolean', ['feature-state', 'selected'], false], 0.75, 0.55] } });
+  map.addLayer({ id: 'buurten-line', type: 'line', source: 'buurten',
+    paint: { 'line-color': '#ffffff', 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 0.4, 15, 1.5] } });
+  map.addLayer({ id: 'buurten-selected', type: 'line', source: 'buurten',
+    paint: { 'line-color': '#0f172a', 'line-width': 2.5, 'line-opacity': ['case', ['boolean', ['feature-state', 'selected'], false], 1, 0] } });
+  renderLegend();
+  if (pendingSelection) { selectBuurten(pendingSelection); pendingSelection = null; }
+}
+
+function ensureGemeente(code) {
+  if (!code || !gemeenteIndex?.[code]) return Promise.resolve();
+  if (!loadedGemeenten.has(code)) {
+    loadedGemeenten.set(code, fetch(`data/gemeenten/${code}.geojson`).then((r) => r.json()).then((fc) => {
+      state.buurten.features.push(...fc.features);
+      recomputeOverall();
+      if (requestedSelection.length) selectBuurten(requestedSelection);
+    }).catch(() => loadedGemeenten.delete(code)));
+  }
+  return loadedGemeenten.get(code);
+}
+
+function loadVisibleGemeenten() {
+  if (!gemeenteIndex || map.getZoom() < 9) return;
+  const b = map.getBounds();
+  for (const [code, g] of Object.entries(gemeenteIndex)) {
+    const [w, s2, e, n] = g.bbox;
+    if (e >= b.getWest() && w <= b.getEast() && n >= b.getSouth() && s2 <= b.getNorth()) ensureGemeente(code);
+  }
+}
+
 async function loadBuurten() {
-  const res = await fetch('data/buurten-scores.geojson');
-  state.buurten = await res.json();
-  recomputeOverall();
-  const add = () => {
-    map.addSource('buurten', { type: 'geojson', data: state.buurten, promoteId: 'buurtcode' });
-    map.addLayer({ id: 'buurten-fill', type: 'fill', source: 'buurten',
-      paint: { 'fill-color': layerPaint(), 'fill-opacity': ['case', ['boolean', ['feature-state', 'selected'], false], 0.75, 0.55] } });
-    map.addLayer({ id: 'buurten-line', type: 'line', source: 'buurten',
-      paint: { 'line-color': '#ffffff', 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 0.4, 15, 1.5] } });
-    map.addLayer({ id: 'buurten-selected', type: 'line', source: 'buurten',
-      paint: { 'line-color': '#0f172a', 'line-width': 2.5, 'line-opacity': ['case', ['boolean', ['feature-state', 'selected'], false], 1, 0] } });
-    renderLegend();
-    if (pendingSelection) { selectBuurten(pendingSelection); pendingSelection = null; }
+  state.buurten = { type: 'FeatureCollection', features: [] };
+  const res = await fetch('data/gemeenten/index.json').catch(() => null);
+  if (res?.ok) {
+    gemeenteIndex = await res.json();
+  } else {
+    // first version: only the test gemeenten in one file
+    state.buurten = await (await fetch('data/buurten-scores.geojson')).json();
+    recomputeOverall();
+  }
+  const start = () => {
+    addBuurtLayers();
+    loadVisibleGemeenten();
+    map.on('moveend', loadVisibleGemeenten);
   };
-  if (map.isStyleLoaded()) add(); else map.once('load', add);
+  if (map.isStyleLoaded()) start(); else map.once('load', start);
 }
 
 let selectedBuurten = [];
 let pendingSelection = null;
+let requestedSelection = [];
 function selectBuurten(codes) {
+  requestedSelection = codes;
   // The buurt layer loads asynchronously; remember the selection until it exists.
   if (!map.getSource('buurten')) { pendingSelection = codes; return; }
   for (const id of selectedBuurten) map.setFeatureState({ source: 'buurten', id }, { selected: false });
@@ -240,6 +279,8 @@ async function select(id) {
       if (near) Object.assign(doc, pick(near, ['buurtnaam', 'buurtcode', 'wijknaam', 'wijkcode', 'postcode', 'provincienaam']));
     }
     clearSchools();
+    await buurtenLoaded;
+    await ensureGemeente(doc.gemeentecode);
     selectBuurten(doc.buurtcode ? [doc.buurtcode] : []);
     renderPlace(doc);
     setCollapsed(false);
@@ -295,8 +336,8 @@ function renderPlace(doc) {
   sheetBody.innerHTML = `
     <h1>${esc(doc.weergavenaam)}</h1>
     <dl class="facts">${rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
-    ${feat ? buurtSummary(feat.properties) : `<p class="notice">No Prospect data for this area yet. The first version covers
-      the gemeenten Leiden and Alphen aan den Rijn.</p>`}
+    ${feat ? buurtSummary(feat.properties) : '<p class="notice">No Prospect data for this location: it is outside the Dutch buurt statistics (for example water or a new area).</p>'}
+    ${feat && doc.type === 'adres' ? '<button type="button" class="council-button" data-valuation-place>Estimate a value</button>' : ''}
     <p class="source">Location: PDOK Locatieserver (BAG, CBS buurt boundaries)</p>
     ${PRESETS}`;
 }
@@ -570,14 +611,37 @@ sheetBody.addEventListener('click', (e) => {
     });
   } else if (e.target.closest('[data-valuation]') && d) {
     openValuation(d);
+  } else if (e.target.closest('[data-valuation-place]') && state.current?.kind === 'place') {
+    openValuation(lightDossier(state.current.doc), { addresses: [placeAddress(state.current.doc)] });
   } else if (e.target.closest('[data-back]') && d) {
     renderArea(d, state.current.title);
+  } else if (e.target.closest('[data-back]') && state.current?.kind === 'place') {
+    renderPlace(state.current.doc);
   }
 });
 
+// For an address outside the test streets: a dossier from its buurt and gemeente data only.
+function lightDossier(doc) {
+  const p = state.buurten.features.find((f) => f.properties.buurtcode === doc.buurtcode)?.properties || {};
+  const prices = gemeenteIndex?.[doc.gemeentecode]?.prijzen || [];
+  return {
+    key: null, straat: doc.straatnaam, woonplaats: doc.woonplaatsnaam, gemeente: doc.gemeentenaam, adressen: null,
+    scores: Object.fromEntries(MAP_THEMES.map((k) => [k, p[`score_${k}`] ?? null])),
+    buurten: [{ buurtnaam: doc.buurtnaam, buurtcode: doc.buurtcode, inwoners: p.inwoners,
+      kerncijfers: { gemiddeldeWoningwaarde: p.woz, misdrijven_per_1000: p.misdrijven_per_1000, leefbaarometer: p.leefbaarometer } }],
+    gemeente_vergelijking: { gemiddelde_verkoopprijs: prices },
+    limited: true,
+  };
+}
+
+function placeAddress(doc) {
+  return { adres: doc.weergavenaam, postcode: doc.postcode, huisnummer: doc.huisnummer, buurtcode: doc.buurtcode,
+    vbo: doc.adresseerbaarobject_id };
+}
+
 // The value estimate (and the Anthropic SDK it uses) loads only when someone opens it.
 let valuationScript;
-async function openValuation(d) {
+async function openValuation(d, options = {}) {
   valuationScript ??= new Promise((resolve, reject) => {
     const s = document.createElement('script');
     s.src = 'valuation.js';
@@ -587,7 +651,8 @@ async function openValuation(d) {
   });
   try {
     await valuationScript;
-    await window.prospectValuation.open(sheetBody, d, { presetAddress: state.current.title });
+    const preset = state.current.kind === 'place' ? state.current.doc.weergavenaam : state.current.title;
+    await window.prospectValuation.open(sheetBody, d, { presetAddress: preset, ...options });
     sheet.scrollTop = 0;
   } catch (err) {
     sheetBody.innerHTML = `<h1>Something went wrong</h1><p class="muted">${esc(err.message)}</p>${PRESETS}`;

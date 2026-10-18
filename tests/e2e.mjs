@@ -40,6 +40,26 @@ const facts = (page) => page.evaluate(() =>
   Object.fromEntries([...document.querySelectorAll('#sheet-body dl.facts dt')].map((dt) => [dt.textContent, dt.nextElementSibling.textContent])));
 const waitForTitle = (page, re) =>
   page.waitForFunction((src) => new RegExp(src).test(document.querySelector('#sheet-body h1')?.textContent || ''), re.source, { timeout: 15000 });
+// Value estimate, against a mocked Anthropic API (no key or network call to Anthropic in tests).
+const MOCK_RESULT = {
+  value_low_eur: 255000, value_estimate_eur: 275000, value_high_eur: 295000, confidence: 'medium',
+  summary: 'Small 1985 apartment in Noordvest; WOZ and buurt averages point to the high 200s.',
+  comparables: [{ description: 'Zamenhofstraat 25 WOZ', price_eur: 301000, kind: 'WOZ value', date: '2025', relevance: 'Same building' }],
+  drivers_up: [{ factor: 'Location', effect: 'Walking distance to Leiden Centraal', source: 'CBS distances' }],
+  drivers_down: [{ factor: 'Crime', effect: 'High registered crime in the buurt', source: 'Politie/CBS 2025' }],
+  risks_to_check: ['VvE reserves'], missing_information: ['Energy label'],
+};
+function sse(result) {
+  const ev = (type, data) => `event: ${type}\ndata: ${JSON.stringify({ type, ...data })}\n\n`;
+  return ev('message_start', { message: { id: 'msg_test', type: 'message', role: 'assistant', model: 'claude-opus-5-5', content: [],
+    stop_reason: null, stop_sequence: null, usage: { input_tokens: 1200, output_tokens: 1 } } })
+    + ev('content_block_start', { index: 0, content_block: { type: 'text', text: '' } })
+    + ev('content_block_delta', { index: 0, delta: { type: 'text_delta', text: JSON.stringify(result) } })
+    + ev('content_block_stop', { index: 0 })
+    + ev('message_delta', { delta: { stop_reason: 'end_turn', stop_sequence: null }, usage: { output_tokens: 400 } })
+    + ev('message_stop', {});
+}
+
 async function test(name, fn) {
   current = name;
   console.log(`\n${name}`);
@@ -134,14 +154,39 @@ await test('Search: other address in Leiden shows its buurt scores', async () =>
   await context.close();
 });
 
-await test('Search: address outside the covered gemeenten', async () => {
+await test('Search: any address in the Netherlands shows its buurt scores', async () => {
   const { context, page, log } = await open();
-  await page.fill('#q', 'Dam 1 Amsterdam');
+  let captured = null;
+  await context.route('**/v1/messages**', async (route) => {
+    captured = JSON.parse(route.request().postData());
+    await route.fulfill({ status: 200, headers: { 'content-type': 'text/event-stream' }, body: sse(MOCK_RESULT) });
+  });
+  await page.fill('#q', 'Prinsengracht 263 Amsterdam');
   await page.locator('#suggestions li[data-id]').first().waitFor({ timeout: 10000 });
   await page.press('#q', 'Enter');
-  await waitForTitle(page, /Dam 1/);
-  check(/No Prospect data for this area yet/.test(await sheetText(page)), 'explains there is no data yet');
-  check((await facts(page)).Gemeente === 'Amsterdam', 'still shows the location facts');
+  await waitForTitle(page, /Prinsengracht 263/);
+  await page.locator('#sheet-body .score-row').first().waitFor({ timeout: 15000 }).catch(() => {});
+  check((await facts(page)).Gemeente === 'Amsterdam', 'shows the location facts');
+  check(await page.locator('#sheet-body .score-row').count() === 6, `Amsterdam buurt scores shown (${await page.locator('#sheet-body .score-row').count()} rows)`);
+  await page.waitForTimeout(1500);
+  const n = await page.evaluate(() => new Set(window.prospectMap.querySourceFeatures('buurten').map((f) => f.properties.gemeentenaam)).size);
+  check(n >= 1, `map loaded the gemeenten in view (${n})`);
+  await page.screenshot({ path: `${OUT}/amsterdam.png` });
+  await page.click('[data-valuation-place]');
+  await waitForTitle(page, /Estimate a value/);
+  check(/neighbourhood-level data only/.test(await sheetText(page)), 'explains the estimate is less certain outside the test streets');
+  await page.waitForTimeout(2500);
+  const area = await page.inputValue('input[name=oppervlakte]');
+  check(Number(area) > 0, `floor area fetched live from BAG (${area || 'empty'})`);
+  await page.fill('input[name=apikey]', 'sk-ant-test-key');
+  await page.click('#valuation-form button[type=submit]');
+  await page.locator('.estimate').waitFor({ timeout: 15000 }).catch(() => {});
+  const text = captured ? captured.messages[0].content.map((c) => c.text).join('\n') : '';
+  check(/buurt and gemeente level only/.test(text) && /Prinsengracht 263/.test(text), 'request carries the light dossier and the address');
+  check(await page.locator('.estimate').count() === 1, 'estimate shown');
+  await page.click('[data-back]');
+  await waitForTitle(page, /Prinsengracht 263/);
+  check(true, 'back returns to the address card');
   check(log.errors.length === 0, `no errors${log.errors.length ? ': ' + log.errors.join(' | ') : ''}`);
   await context.close();
 });
@@ -299,26 +344,6 @@ await test('Weights change the Prospect score and are remembered', async () => {
   check(log.errors.length === 0, `no errors${log.errors.length ? ': ' + log.errors.join(' | ') : ''}`);
   await context.close();
 });
-
-// Value estimate, against a mocked Anthropic API (no key or network call to Anthropic in tests).
-const MOCK_RESULT = {
-  value_low_eur: 255000, value_estimate_eur: 275000, value_high_eur: 295000, confidence: 'medium',
-  summary: 'Small 1985 apartment in Noordvest; WOZ and buurt averages point to the high 200s.',
-  comparables: [{ description: 'Zamenhofstraat 25 WOZ', price_eur: 301000, kind: 'WOZ value', date: '2025', relevance: 'Same building' }],
-  drivers_up: [{ factor: 'Location', effect: 'Walking distance to Leiden Centraal', source: 'CBS distances' }],
-  drivers_down: [{ factor: 'Crime', effect: 'High registered crime in the buurt', source: 'Politie/CBS 2025' }],
-  risks_to_check: ['VvE reserves'], missing_information: ['Energy label'],
-};
-function sse(result) {
-  const ev = (type, data) => `event: ${type}\ndata: ${JSON.stringify({ type, ...data })}\n\n`;
-  return ev('message_start', { message: { id: 'msg_test', type: 'message', role: 'assistant', model: 'claude-opus-5-5', content: [],
-    stop_reason: null, stop_sequence: null, usage: { input_tokens: 1200, output_tokens: 1 } } })
-    + ev('content_block_start', { index: 0, content_block: { type: 'text', text: '' } })
-    + ev('content_block_delta', { index: 0, delta: { type: 'text_delta', text: JSON.stringify(result) } })
-    + ev('content_block_stop', { index: 0 })
-    + ev('message_delta', { delta: { stop_reason: 'end_turn', stop_sequence: null }, usage: { output_tokens: 400 } })
-    + ev('message_stop', {});
-}
 
 await test('Value estimate: request, result and remembered key', async () => {
   const { context, page, log } = await open();
