@@ -229,7 +229,8 @@ for (const [name, viewport, mobile] of SCREENS) {
       check(sheet && sheet.y + sheet.height <= viewport.height + 1 && sheet.height <= viewport.height * 0.6, `sheet fits (${Math.round(sheet?.height)}px of ${viewport.height}px)`);
       check(sheet && sheet.y > search.y + search.height, 'sheet does not cover the search box');
       const small = await page.evaluate(() => [...document.querySelectorAll('button, input')]
-        .filter((el) => el.offsetParent && el.getBoundingClientRect().height < 30).map((el) => el.textContent || el.id));
+        .filter((el) => el.offsetParent && el.getBoundingClientRect().height < 30)
+        .map((el) => `${el.getAttribute('aria-label') || el.title || el.textContent || el.id} (${Math.round(el.getBoundingClientRect().height)}px)`));
       check(small.length === 0, `touch targets at least 30px tall${small.length ? ': ' + small.join(', ') : ''}`);
       const contrast = await page.evaluate(() => {
         const s = getComputedStyle(document.querySelector('#sheet-body h1'));

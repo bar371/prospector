@@ -118,3 +118,7 @@ dl.facts { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin
 dl.facts dt { color: var(--muted); }
 dl.facts dd { margin: 0; font-weight: 500; }
 .soon { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; }
+
+/* MapLibre's zoom buttons default to 29px; make them comfortable to tap on tablets. */
+.maplibregl-ctrl-group button { width: 40px; height: 40px; }
+.maplibregl-ctrl-bottom-right { margin-bottom: calc(env(safe-area-inset-bottom) + 6px); }
