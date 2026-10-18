@@ -220,7 +220,7 @@ PLAN.md
 |---|---|
 | **0 – Confirm** | Answer the open questions below and pin down the exact buurt codes for both test areas |
 | **1 – Data & DD** | Pipeline scripts for the open sources (CBS KWB, buurt polygons, politie/CBS crime, DUO + Inspectie, Leefbaarometer, BAG, EP-Online, BRO soil, Bodemloket, Klimaateffectatlas, RIVM, ruimtelijke plannen), the mobility layer (CBS nabijheid, NWB, NDOV GTFS isochrones, verkeersbesluiten, RDW parking, autoluw score), plus the municipal buyer-rules table for Leiden and Alphen aan den Rijn. Output: `/data` for both areas plus a written **DD report per area** in `/docs` | **Status: first version done (Oct 2026)**: see `docs/dd/` and `app/data/`. The pipeline is in `pipeline/` and runs on GitHub Actions (Data workflow).
-| **2 – App** | The map app with layers, bottom sheet, search, weights and PWA install, using the phase-1 data. Deployed on GitHub Pages |
+| **2 – App** | The map app with layers, bottom sheet, search, weights and PWA install, using the phase-1 data. Deployed on GitHub Pages | **Status: first version done (Oct 2026), in English**: a buurt score map with layers and legend, street dossiers, the council view and weights.
 | **3 – Raad** | The council-transcript pipeline for both test areas, pre-populated, plus the "Wat zegt de raad?" view |
 | **4 – Valuation** | The dossier builder for any address, comparables from online search, the LLM valuation call, and the result card |
 | **5 – Scale** | Any address in the Netherlands on demand, a monthly refresh job (GitHub Actions) for the council data and statistics |
