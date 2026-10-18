@@ -97,7 +97,10 @@ def bag(docs):
     lons, lats = [d["lon"] for d in docs], [d["lat"] for d in docs]
     bbox = [min(lons) - 0.002, min(lats) - 0.002, max(lons) + 0.002, max(lats) + 0.002]
     vbos = {f["properties"]["identificatie"]: f["properties"] for f in ogc_items("verblijfsobject", bbox)}
-    panden = {f["properties"]["identificatie"]: f for f in ogc_items("pand", bbox)}
+    panden, by_feature_id = {}, {}
+    for f in ogc_items("pand", bbox):
+        panden[f["properties"]["identificatie"]] = f
+        by_feature_id[str(f.get("id"))] = f["properties"]["identificatie"]
     log(f"  BAG in bbox: {len(vbos)} verblijfsobjecten, {len(panden)} panden")
     for d in docs:
         v = vbos.get(d.get("adresseerbaarobject_id"))
@@ -107,11 +110,9 @@ def bag(docs):
         d["gebruiksdoel"] = ",".join(v.get("gebruiksdoel")) if isinstance(v.get("gebruiksdoel"), list) else v.get("gebruiksdoel")
         href = v.get("pand.href")
         href = href[0] if isinstance(href, list) else href
-        # ".../collections/pand/items/<id>" or ".../collections/pand/items?identificatie=<id>"
-        m = re.search(r"identificatie=(\d+)|/items/(\d+)", href or "")
-        pid = (m.group(1) or m.group(2)) if m else None
-        if pid is None and len(log_lines) < 40:
-            log(f"  unparsed pand.href: {href}")
+        # ".../collections/pand/items/<feature id>" or "...?identificatie=<BAG id>"
+        m = re.search(r"identificatie=(\d+)|/items/([^/?]+)", href or "")
+        pid = (m.group(1) or by_feature_id.get(m.group(2))) if m else None
         if pid in panden:
             d["pand"] = pid
             d["bouwjaar"] = panden[pid]["properties"].get("bouwjaar")
