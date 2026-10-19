@@ -542,9 +542,15 @@ await test('Village: new development gets measured scores (Koolrabi)', async () 
   const wozText = await page.locator('#woz-box').innerText();
   check(/€855\.000/.test(wozText), `Koolrabi 11 shows its own WOZ value (${wozText.slice(0, 70)})`);
   await page.click('[data-value-check]');
-  await page.waitForFunction(() => /median|Too few/.test(document.querySelector('#value-check')?.innerText || ''), null, { timeout: 30000 }).catch(() => {});
+  const lookups = await page.locator('[data-woz-peer]').count();
+  check(lookups >= 3, `similar homes listed, none looked up yet (${lookups})`);
+  for (let i = 0; i < Math.min(4, lookups); i++) {
+    await page.locator('[data-woz-peer]').first().click();
+    await page.waitForTimeout(1200);
+  }
+  await page.waitForFunction(() => /median|of 3 looked up/.test(document.querySelector('#value-verdict')?.innerText || ''), null, { timeout: 20000 }).catch(() => {});
   const vc = await page.locator('#value-check').innerText();
-  check(/median of \d+ similar/.test(vc), `value check against similar homes (${vc.slice(0, 120)})`);
+  check(/median of the \d+ similar/.test(vc), `value check against the homes looked up (${vc.slice(-160)})`);
   await page.screenshot({ path: `${OUT}/village-value-check.png` });
   check(log.errors.length === 0, `no errors${log.errors.length ? ': ' + log.errors.join(' | ') : ''}`);
   await context.close();

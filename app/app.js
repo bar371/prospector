@@ -721,34 +721,60 @@ async function renderWoz(v, a) {
     </dl>
     <button type="button" class="council-button" data-value-check>Compare with similar homes</button>
     <div id="value-check"></div>
-    <p class="source">WOZ-waardeloket (Kadaster), looked up for this address only. WOZ is the municipality's valuation for tax and usually trails the market.</p>`;
+    <p class="source">WOZ-waardeloket (Kadaster), looked up for this address only; values for other homes are looked up one at a time when
+      you tap them. WOZ is the municipality's valuation for tax and usually trails the market.</p>`;
 }
 
-async function renderValueCheck(v, a) {
+// Similar homes are listed, and each WOZ value is looked up only when the user taps it: the WOZ-waardeloket allows
+// viewing the value of a specific home, not automated extraction of many.
+function renderValueCheck(v, a) {
   const out = sheetBody.querySelector('#value-check');
   if (!out) return;
-  out.innerHTML = '<p class="working">Looking up WOZ values of similar homes…</p>';
-  const own = await wozOf(a);
   const peers = similarHomes(v, a);
+  const type = v.enrich?.[a.adresseerbaarobject_id]?.woningtype;
+  if (!peers.length) {
+    out.innerHTML = '<p class="muted">No similar homes nearby to compare with.</p>';
+    return;
+  }
+  out.innerHTML = `<p class="muted">Similar homes nearby${type ? ` (${esc(type)}, ${num(a.oppervlakte * 0.7)}–${num(a.oppervlakte * 1.3)} m²)` : ''}.
+      Tap a home to look up its WOZ value; with three or more, Prospect compares them per m².</p>
+    <table class="table"><thead><tr><th>Home</th><th>m²</th><th>WOZ</th><th>per m²</th></tr></thead><tbody>
+      ${peers.map((x) => `<tr data-peer="${esc(x.adresseerbaarobject_id)}"><td>${esc(`${x.straatnaam} ${houseNumber(x)}`)}</td><td>${num(x.oppervlakte)}</td>
+        <td colspan="2"><button type="button" class="link-button" data-woz-peer="${esc(x.adresseerbaarobject_id)}">Look up</button></td></tr>`).join('')}
+    </tbody></table>
+    <div id="value-verdict"></div>`;
+  for (const x of peers) if (wozCache.has(x.adresseerbaarobject_id)) showPeer(v, a, x);
+}
+
+async function showPeer(v, a, x) {
+  const row = sheetBody.querySelector(`tr[data-peer="${CSS.escape(x.adresseerbaarobject_id)}"]`);
+  if (!row) return;
+  row.lastElementChild.innerHTML = '<span class="muted">…</span>';
+  const woz = await wozOf(x);
+  if (!sheetBody.contains(row)) return;
+  row.lastElementChild.remove();
+  row.insertAdjacentHTML('beforeend', woz ? `<td>${eur(woz.value)}</td><td>${perM2(woz, x) ? eur(perM2(woz, x)) : '–'}</td>` : '<td colspan="2" class="muted">none</td>');
+  updateVerdict(v, a);
+}
+
+async function updateVerdict(v, a) {
+  const box = sheetBody.querySelector('#value-verdict');
+  if (!box) return;
+  const own = await wozOf(a);
+  const peers = similarHomes(v, a).filter((x) => wozCache.has(x.adresseerbaarobject_id));
   const rows = (await Promise.all(peers.map(async (x) => ({ x, woz: await wozOf(x) })))).filter((r) => perM2(r.woz, r.x));
-  if (!sheetBody.contains(out)) return;
-  state.valueCheck = { address: a.adresseerbaarobject_id, own, peers: rows.map((r) => ({ adres: `${r.x.straatnaam} ${houseNumber(r.x)}`,
+  state.valueCheck = { address: a.adresseerbaarobject_id, peers: rows.map((r) => ({ adres: `${r.x.straatnaam} ${houseNumber(r.x)}`,
     oppervlakte_m2: r.x.oppervlakte, woz: r.woz.value, woz_date: r.woz.date, woz_per_m2: Math.round(perM2(r.woz, r.x)) })) };
   if (rows.length < 3 || !perM2(own, a)) {
-    out.innerHTML = `<p class="muted">Too few similar homes with a WOZ value nearby to compare (${rows.length} found).</p>`;
+    box.innerHTML = rows.length ? `<p class="muted">${rows.length} of 3 looked up.</p>` : '';
     return;
   }
   const vals = rows.map((r) => perM2(r.woz, r.x)).sort((x, y) => x - y);
   const median = vals[Math.floor(vals.length / 2)];
   const diff = Math.round((perM2(own, a) / median - 1) * 100);
-  const type = v.enrich?.[a.adresseerbaarobject_id]?.woningtype;
   const verdict = Math.abs(diff) <= 5 ? 'in line with' : diff > 0 ? `${diff}% above` : `${-diff}% below`;
-  out.innerHTML = `<p class="value-verdict"><strong>${eur(perM2(own, a))}/m²</strong> is ${verdict} the median of ${rows.length} similar
-      homes${type ? ` (${esc(type)}, ${num(a.oppervlakte * 0.7)}–${num(a.oppervlakte * 1.3)} m²)` : ''} nearby: <strong>${eur(median)}/m²</strong>.
-      At that median this home would be valued at about ${eur(median * a.oppervlakte)}.</p>
-    <table class="table"><thead><tr><th>Home</th><th>m²</th><th>WOZ</th><th>per m²</th></tr></thead><tbody>
-      ${rows.map((r) => `<tr><td>${esc(`${r.x.straatnaam} ${houseNumber(r.x)}`)}</td><td>${num(r.x.oppervlakte)}</td><td>${eur(r.woz.value)}</td><td>${eur(perM2(r.woz, r.x))}</td></tr>`).join('')}
-    </tbody></table>
+  box.innerHTML = `<p class="value-verdict"><strong>${eur(perM2(own, a))}/m²</strong> is ${verdict} the median of the ${rows.length} similar
+      homes you looked up: <strong>${eur(median)}/m²</strong>. At that median this home would be valued at about ${eur(median * a.oppervlakte)}.</p>
     <p class="source">Same street first, then within 500 m; same house type and floor area within 30% (BAG). A higher value per m² usually
       means a larger plot, better finish or a better spot on the street, so check what differs.</p>`;
 }
@@ -1105,6 +1131,10 @@ sheetBody.addEventListener('click', (e) => {
       openValuation(d, { addresses: [{ adres: a.weergavenaam, postcode: a.postcode, huisnummer: a.huisnummer, buurtcode: a.buurtcode,
         vbo: a.adresseerbaarobject_id }] });
     });
+  } else if (e.target.closest('[data-woz-peer]') && state.current?.kind === 'building') {
+    const v = villages.data[state.current.village];
+    const x = v.addresses.find((y) => y.adresseerbaarobject_id === e.target.closest('[data-woz-peer]').dataset.wozPeer);
+    if (x) showPeer(v, state.current.address, x);
   } else if (e.target.closest('[data-value-check]') && state.current?.kind === 'building') {
     e.target.closest('[data-value-check]').hidden = true;
     renderValueCheck(villages.data[state.current.village], state.current.address);
