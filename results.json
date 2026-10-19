@@ -1,0 +1,1337 @@
+{
+  "base": "http://localhost:8000/",
+  "passed": 266,
+  "failed": 0,
+  "results": [
+    {
+      "test": "Assets and install metadata",
+      "ok": true,
+      "msg": "manifest served (200)"
+    },
+    {
+      "test": "Assets and install metadata",
+      "ok": true,
+      "msg": "manifest has display=standalone and start_url"
+    },
+    {
+      "test": "Assets and install metadata",
+      "ok": true,
+      "msg": "manifest icon icons/icon-192.png (200)"
+    },
+    {
+      "test": "Assets and install metadata",
+      "ok": true,
+      "msg": "manifest icon icons/icon-512.png (200)"
+    },
+    {
+      "test": "Assets and install metadata",
+      "ok": true,
+      "msg": "manifest icon icons/icon.svg (200)"
+    },
+    {
+      "test": "Assets and install metadata",
+      "ok": true,
+      "msg": "apple-touch-icon icons/apple-touch-icon.png (200)"
+    },
+    {
+      "test": "Assets and install metadata",
+      "ok": true,
+      "msg": "apple-touch-icon is 180x180"
+    },
+    {
+      "test": "Assets and install metadata",
+      "ok": true,
+      "msg": "iOS standalone meta tag present"
+    },
+    {
+      "test": "Assets and install metadata",
+      "ok": true,
+      "msg": "viewport covers the iPhone notch area"
+    },
+    {
+      "test": "Assets and install metadata",
+      "ok": true,
+      "msg": "styles.css (200)"
+    },
+    {
+      "test": "Assets and install metadata",
+      "ok": true,
+      "msg": "app.js (200)"
+    },
+    {
+      "test": "Assets and install metadata",
+      "ok": true,
+      "msg": "sw.js (200)"
+    },
+    {
+      "test": "Assets and install metadata",
+      "ok": true,
+      "msg": "vendor/maplibre-gl-4.7.1/maplibre-gl.js (200)"
+    },
+    {
+      "test": "Assets and install metadata",
+      "ok": true,
+      "msg": "vendor/maplibre-gl-4.7.1/maplibre-gl.css (200)"
+    },
+    {
+      "test": "Map and PDOK basemap",
+      "ok": true,
+      "msg": "initial tiles: 15 ok, 0 failed"
+    },
+    {
+      "test": "Map and PDOK basemap",
+      "ok": true,
+      "msg": "panning loads new tiles (5 more)"
+    },
+    {
+      "test": "Map and PDOK basemap",
+      "ok": true,
+      "msg": "no tile failures after panning"
+    },
+    {
+      "test": "Map and PDOK basemap",
+      "ok": true,
+      "msg": "PDOK attribution shown"
+    },
+    {
+      "test": "Map and PDOK basemap",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Search: address on a test street opens its dossier",
+      "ok": true,
+      "msg": "first suggestion is the address: \"Zamenhofstraat 25, 2312NX Leidenadres\""
+    },
+    {
+      "test": "Search: address on a test street opens its dossier",
+      "ok": true,
+      "msg": "suggestion list closes after choosing"
+    },
+    {
+      "test": "Search: address on a test street opens its dossier",
+      "ok": true,
+      "msg": "search box shows the choice (\"Zamenhofstraat 25, 2312NX Leiden\")"
+    },
+    {
+      "test": "Search: address on a test street opens its dossier",
+      "ok": true,
+      "msg": "dossier shows 7 theme scores"
+    },
+    {
+      "test": "Search: address on a test street opens its dossier",
+      "ok": true,
+      "msg": "dossier names buurt Noordvest"
+    },
+    {
+      "test": "Search: address on a test street opens its dossier",
+      "ok": true,
+      "msg": "marker visible above the bottom sheet (182,219)"
+    },
+    {
+      "test": "Search: address on a test street opens its dossier",
+      "ok": true,
+      "msg": "no Locatieserver failures"
+    },
+    {
+      "test": "Search: address on a test street opens its dossier",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Search: other address in Leiden shows its buurt scores",
+      "ok": true,
+      "msg": "postcode shown (2311CS)"
+    },
+    {
+      "test": "Search: other address in Leiden shows its buurt scores",
+      "ok": true,
+      "msg": "gemeente Leiden (Leiden)"
+    },
+    {
+      "test": "Search: other address in Leiden shows its buurt scores",
+      "ok": true,
+      "msg": "buurt shown (Pieterswijk (BU05460000))"
+    },
+    {
+      "test": "Search: other address in Leiden shows its buurt scores",
+      "ok": true,
+      "msg": "buurt scores shown (6 map themes)"
+    },
+    {
+      "test": "Search: other address in Leiden shows its buurt scores",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Search: any address in the Netherlands shows its buurt scores",
+      "ok": true,
+      "msg": "shows the location facts"
+    },
+    {
+      "test": "Search: any address in the Netherlands shows its buurt scores",
+      "ok": true,
+      "msg": "Amsterdam buurt scores shown (6 rows)"
+    },
+    {
+      "test": "Search: any address in the Netherlands shows its buurt scores",
+      "ok": true,
+      "msg": "map loaded the gemeenten in view (1)"
+    },
+    {
+      "test": "Search: any address in the Netherlands shows its buurt scores",
+      "ok": true,
+      "msg": "explains the estimate is less certain outside the test streets"
+    },
+    {
+      "test": "Search: any address in the Netherlands shows its buurt scores",
+      "ok": true,
+      "msg": "floor area fetched live from BAG (108)"
+    },
+    {
+      "test": "Search: any address in the Netherlands shows its buurt scores",
+      "ok": true,
+      "msg": "request carries the light dossier and the address"
+    },
+    {
+      "test": "Search: any address in the Netherlands shows its buurt scores",
+      "ok": true,
+      "msg": "estimate shown"
+    },
+    {
+      "test": "Search: any address in the Netherlands shows its buurt scores",
+      "ok": true,
+      "msg": "back returns to the address card"
+    },
+    {
+      "test": "Search: any address in the Netherlands shows its buurt scores",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Search: street result gets buurt from nearest address",
+      "ok": true,
+      "msg": "buurt filled in (Noordvest (BU05460105))"
+    },
+    {
+      "test": "Search: Enter key, short and unknown queries",
+      "ok": true,
+      "msg": "no suggestions for under 3 characters"
+    },
+    {
+      "test": "Search: Enter key, short and unknown queries",
+      "ok": true,
+      "msg": "Enter opens the Rijndijk dossier (Alphen aan den Rijn)"
+    },
+    {
+      "test": "Search: Enter key, short and unknown queries",
+      "ok": true,
+      "msg": "nonsense query shows no suggestions"
+    },
+    {
+      "test": "Search: Enter key, short and unknown queries",
+      "ok": true,
+      "msg": "Enter on a nonsense query leaves the current card alone"
+    },
+    {
+      "test": "Search: Enter key, short and unknown queries",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Search: input is escaped, never run as HTML",
+      "ok": true,
+      "msg": "no script injection through the search box"
+    },
+    {
+      "test": "Search: input is escaped, never run as HTML",
+      "ok": true,
+      "msg": "no HTML injected into the suggestion list"
+    },
+    {
+      "test": "Search: input is escaped, never run as HTML",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Search: Locatieserver down",
+      "ok": true,
+      "msg": "no broken suggestion list when the service is down"
+    },
+    {
+      "test": "Search: Locatieserver down",
+      "ok": true,
+      "msg": "test areas still open (they use local data)"
+    },
+    {
+      "test": "Search: Locatieserver down",
+      "ok": true,
+      "msg": "app does not crash"
+    },
+    {
+      "test": "Map: buurt layer, legend and layer chips",
+      "ok": true,
+      "msg": "buurt polygons loaded (579)"
+    },
+    {
+      "test": "Map: buurt layer, legend and layer chips",
+      "ok": true,
+      "msg": "legend shows the Prospect score"
+    },
+    {
+      "test": "Map: buurt layer, legend and layer chips",
+      "ok": true,
+      "msg": "legend has 5 classes"
+    },
+    {
+      "test": "Map: buurt layer, legend and layer chips",
+      "ok": true,
+      "msg": "Safety chip recolours the map by safety"
+    },
+    {
+      "test": "Map: buurt layer, legend and layer chips",
+      "ok": true,
+      "msg": "Safety chip is marked as pressed"
+    },
+    {
+      "test": "Map: buurt layer, legend and layer chips",
+      "ok": true,
+      "msg": "legend follows the layer"
+    },
+    {
+      "test": "Map: buurt layer, legend and layer chips",
+      "ok": true,
+      "msg": "Home value layer uses its own legend"
+    },
+    {
+      "test": "Map: buurt layer, legend and layer chips",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Map: tapping a neighbourhood opens its scores",
+      "ok": true,
+      "msg": "tap opens buurt Noordvest"
+    },
+    {
+      "test": "Map: tapping a neighbourhood opens its scores",
+      "ok": true,
+      "msg": "buurt card shows 6 theme scores"
+    },
+    {
+      "test": "Map: tapping a neighbourhood opens its scores",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Dossier: zamenhofstraat-leiden",
+      "ok": true,
+      "msg": "title \"Zamenhofstraat, Leiden\""
+    },
+    {
+      "test": "Dossier: zamenhofstraat-leiden",
+      "ok": true,
+      "msg": "shows 7 theme scores"
+    },
+    {
+      "test": "Dossier: zamenhofstraat-leiden",
+      "ok": true,
+      "msg": "overall Prospect score shown (36)"
+    },
+    {
+      "test": "Dossier: zamenhofstraat-leiden",
+      "ok": true,
+      "msg": "section s-safety has content (511 chars)"
+    },
+    {
+      "test": "Dossier: zamenhofstraat-leiden",
+      "ok": true,
+      "msg": "section s-liveability has content (338 chars)"
+    },
+    {
+      "test": "Dossier: zamenhofstraat-leiden",
+      "ok": true,
+      "msg": "section s-schools has content (1530 chars)"
+    },
+    {
+      "test": "Dossier: zamenhofstraat-leiden",
+      "ok": true,
+      "msg": "section s-buildings has content (364 chars)"
+    },
+    {
+      "test": "Dossier: zamenhofstraat-leiden",
+      "ok": true,
+      "msg": "section s-market has content (630 chars)"
+    },
+    {
+      "test": "Dossier: zamenhofstraat-leiden",
+      "ok": true,
+      "msg": "section s-rules has content (1611 chars)"
+    },
+    {
+      "test": "Dossier: zamenhofstraat-leiden",
+      "ok": true,
+      "msg": "section s-development has content (230 chars)"
+    },
+    {
+      "test": "Dossier: zamenhofstraat-leiden",
+      "ok": true,
+      "msg": "safety covers 1 buurt(en)"
+    },
+    {
+      "test": "Dossier: zamenhofstraat-leiden",
+      "ok": true,
+      "msg": "school markers on the map (9)"
+    },
+    {
+      "test": "Dossier: zamenhofstraat-leiden",
+      "ok": true,
+      "msg": "council view content matches /Said in meetings[\\s\\S]*Energiepark/"
+    },
+    {
+      "test": "Dossier: zamenhofstraat-leiden",
+      "ok": true,
+      "msg": "back returns to the dossier"
+    },
+    {
+      "test": "Dossier: zamenhofstraat-leiden",
+      "ok": true,
+      "msg": "both test areas still available"
+    },
+    {
+      "test": "Dossier: zamenhofstraat-leiden",
+      "ok": true,
+      "msg": "value estimate button present"
+    },
+    {
+      "test": "Dossier: zamenhofstraat-leiden",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Dossier: rijndijk-hazerswoude-rijndijk",
+      "ok": true,
+      "msg": "title \"Rijndijk, Hazerswoude-Rijndijk\""
+    },
+    {
+      "test": "Dossier: rijndijk-hazerswoude-rijndijk",
+      "ok": true,
+      "msg": "shows 7 theme scores"
+    },
+    {
+      "test": "Dossier: rijndijk-hazerswoude-rijndijk",
+      "ok": true,
+      "msg": "overall Prospect score shown (47)"
+    },
+    {
+      "test": "Dossier: rijndijk-hazerswoude-rijndijk",
+      "ok": true,
+      "msg": "section s-safety has content (908 chars)"
+    },
+    {
+      "test": "Dossier: rijndijk-hazerswoude-rijndijk",
+      "ok": true,
+      "msg": "section s-liveability has content (1189 chars)"
+    },
+    {
+      "test": "Dossier: rijndijk-hazerswoude-rijndijk",
+      "ok": true,
+      "msg": "section s-schools has content (827 chars)"
+    },
+    {
+      "test": "Dossier: rijndijk-hazerswoude-rijndijk",
+      "ok": true,
+      "msg": "section s-buildings has content (777 chars)"
+    },
+    {
+      "test": "Dossier: rijndijk-hazerswoude-rijndijk",
+      "ok": true,
+      "msg": "section s-market has content (786 chars)"
+    },
+    {
+      "test": "Dossier: rijndijk-hazerswoude-rijndijk",
+      "ok": true,
+      "msg": "section s-rules has content (1456 chars)"
+    },
+    {
+      "test": "Dossier: rijndijk-hazerswoude-rijndijk",
+      "ok": true,
+      "msg": "section s-development has content (2228 chars)"
+    },
+    {
+      "test": "Dossier: rijndijk-hazerswoude-rijndijk",
+      "ok": true,
+      "msg": "safety covers 4 buurt(en)"
+    },
+    {
+      "test": "Dossier: rijndijk-hazerswoude-rijndijk",
+      "ok": true,
+      "msg": "school markers on the map (2)"
+    },
+    {
+      "test": "Dossier: rijndijk-hazerswoude-rijndijk",
+      "ok": true,
+      "msg": "council view content matches /Elektriciteitsstation Hazerswoude-Rijndijk/"
+    },
+    {
+      "test": "Dossier: rijndijk-hazerswoude-rijndijk",
+      "ok": true,
+      "msg": "back returns to the dossier"
+    },
+    {
+      "test": "Dossier: rijndijk-hazerswoude-rijndijk",
+      "ok": true,
+      "msg": "both test areas still available"
+    },
+    {
+      "test": "Dossier: rijndijk-hazerswoude-rijndijk",
+      "ok": true,
+      "msg": "value estimate button present"
+    },
+    {
+      "test": "Dossier: rijndijk-hazerswoude-rijndijk",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Weights change the Prospect score and are remembered",
+      "ok": true,
+      "msg": "weights dialog opens"
+    },
+    {
+      "test": "Weights change the Prospect score and are remembered",
+      "ok": true,
+      "msg": "a slider per theme"
+    },
+    {
+      "test": "Weights change the Prospect score and are remembered",
+      "ok": true,
+      "msg": "market weights are the default and explained"
+    },
+    {
+      "test": "Weights change the Prospect score and are remembered",
+      "ok": true,
+      "msg": "own priorities change Zamenhofstraat's score (36 -> 56)"
+    },
+    {
+      "test": "Weights change the Prospect score and are remembered",
+      "ok": true,
+      "msg": "weights are remembered after a reload"
+    },
+    {
+      "test": "Weights change the Prospect score and are remembered",
+      "ok": true,
+      "msg": "reset restores the market-weighted score"
+    },
+    {
+      "test": "Weights change the Prospect score and are remembered",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Value estimate: request, result and remembered key",
+      "ok": true,
+      "msg": "the searched address is preselected"
+    },
+    {
+      "test": "Value estimate: request, result and remembered key",
+      "ok": true,
+      "msg": "BAG facts shown (BAG: 63 m², built 1985, use: woonfunctie)"
+    },
+    {
+      "test": "Value estimate: request, result and remembered key",
+      "ok": true,
+      "msg": "floor area prefilled from BAG"
+    },
+    {
+      "test": "Value estimate: request, result and remembered key",
+      "ok": true,
+      "msg": "building year prefilled (1985)"
+    },
+    {
+      "test": "Value estimate: request, result and remembered key",
+      "ok": true,
+      "msg": "a request went to the Anthropic Messages API"
+    },
+    {
+      "test": "Value estimate: request, result and remembered key",
+      "ok": true,
+      "msg": "model claude-opus-5-5"
+    },
+    {
+      "test": "Value estimate: request, result and remembered key",
+      "ok": true,
+      "msg": "adaptive thinking"
+    },
+    {
+      "test": "Value estimate: request, result and remembered key",
+      "ok": true,
+      "msg": "effort high and a JSON schema for the answer"
+    },
+    {
+      "test": "Value estimate: request, result and remembered key",
+      "ok": true,
+      "msg": "server-side refusal fallback enabled"
+    },
+    {
+      "test": "Value estimate: request, result and remembered key",
+      "ok": true,
+      "msg": "the typed key is sent as x-api-key"
+    },
+    {
+      "test": "Value estimate: request, result and remembered key",
+      "ok": true,
+      "msg": "browser access header set by the SDK"
+    },
+    {
+      "test": "Value estimate: request, result and remembered key",
+      "ok": true,
+      "msg": "request carries the dossier and the property"
+    },
+    {
+      "test": "Value estimate: request, result and remembered key",
+      "ok": true,
+      "msg": "dossier block is marked for prompt caching"
+    },
+    {
+      "test": "Value estimate: request, result and remembered key",
+      "ok": true,
+      "msg": "estimate shown (€275.000)"
+    },
+    {
+      "test": "Value estimate: request, result and remembered key",
+      "ok": true,
+      "msg": "evidence table shown"
+    },
+    {
+      "test": "Value estimate: request, result and remembered key",
+      "ok": true,
+      "msg": "remembered key is filled in after a reload"
+    },
+    {
+      "test": "Value estimate: request, result and remembered key",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Value estimate: a rejected key gives a clear message",
+      "ok": true,
+      "msg": "clear error (Anthropic rejected the API key. Check it and try again.)"
+    },
+    {
+      "test": "Value estimate: a rejected key gives a clear message",
+      "ok": true,
+      "msg": "key not stored when \"remember\" is off"
+    },
+    {
+      "test": "Village: building card from a searched address",
+      "ok": true,
+      "msg": "building year (1966)"
+    },
+    {
+      "test": "Village: building card from a searched address",
+      "ok": true,
+      "msg": "floor area (76 m²)"
+    },
+    {
+      "test": "Village: building card from a searched address",
+      "ok": true,
+      "msg": "foundation flag (Check Built 1925–1970 on clay, peat or u)"
+    },
+    {
+      "test": "Village: building card from a searched address",
+      "ok": true,
+      "msg": "soil (not mapped (built-up area))"
+    },
+    {
+      "test": "Village: building card from a searched address",
+      "ok": true,
+      "msg": "the asking price found online is shown"
+    },
+    {
+      "test": "Village: building card from a searched address",
+      "ok": true,
+      "msg": "neighbourhood scores shown"
+    },
+    {
+      "test": "Village: building card from a searched address",
+      "ok": true,
+      "msg": "the building is highlighted on the map"
+    },
+    {
+      "test": "Village: building card from a searched address",
+      "ok": true,
+      "msg": "legend explains the building colours"
+    },
+    {
+      "test": "Village: building card from a searched address",
+      "ok": true,
+      "msg": "WOZ value looked up (WOZ value\n€585.000 (value date 2025-01-01)\nPer m²\n€7.697\nEar)"
+    },
+    {
+      "test": "Village: building card from a searched address",
+      "ok": true,
+      "msg": "street address count (26)"
+    },
+    {
+      "test": "Village: building card from a searched address",
+      "ok": true,
+      "msg": "homes on the street listed"
+    },
+    {
+      "test": "Village: building card from a searched address",
+      "ok": true,
+      "msg": "foundation risk bar shown"
+    },
+    {
+      "test": "Village: building card from a searched address",
+      "ok": true,
+      "msg": "a home opens from the street list (Valeriusstraat 3)"
+    },
+    {
+      "test": "Village: building card from a searched address",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Village: street search and tapping a building",
+      "ok": true,
+      "msg": "listings on the street shown"
+    },
+    {
+      "test": "Village: street search and tapping a building",
+      "ok": true,
+      "msg": "buildings are drawn on the map"
+    },
+    {
+      "test": "Village: street search and tapping a building",
+      "ok": true,
+      "msg": "tapping a building opens its card (Potgieterlaan 58)"
+    },
+    {
+      "test": "Village: street search and tapping a building",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Village: value estimate carries building and street data",
+      "ok": true,
+      "msg": "request carries the building facts"
+    },
+    {
+      "test": "Village: value estimate carries building and street data",
+      "ok": true,
+      "msg": "request carries the measured plot, garden and noise"
+    },
+    {
+      "test": "Village: value estimate carries building and street data",
+      "ok": true,
+      "msg": "request carries the street listings"
+    },
+    {
+      "test": "Village: new development gets measured scores (Koolrabi)",
+      "ok": true,
+      "msg": "the street is flagged as a new development"
+    },
+    {
+      "test": "Village: new development gets measured scores (Koolrabi)",
+      "ok": true,
+      "msg": "quiet and car-light are measured for the street"
+    },
+    {
+      "test": "Village: new development gets measured scores (Koolrabi)",
+      "ok": true,
+      "msg": "plot and garden sizes (232 m², 129 m²)"
+    },
+    {
+      "test": "Village: new development gets measured scores (Koolrabi)",
+      "ok": true,
+      "msg": "house type (end of terrace)"
+    },
+    {
+      "test": "Village: new development gets measured scores (Koolrabi)",
+      "ok": true,
+      "msg": "garden or plot (136 m², of which 136 m² behind the house / 250 m²)"
+    },
+    {
+      "test": "Village: new development gets measured scores (Koolrabi)",
+      "ok": true,
+      "msg": "noise at the home (53 dB Lden (RIVM noise map (all sources)))"
+    },
+    {
+      "test": "Village: new development gets measured scores (Koolrabi)",
+      "ok": true,
+      "msg": "energy label line (Expected A+++ or better (built under the BENG energy rules from 2021))"
+    },
+    {
+      "test": "Village: new development gets measured scores (Koolrabi)",
+      "ok": true,
+      "msg": "the Foundations layer colours buildings by foundation risk"
+    },
+    {
+      "test": "Village: new development gets measured scores (Koolrabi)",
+      "ok": true,
+      "msg": "Koolrabi 11 shows its own WOZ value (WOZ value\n€855.000 (value date 2025-01-01)\nPer m²\n€4.971\nEarlier\n€753.)"
+    },
+    {
+      "test": "Village: new development gets measured scores (Koolrabi)",
+      "ok": true,
+      "msg": "similar homes listed, none looked up yet (9)"
+    },
+    {
+      "test": "Village: new development gets measured scores (Koolrabi)",
+      "ok": true,
+      "msg": "value check against the homes looked up (se type and floor area within 30% (BAG). A higher value per m² usually means a larger plot, better finish or a better spot on the street, so check what differs.)"
+    },
+    {
+      "test": "Village: new development gets measured scores (Koolrabi)",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Layout: iphone-se light",
+      "ok": true,
+      "msg": "no horizontal scroll (0px)"
+    },
+    {
+      "test": "Layout: iphone-se light",
+      "ok": true,
+      "msg": "search box fully on screen"
+    },
+    {
+      "test": "Layout: iphone-se light",
+      "ok": true,
+      "msg": "sheet fits (312px of 568px)"
+    },
+    {
+      "test": "Layout: iphone-se light",
+      "ok": true,
+      "msg": "sheet does not cover the search box"
+    },
+    {
+      "test": "Layout: iphone-se light",
+      "ok": true,
+      "msg": "legend visible and clear of the sheet (144,152 164x53)"
+    },
+    {
+      "test": "Layout: iphone-se light",
+      "ok": true,
+      "msg": "search box keeps a readable width (296px)"
+    },
+    {
+      "test": "Layout: iphone-se light",
+      "ok": true,
+      "msg": "title has its own background, readable over the map (rgba(255, 255, 255, 0.92))"
+    },
+    {
+      "test": "Layout: iphone-se light",
+      "ok": true,
+      "msg": "touch targets at least 30px tall"
+    },
+    {
+      "test": "Layout: iphone-se light",
+      "ok": true,
+      "msg": "text colour set (rgb(15, 23, 42))"
+    },
+    {
+      "test": "Layout: iphone-se light",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Layout: iphone-se dark",
+      "ok": true,
+      "msg": "no horizontal scroll (0px)"
+    },
+    {
+      "test": "Layout: iphone-se dark",
+      "ok": true,
+      "msg": "search box fully on screen"
+    },
+    {
+      "test": "Layout: iphone-se dark",
+      "ok": true,
+      "msg": "sheet fits (312px of 568px)"
+    },
+    {
+      "test": "Layout: iphone-se dark",
+      "ok": true,
+      "msg": "sheet does not cover the search box"
+    },
+    {
+      "test": "Layout: iphone-se dark",
+      "ok": true,
+      "msg": "legend visible and clear of the sheet (144,152 164x53)"
+    },
+    {
+      "test": "Layout: iphone-se dark",
+      "ok": true,
+      "msg": "search box keeps a readable width (296px)"
+    },
+    {
+      "test": "Layout: iphone-se dark",
+      "ok": true,
+      "msg": "title has its own background, readable over the map (rgba(15, 23, 42, 0.92))"
+    },
+    {
+      "test": "Layout: iphone-se dark",
+      "ok": true,
+      "msg": "touch targets at least 30px tall"
+    },
+    {
+      "test": "Layout: iphone-se dark",
+      "ok": true,
+      "msg": "text colour set (rgb(226, 232, 240))"
+    },
+    {
+      "test": "Layout: iphone-se dark",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Layout: iphone-15 light",
+      "ok": true,
+      "msg": "no horizontal scroll (0px)"
+    },
+    {
+      "test": "Layout: iphone-15 light",
+      "ok": true,
+      "msg": "search box fully on screen"
+    },
+    {
+      "test": "Layout: iphone-15 light",
+      "ok": true,
+      "msg": "sheet fits (469px of 852px)"
+    },
+    {
+      "test": "Layout: iphone-15 light",
+      "ok": true,
+      "msg": "sheet does not cover the search box"
+    },
+    {
+      "test": "Layout: iphone-15 light",
+      "ok": true,
+      "msg": "legend visible and clear of the sheet (217,152 164x53)"
+    },
+    {
+      "test": "Layout: iphone-15 light",
+      "ok": true,
+      "msg": "search box keeps a readable width (369px)"
+    },
+    {
+      "test": "Layout: iphone-15 light",
+      "ok": true,
+      "msg": "title has its own background, readable over the map (rgba(255, 255, 255, 0.92))"
+    },
+    {
+      "test": "Layout: iphone-15 light",
+      "ok": true,
+      "msg": "touch targets at least 30px tall"
+    },
+    {
+      "test": "Layout: iphone-15 light",
+      "ok": true,
+      "msg": "text colour set (rgb(15, 23, 42))"
+    },
+    {
+      "test": "Layout: iphone-15 light",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Layout: iphone-15 dark",
+      "ok": true,
+      "msg": "no horizontal scroll (0px)"
+    },
+    {
+      "test": "Layout: iphone-15 dark",
+      "ok": true,
+      "msg": "search box fully on screen"
+    },
+    {
+      "test": "Layout: iphone-15 dark",
+      "ok": true,
+      "msg": "sheet fits (469px of 852px)"
+    },
+    {
+      "test": "Layout: iphone-15 dark",
+      "ok": true,
+      "msg": "sheet does not cover the search box"
+    },
+    {
+      "test": "Layout: iphone-15 dark",
+      "ok": true,
+      "msg": "legend visible and clear of the sheet (217,152 164x53)"
+    },
+    {
+      "test": "Layout: iphone-15 dark",
+      "ok": true,
+      "msg": "search box keeps a readable width (369px)"
+    },
+    {
+      "test": "Layout: iphone-15 dark",
+      "ok": true,
+      "msg": "title has its own background, readable over the map (rgba(15, 23, 42, 0.92))"
+    },
+    {
+      "test": "Layout: iphone-15 dark",
+      "ok": true,
+      "msg": "touch targets at least 30px tall"
+    },
+    {
+      "test": "Layout: iphone-15 dark",
+      "ok": true,
+      "msg": "text colour set (rgb(226, 232, 240))"
+    },
+    {
+      "test": "Layout: iphone-15 dark",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Layout: iphone-15-landscape light",
+      "ok": true,
+      "msg": "no horizontal scroll (0px)"
+    },
+    {
+      "test": "Layout: iphone-15-landscape light",
+      "ok": true,
+      "msg": "search box fully on screen"
+    },
+    {
+      "test": "Layout: iphone-15-landscape light",
+      "ok": true,
+      "msg": "sheet fits (216px of 393px)"
+    },
+    {
+      "test": "Layout: iphone-15-landscape light",
+      "ok": true,
+      "msg": "sheet does not cover the search box"
+    },
+    {
+      "test": "Layout: iphone-15-landscape light",
+      "ok": true,
+      "msg": "legend visible and clear of the sheet (666,103 170x170)"
+    },
+    {
+      "test": "Layout: iphone-15-landscape light",
+      "ok": true,
+      "msg": "search box keeps a readable width (480px)"
+    },
+    {
+      "test": "Layout: iphone-15-landscape light",
+      "ok": true,
+      "msg": "title has its own background, readable over the map (rgba(255, 255, 255, 0.92))"
+    },
+    {
+      "test": "Layout: iphone-15-landscape light",
+      "ok": true,
+      "msg": "touch targets at least 30px tall"
+    },
+    {
+      "test": "Layout: iphone-15-landscape light",
+      "ok": true,
+      "msg": "text colour set (rgb(15, 23, 42))"
+    },
+    {
+      "test": "Layout: iphone-15-landscape light",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Layout: iphone-15-landscape dark",
+      "ok": true,
+      "msg": "no horizontal scroll (0px)"
+    },
+    {
+      "test": "Layout: iphone-15-landscape dark",
+      "ok": true,
+      "msg": "search box fully on screen"
+    },
+    {
+      "test": "Layout: iphone-15-landscape dark",
+      "ok": true,
+      "msg": "sheet fits (216px of 393px)"
+    },
+    {
+      "test": "Layout: iphone-15-landscape dark",
+      "ok": true,
+      "msg": "sheet does not cover the search box"
+    },
+    {
+      "test": "Layout: iphone-15-landscape dark",
+      "ok": true,
+      "msg": "legend visible and clear of the sheet (666,103 170x170)"
+    },
+    {
+      "test": "Layout: iphone-15-landscape dark",
+      "ok": true,
+      "msg": "search box keeps a readable width (480px)"
+    },
+    {
+      "test": "Layout: iphone-15-landscape dark",
+      "ok": true,
+      "msg": "title has its own background, readable over the map (rgba(15, 23, 42, 0.92))"
+    },
+    {
+      "test": "Layout: iphone-15-landscape dark",
+      "ok": true,
+      "msg": "touch targets at least 30px tall"
+    },
+    {
+      "test": "Layout: iphone-15-landscape dark",
+      "ok": true,
+      "msg": "text colour set (rgb(226, 232, 240))"
+    },
+    {
+      "test": "Layout: iphone-15-landscape dark",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Layout: ipad light",
+      "ok": true,
+      "msg": "no horizontal scroll (0px)"
+    },
+    {
+      "test": "Layout: ipad light",
+      "ok": true,
+      "msg": "search box fully on screen"
+    },
+    {
+      "test": "Layout: ipad light",
+      "ok": true,
+      "msg": "sheet fits (649px of 1180px)"
+    },
+    {
+      "test": "Layout: ipad light",
+      "ok": true,
+      "msg": "sheet does not cover the search box"
+    },
+    {
+      "test": "Layout: ipad light",
+      "ok": true,
+      "msg": "legend visible and clear of the sheet (634,890 170x170)"
+    },
+    {
+      "test": "Layout: ipad light",
+      "ok": true,
+      "msg": "search box keeps a readable width (480px)"
+    },
+    {
+      "test": "Layout: ipad light",
+      "ok": true,
+      "msg": "title has its own background, readable over the map (rgba(255, 255, 255, 0.92))"
+    },
+    {
+      "test": "Layout: ipad light",
+      "ok": true,
+      "msg": "touch targets at least 30px tall"
+    },
+    {
+      "test": "Layout: ipad light",
+      "ok": true,
+      "msg": "text colour set (rgb(15, 23, 42))"
+    },
+    {
+      "test": "Layout: ipad light",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Layout: ipad dark",
+      "ok": true,
+      "msg": "no horizontal scroll (0px)"
+    },
+    {
+      "test": "Layout: ipad dark",
+      "ok": true,
+      "msg": "search box fully on screen"
+    },
+    {
+      "test": "Layout: ipad dark",
+      "ok": true,
+      "msg": "sheet fits (649px of 1180px)"
+    },
+    {
+      "test": "Layout: ipad dark",
+      "ok": true,
+      "msg": "sheet does not cover the search box"
+    },
+    {
+      "test": "Layout: ipad dark",
+      "ok": true,
+      "msg": "legend visible and clear of the sheet (634,890 170x170)"
+    },
+    {
+      "test": "Layout: ipad dark",
+      "ok": true,
+      "msg": "search box keeps a readable width (480px)"
+    },
+    {
+      "test": "Layout: ipad dark",
+      "ok": true,
+      "msg": "title has its own background, readable over the map (rgba(15, 23, 42, 0.92))"
+    },
+    {
+      "test": "Layout: ipad dark",
+      "ok": true,
+      "msg": "touch targets at least 30px tall"
+    },
+    {
+      "test": "Layout: ipad dark",
+      "ok": true,
+      "msg": "text colour set (rgb(226, 232, 240))"
+    },
+    {
+      "test": "Layout: ipad dark",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Layout: desktop light",
+      "ok": true,
+      "msg": "no horizontal scroll (0px)"
+    },
+    {
+      "test": "Layout: desktop light",
+      "ok": true,
+      "msg": "search box fully on screen"
+    },
+    {
+      "test": "Layout: desktop light",
+      "ok": true,
+      "msg": "sheet fits (495px of 900px)"
+    },
+    {
+      "test": "Layout: desktop light",
+      "ok": true,
+      "msg": "sheet does not cover the search box"
+    },
+    {
+      "test": "Layout: desktop light",
+      "ok": true,
+      "msg": "legend visible and clear of the sheet (1254,610 170x170)"
+    },
+    {
+      "test": "Layout: desktop light",
+      "ok": true,
+      "msg": "search box keeps a readable width (480px)"
+    },
+    {
+      "test": "Layout: desktop light",
+      "ok": true,
+      "msg": "title has its own background, readable over the map (rgba(255, 255, 255, 0.92))"
+    },
+    {
+      "test": "Layout: desktop light",
+      "ok": true,
+      "msg": "touch targets at least 30px tall"
+    },
+    {
+      "test": "Layout: desktop light",
+      "ok": true,
+      "msg": "text colour set (rgb(15, 23, 42))"
+    },
+    {
+      "test": "Layout: desktop light",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Layout: desktop dark",
+      "ok": true,
+      "msg": "no horizontal scroll (0px)"
+    },
+    {
+      "test": "Layout: desktop dark",
+      "ok": true,
+      "msg": "search box fully on screen"
+    },
+    {
+      "test": "Layout: desktop dark",
+      "ok": true,
+      "msg": "sheet fits (495px of 900px)"
+    },
+    {
+      "test": "Layout: desktop dark",
+      "ok": true,
+      "msg": "sheet does not cover the search box"
+    },
+    {
+      "test": "Layout: desktop dark",
+      "ok": true,
+      "msg": "legend visible and clear of the sheet (1254,610 170x170)"
+    },
+    {
+      "test": "Layout: desktop dark",
+      "ok": true,
+      "msg": "search box keeps a readable width (480px)"
+    },
+    {
+      "test": "Layout: desktop dark",
+      "ok": true,
+      "msg": "title has its own background, readable over the map (rgba(15, 23, 42, 0.92))"
+    },
+    {
+      "test": "Layout: desktop dark",
+      "ok": true,
+      "msg": "touch targets at least 30px tall"
+    },
+    {
+      "test": "Layout: desktop dark",
+      "ok": true,
+      "msg": "text colour set (rgb(226, 232, 240))"
+    },
+    {
+      "test": "Layout: desktop dark",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Bottom sheet collapse",
+      "ok": true,
+      "msg": "collapsing shrinks the sheet (464px -> 81px)"
+    },
+    {
+      "test": "Bottom sheet collapse",
+      "ok": true,
+      "msg": "title stays visible when collapsed"
+    },
+    {
+      "test": "Bottom sheet collapse",
+      "ok": true,
+      "msg": "handle reports collapsed state"
+    },
+    {
+      "test": "Bottom sheet collapse",
+      "ok": true,
+      "msg": "expanding restores the sheet"
+    },
+    {
+      "test": "Bottom sheet collapse",
+      "ok": true,
+      "msg": "choosing a new place expands the sheet again"
+    },
+    {
+      "test": "Bottom sheet collapse",
+      "ok": true,
+      "msg": "no errors"
+    },
+    {
+      "test": "Offline app shell (service worker)",
+      "ok": true,
+      "msg": "service worker controls the page"
+    },
+    {
+      "test": "Offline app shell (service worker)",
+      "ok": true,
+      "msg": "app shell loads while offline"
+    },
+    {
+      "test": "Offline app shell (service worker)",
+      "ok": true,
+      "msg": "MapLibre loads offline from cache"
+    }
+  ]
+}
