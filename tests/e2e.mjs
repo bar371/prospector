@@ -30,6 +30,13 @@ async function open({ viewport = { width: 390, height: 844 }, colorScheme = 'lig
     if (u.includes('service.pdok.nl/brt/achtergrondkaart')) r.ok() ? log.tilesOk++ : log.tilesFailed++;
     if (u.includes('locatieserver') && !r.ok()) log.apiFailed.push(`${r.status()} ${u}`);
   });
+  // The WOZ-waardeloket is not queried from tests (its terms allow viewing single homes, and it only accepts the live origin).
+  await context.route('**/wozwaardeloket-api/**', (route) => {
+    const id = route.request().url().split('/').pop();
+    const values = id === '0484200002044829' ? [855000, 753000, 352000] : [400000 + (Number(id.slice(-3)) % 50) * 5000, 380000];
+    route.fulfill({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' },
+      body: JSON.stringify({ wozObject: { grondoppervlakte: 300 }, wozWaarden: values.map((v, i) => ({ peildatum: `${2025 - i}-01-01`, vastgesteldeWaarde: v })) }) });
+  });
   await page.goto(BASE, { waitUntil: 'load' });
   await page.waitForFunction(() => window.maplibregl && document.querySelector('.maplibregl-canvas'));
   return { context, page, log };
