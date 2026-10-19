@@ -435,7 +435,7 @@ document.querySelector('.search').addEventListener('submit', async (e) => {
 
 // ---------------------------------------------------------------- cards
 
-function scoreBars(scores, { withOverall = true } = {}) {
+function scoreBars(scores, { withOverall = true, measured = false } = {}) {
   const overall = weightedScore(scores);
   const rows = Object.entries(THEMES).filter(([k]) => scores[k] !== undefined).map(([k, label]) => {
     const s = scores[k];
@@ -445,7 +445,9 @@ function scoreBars(scores, { withOverall = true } = {}) {
       <span class="score-value">${s ?? '–'}</span></li>`;
   }).join('');
   return `${withOverall ? `<div class="overall"><span class="overall-value" style="--c:${scoreColor(overall)}">${overall ?? '–'}</span>
-      <span class="overall-text"><strong>Prospect score</strong><br>Better than ${overall ?? '–'}% of Dutch neighbourhoods, with your weights</span></div>` : ''}
+      <span class="overall-text"><strong>Prospect score, ${overall ?? '–'} out of 100</strong><br>${measured
+        ? 'Average of the scores below, with your weights. 0 is worst, 100 is best.'
+        : 'Average of the scores below, with your weights. Each is a national ranking: 50 is a typical Dutch neighbourhood, 0 the worst, 100 the best.'}</span></div>` : ''}
     <ul class="scores">${rows}</ul>`;
 }
 
@@ -471,8 +473,9 @@ function renderPlace(doc) {
 function buurtSummary(p, { measured = null, where = 'this home' } = {}) {
   const scores = Object.fromEntries(MAP_THEMES.map((k) => [k, measured?.[`score_${k}`] ?? p[`score_${k}`] ?? null]));
   return `<h2 class="section-title">${measured ? `Scores for ${esc(where)}` : `Neighbourhood ${esc(p.buurtnaam)}`}</h2>
-    ${scoreBars(scores)}
-    ${measured ? `<p class="source">Quiet and Car-light are measured at ${esc(where)} (noise ${num(measured.lden_db)} dB Lden, ${esc(measured.lden_bron || '')};
+    ${scoreBars(scores, { measured: !!measured })}
+    ${measured ? `<p class="source">Quiet and Car-light are measured at ${esc(where)} on a fixed scale, not ranked nationally: Quiet is 100 at 45 dB
+      or less and 0 at 65 dB or more (noise ${num(measured.lden_db)} dB Lden, ${esc(measured.lden_bron || '')};
       main road ${num(measured.afstand_hoofdweg_m)} m away). The other scores are averages for buurt ${esc(p.buurtnaam)}.</p>` : ''}
     <dl class="facts compact">
       <dt>Residents</dt><dd>${num(p.inwoners)}</dd>
@@ -480,7 +483,8 @@ function buurtSummary(p, { measured = null, where = 'this home' } = {}) {
       <dt>Crimes / 1,000 residents</dt><dd>${num(p.misdrijven_per_1000, 1)} <span class="muted">(2025)</span></dd>
       <dt>Leefbaarometer</dt><dd>${num(p.leefbaarometer, 2)} <span class="muted">(2024)</span></dd>
     </dl>
-    <p class="source">Scores are percentiles among all Dutch buurten. Sources: CBS, Politie, Leefbaarometer (BZK), RIVM.</p>`;
+    <p class="source">${measured ? 'The other scores rank' : 'Scores rank'} buurt ${esc(p.buurtnaam)} among all Dutch buurten (0 worst, 100 best).
+      Sources: CBS, Politie, Leefbaarometer (BZK), RIVM.</p>`;
 }
 
 function renderBuurt(p) {
