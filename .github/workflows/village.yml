@@ -36,7 +36,8 @@ jobs:
       - run: pip install -q shapely==2.0.6
       - run: python pipeline/village.py out/village
         env:
-          VILLAGES: ${{ github.event.inputs.villages }}
+          # Leiden is on hold until Hazerswoude-Rijndijk is signed off; dispatch with villages=leiden-centrum to build it.
+          VILLAGES: ${{ github.event.inputs.villages || 'hazerswoude-rijndijk' }}
       - name: Publish to the village-build branch
         if: always()
         run: |

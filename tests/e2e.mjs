@@ -322,17 +322,19 @@ for (const [key, title, buurten, councilRe] of [
 
 await test('Weights change the Prospect score and are remembered', async () => {
   const { context, page, log } = await open();
+  await page.waitForFunction(() => window.prospectMarketWeights, null, { timeout: 10000 });
   await page.click('.preset[data-area="zamenhofstraat-leiden"]');
   await waitForTitle(page, /Zamenhofstraat/);
   const before = Number(await page.locator('.overall-value').innerText());
   await page.click('#open-weights');
   check(await page.locator('#weights').isVisible(), 'weights dialog opens');
   check(await page.locator('#weights input[type=range]').count() === 7, 'a slider per theme');
+  check(/Market weights/.test(await page.locator('#weight-mode').innerText()), 'market weights are the default and explained');
   await page.locator('input[data-weight="veiligheid"]').fill('0');
   await page.locator('input[data-weight="voorzieningen"]').fill('3');
   await page.click('#weights button[value=close]');
   const after = Number(await page.locator('.overall-value').innerText());
-  check(after > before, `ignoring safety and stressing amenities raises Zamenhofstraat's score (${before} -> ${after})`);
+  check(after !== before, `own priorities change Zamenhofstraat's score (${before} -> ${after})`);
   await page.reload({ waitUntil: 'load' });
   await page.click('.preset[data-area="zamenhofstraat-leiden"]');
   await waitForTitle(page, /Zamenhofstraat/);
@@ -340,7 +342,7 @@ await test('Weights change the Prospect score and are remembered', async () => {
   await page.click('#open-weights');
   await page.click('#reset-weights');
   await page.click('#weights button[value=close]');
-  check(Number(await page.locator('.overall-value').innerText()) === before, 'reset restores the default score');
+  check(Number(await page.locator('.overall-value').innerText()) === before, 'reset restores the market-weighted score');
   check(log.errors.length === 0, `no errors${log.errors.length ? ': ' + log.errors.join(' | ') : ''}`);
   await context.close();
 });
@@ -434,8 +436,10 @@ await test('Village: building card from a searched address', async () => {
     return m.queryRenderedFeatures({ layers: ['buildings-fill'] }).some((x) => m.getFeatureState({ source: 'buildings', id: x.properties.pand }).selected);
   });
   check(selected, 'the building is highlighted on the map');
-  check(await page.waitForFunction(() => /foundation risk/i.test(document.querySelector('#legend').innerText), null, { timeout: 8000 }).then(() => true, () => false),
+  check(await page.waitForFunction(() => /measured at each home/i.test(document.querySelector('#legend').innerText), null, { timeout: 8000 }).then(() => true, () => false),
     'legend explains the building colours');
+  await page.waitForFunction(() => /WOZ value|No WOZ/.test(document.querySelector('#woz-box')?.innerText || ''), null, { timeout: 15000 }).catch(() => {});
+  check(/WOZ value\s*€\d/.test(await page.locator('#woz-box').innerText()), `WOZ value looked up (${(await page.locator('#woz-box').innerText()).slice(0, 60)})`);
   await page.screenshot({ path: `${OUT}/village-building.png` });
   await page.click('[data-street]');
   await waitForTitle(page, /^Valeriusstraat, Hazerswoude-Rijndijk$/);
@@ -514,7 +518,7 @@ await test('Village: new development gets measured scores (Koolrabi)', async () 
   await waitForTitle(page, /^Koolrabi, Hazerswoude-Rijndijk$/);
   const text = await sheetText(page);
   check(/New development, built 202/.test(text), 'the street is flagged as a new development');
-  check(/Scores for this street/.test(text) && /measured at this street/.test(text), 'quiet and car-light are measured for the street');
+  check(/Scores for this street/.test(text) && /Measured at this street/.test(text), 'quiet and car-light are measured for the street');
   const f = await facts(page);
   check(!!f['Median plot'] && !!f['Median garden'], `plot and garden sizes (${f['Median plot']}, ${f['Median garden']})`);
   await page.screenshot({ path: `${OUT}/village-new-street.png` });
@@ -527,9 +531,21 @@ await test('Village: new development gets measured scores (Koolrabi)', async () 
   check(/dB/.test(h.Noise || ''), `noise at the home (${h.Noise})`);
   check(/A\+\+\+|Not available|^[A-G]/.test(h['Energy label'] || ''), `energy label line (${h['Energy label']})`);
   await page.screenshot({ path: `${OUT}/village-new-home.png`, fullPage: false });
-  await page.click('[data-layer="rust"]');
+  await page.click('[data-layer="fundering"]');
   await page.waitForTimeout(800);
-  check(/measured at each home/.test(await page.locator('#legend').innerText()), 'on Quiet, buildings show the measured score');
+  check(/Foundation risk/.test(await page.locator('#legend').innerText()), 'the Foundations layer colours buildings by foundation risk');
+  await page.fill('#q', 'Koolrabi 11 Hazerswoude-Rijndijk');
+  await page.locator('#suggestions li[data-id]').first().waitFor({ timeout: 10000 });
+  await page.press('#q', 'Enter');
+  await waitForTitle(page, /^Koolrabi 11$/);
+  await page.waitForFunction(() => /WOZ value/.test(document.querySelector('#woz-box')?.innerText || ''), null, { timeout: 15000 }).catch(() => {});
+  const wozText = await page.locator('#woz-box').innerText();
+  check(/€855\.000/.test(wozText), `Koolrabi 11 shows its own WOZ value (${wozText.slice(0, 70)})`);
+  await page.click('[data-value-check]');
+  await page.waitForFunction(() => /median|Too few/.test(document.querySelector('#value-check')?.innerText || ''), null, { timeout: 30000 }).catch(() => {});
+  const vc = await page.locator('#value-check').innerText();
+  check(/median of \d+ similar/.test(vc), `value check against similar homes (${vc.slice(0, 120)})`);
+  await page.screenshot({ path: `${OUT}/village-value-check.png` });
   check(log.errors.length === 0, `no errors${log.errors.length ? ': ' + log.errors.join(' | ') : ''}`);
   await context.close();
 });

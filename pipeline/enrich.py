@@ -104,6 +104,66 @@ def active(f):
     return not p.get("eind_registratie") and p.get("status", "bestaand") in (None, "bestaand")
 
 
+# ---------------------------------------------------------------- Leefbaarometer 100 m grid
+
+LBM_ZIP = "https://www.leefbaarometer.nl/resources/open-data-leefbaarometer-meting-2024.zip"
+
+
+def rd(lon, lat):
+    """WGS84 to Rijksdriehoek (EPSG:28992), the standard polynomial approximation (accurate to about 1 m)."""
+    dphi, dlam = 0.36 * (lat - 52.15517440), 0.36 * (lon - 5.38720621)
+    x = (155000 + 190094.945 * dlam - 11832.228 * dphi * dlam - 114.221 * dphi ** 2 * dlam - 32.391 * dlam ** 3
+         - 0.705 * dphi - 2.340 * dphi ** 3 * dlam - 0.608 * dphi * dlam ** 3 - 0.008 * dlam ** 2 + 0.148 * dphi ** 2 * dlam ** 3)
+    y = (463000 + 309056.544 * dphi + 3638.893 * dlam ** 2 + 73.077 * dphi ** 2 - 157.984 * dphi * dlam ** 2
+         + 59.788 * dphi ** 3 + 0.433 * dlam - 6.439 * dphi ** 2 * dlam ** 2 - 0.032 * dphi * dlam + 0.092 * dlam ** 4
+         - 0.054 * dphi * dlam ** 4)
+    return x, y
+
+
+def grid_id(lon, lat):
+    x, y = rd(lon, lat)
+    return f"E{int(x // 100):04d}N{int(y // 100):04d}"
+
+
+def lbm_grid(cells):
+    """Latest Leefbaarometer scores for the given 100 m cells, with national percentiles among all cells of that year."""
+    import bisect
+    import csv
+    import io
+    import tempfile
+    import zipfile
+    tmp = Path(tempfile.gettempdir()) / "leefbaarometer-2024.zip"
+    if not tmp.exists():
+        req = urllib.request.Request(LBM_ZIP, headers=UA)
+        with urllib.request.urlopen(req, timeout=900) as r, open(tmp, "wb") as fh:
+            while chunk := r.read(1 << 20):
+                fh.write(chunk)
+    z = zipfile.ZipFile(tmp)
+    name = next(i.filename for i in z.infolist() if "scores grids" in i.filename and not i.filename.startswith("__MACOSX"))
+    latest, national = {}, {}
+    with z.open(name) as fh:
+        for row in csv.DictReader(io.TextIOWrapper(fh, encoding="utf-8-sig")):
+            year = int(row["jaar"])
+            if year == 2024:
+                for k in ("lbm", "onv", "vrz", "won"):
+                    if row[k] not in ("NA", ""):
+                        national.setdefault(k, []).append(float(row[k]))
+            if row["grid_id"] in cells and year >= latest.get(row["grid_id"], {}).get("jaar", 0):
+                latest[row["grid_id"]] = {"jaar": year, **{k: (None if row[k] in ("NA", "") else float(row[k]))
+                                                          for k in ("lbm", "onv", "vrz", "won", "fys", "soc")}}
+    for v in national.values():
+        v.sort()
+
+    def pct(k, val):
+        arr = national.get(k)
+        return None if val is None or not arr else int(round(100 * bisect.bisect_left(arr, val) / len(arr)))
+
+    for cell in latest.values():
+        cell["pct_lbm"], cell["pct_onv"], cell["pct_vrz"] = pct("lbm", cell["lbm"]), pct("onv", cell["onv"]), pct("vrz", cell["vrz"])
+    log(f"  Leefbaarometer grid: {len(latest)} of {len(cells)} cells found; national 2024 cells {len(national.get('lbm', []))}")
+    return latest
+
+
 # ---------------------------------------------------------------- noise
 
 def noise_layers():
@@ -319,6 +379,11 @@ def build(key):
         return {"label": doc.get("Energieklasse") or doc.get("energieklasse"), "datum": doc.get("Registratiedatum") or doc.get("registratiedatum")} if doc else None
 
     noise_cache = {}
+    try:
+        lbm_cells = lbm_grid({grid_id(a["lon"], a["lat"]) for a in homes})
+    except Exception as e:
+        log(f"  Leefbaarometer grid failed: {e}")
+        lbm_cells = {}
 
     def one(a):
         pt = M.geom(Point(a["lon"], a["lat"]))
@@ -422,6 +487,12 @@ def build(key):
         car_score = min(100, car_d * 4)  # 25 m or more from any car lane is fully car-free at the door
         out["score_autoluw"] = int(round(0.4 * street_score + 0.3 * car_score + 0.3 * main_score))
 
+        # liveability and its safety part for the home's own 100 m cell (Leefbaarometer is itself built from house prices)
+        cell = lbm_cells.get(grid_id(a["lon"], a["lat"]))
+        if cell and cell.get("lbm") is not None:
+            out["leefbaarometer_grid"] = {"jaar": cell["jaar"], "score": round(cell["lbm"], 3), "pct": cell["pct_lbm"],
+                                          "veiligheid_pct": cell["pct_onv"], "voorzieningen_pct": cell["pct_vrz"]}
+            out["score_leefbaarheid"] = cell["pct_lbm"]
         year = a.get("bouwjaar")
         out["nieuwbouw"] = bool(year) and int(year) >= 2015
         out["energielabel"] = energy(a["adresseerbaarobject_id"])
@@ -473,6 +544,9 @@ def build(key):
             "lden_bron": es[0].get("lden_bron") if es else None,
             "score_rust": med(e.get("score_rust") for e in es),
             "score_autoluw": med(e.get("score_autoluw") for e in es),
+            "score_leefbaarheid": med(e.get("score_leefbaarheid") for e in es),
+            "veiligheid_grid_pct": med((e.get("leefbaarometer_grid") or {}).get("veiligheid_pct") for e in es),
+            "leefbaarometer_jaar": max(((e.get("leefbaarometer_grid") or {}).get("jaar") or 0 for e in es), default=None) or None,
             "nieuwbouw_pct": share(e.get("nieuwbouw") for e in es),
             "bouwlagen_mediaan": med(e.get("bouwlagen") for e in es),
         }
