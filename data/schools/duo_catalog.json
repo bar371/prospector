@@ -1,0 +1,1402 @@
+{
+ "adressen_bo": {
+  "title": "Adressen van hoofdvestigingen, vestigingen en besturen in het basisonderwijs",
+  "resources": [
+   [
+    "Adressen bevoegde gezagen basisonderwijs",
+    "https://onderwijsdata.duo.nl/dataset/786f12ea-6224-42fd-ab72-de4d7d879535/resource/d06cc759-ec8c-4430-91ad-14631b6c7bed/download/besturenbo.csv"
+   ],
+   [
+    "Adresgegevens van hoofdvestingen in het basisonderwijs",
+    "https://onderwijsdata.duo.nl/dataset/786f12ea-6224-42fd-ab72-de4d7d879535/resource/9801fdea-01bc-43cc-8e4e-3e03a2bbbbf8/download/instellingenbo.csv"
+   ],
+   [
+    "Alle vestigingen in het basisonderwijs",
+    "https://onderwijsdata.duo.nl/dataset/786f12ea-6224-42fd-ab72-de4d7d879535/resource/dcc9c9a5-6d01-410b-967f-810557588ba4/download/vestigingenbo.csv"
+   ]
+  ]
+ },
+ "adressen_mbo": {
+  "title": "Adressen mbo",
+  "resources": [
+   [
+    "Adressen bevoegde gezagen mbo",
+    "https://onderwijsdata.duo.nl/dataset/1bafae09-10e4-47b5-a54e-1c01f5776a60/resource/9aedc028-b38b-48d7-a158-7fd360d5fc30/download/besturenmbo.csv"
+   ],
+   [
+    "Adressen instellingen",
+    "https://onderwijsdata.duo.nl/dataset/1bafae09-10e4-47b5-a54e-1c01f5776a60/resource/1a946297-a7ca-48d5-9ae8-19ad73bf8176/download/instellingenmbo.csv"
+   ]
+  ]
+ },
+ "adressen_ho": {
+  "title": "Adressen in het hoger onderwijs",
+  "resources": [
+   [
+    "Adressen van besturen in het hoger onderwijs",
+    "https://onderwijsdata.duo.nl/dataset/37051cda-b681-43eb-a385-efa18e99cdd2/resource/a521ddc2-b8d9-43d5-97df-1e700ee9f8c5/download/besturenho.csv"
+   ],
+   [
+    "Adressen van instellingen in het hoger onderwijs",
+    "https://onderwijsdata.duo.nl/dataset/37051cda-b681-43eb-a385-efa18e99cdd2/resource/bf1da9c6-c688-4873-91b1-b12c9ac2c132/download/instellingenho.csv"
+   ]
+  ]
+ },
+ "persbek_bo_en_sbo": {
+  "title": "Personele bekostiging bo en sbo",
+  "resources": [
+   [
+    "Personele Bekostiging bo schoolkenmerken per instelling",
+    "https://onderwijsdata.duo.nl/dataset/a1458deb-58f0-41cf-a49a-fdd3cb0beffc/resource/2ea15161-f387-4a6b-8539-5f668bfe4e89/download/persbek_bo_01.csv"
+   ],
+   [
+    "Personele Bekostiging bo leerlingkenmerken per instelling",
+    "https://onderwijsdata.duo.nl/dataset/a1458deb-58f0-41cf-a49a-fdd3cb0beffc/resource/cd8a2b57-b7fe-4bc2-b6f0-0ec8618a8a01/download/persbek_bo_02.csv"
+   ],
+   [
+    "Personele Bekostiging bo bekostigingskenmerken per instelling",
+    "https://onderwijsdata.duo.nl/dataset/a1458deb-58f0-41cf-a49a-fdd3cb0beffc/resource/e4dda649-a4d0-4c95-a38d-8b25f7e39d1d/download/persbek_bo_03.csv"
+   ],
+   [
+    "Personele Bekostiging sbo schoolkenmerken per instelling",
+    "https://onderwijsdata.duo.nl/dataset/a1458deb-58f0-41cf-a49a-fdd3cb0beffc/resource/0d75517c-4ffe-401e-922c-1f054b8fab28/download/persbek_sbo_01.csv"
+   ],
+   [
+    "Personele Bekostiging sbo leerlingkenmerken per instelling",
+    "https://onderwijsdata.duo.nl/dataset/a1458deb-58f0-41cf-a49a-fdd3cb0beffc/resource/30256fc3-f431-479f-8aca-6dec3d216f62/download/persbek_sbo_02.csv"
+   ],
+   [
+    "Personele Bekostiging sbo bekostigingskenmerken per instelling",
+    "https://onderwijsdata.duo.nl/dataset/a1458deb-58f0-41cf-a49a-fdd3cb0beffc/resource/c0c3c327-e286-4558-94bb-05877e547cf8/download/persbek_sbo_03.csv"
+   ]
+  ]
+ },
+ "mibek_bo_en_sbo": {
+  "title": "Materiele instandhouding bo en sbo",
+  "resources": [
+   [
+    "Materi�le instandhouding bo schoolkenmerken per instelling",
+    "https://onderwijsdata.duo.nl/dataset/8a0adfc2-1cdb-4631-b860-04147d80d67d/resource/9dc64222-99e3-4f97-b912-dc90ab5e02ef/download/mibek_bo_01.csv"
+   ],
+   [
+    "Materi�le instandhouding bo leerlingkenmerken per instelling",
+    "https://onderwijsdata.duo.nl/dataset/8a0adfc2-1cdb-4631-b860-04147d80d67d/resource/2b29dddc-ccef-4dfd-ba52-088a448d53dd/download/mibek_bo_02.csv"
+   ],
+   [
+    "Materi�le instandhouding bo bekostigingskenmerken per instelling",
+    "https://onderwijsdata.duo.nl/dataset/8a0adfc2-1cdb-4631-b860-04147d80d67d/resource/9ad5c479-f854-4178-99ca-722169fe65ff/download/mibek_bo_03.csv"
+   ],
+   [
+    "Materi�le instandhouding sbo schoolkenmerken per instelling",
+    "https://onderwijsdata.duo.nl/dataset/8a0adfc2-1cdb-4631-b860-04147d80d67d/resource/78a3b264-88be-4342-82b5-34c4e4f83098/download/mibek_sbo_01.csv"
+   ],
+   [
+    "Materi�le instandhouding sbo leerlingkenmerken per instelling",
+    "https://onderwijsdata.duo.nl/dataset/8a0adfc2-1cdb-4631-b860-04147d80d67d/resource/541d1543-c01d-4e8e-a5e3-c1d3c0b3a13b/download/mibek_sbo_02.csv"
+   ],
+   [
+    "Materi�le instandhouding sbo bekostigingskenmerken per instelling",
+    "https://onderwijsdata.duo.nl/dataset/8a0adfc2-1cdb-4631-b860-04147d80d67d/resource/f5ad5df5-e800-45e8-b7e4-55fee0fcd02d/download/mibek_sbo_03.csv"
+   ]
+  ]
+ },
+ "adressen_so": {
+  "title": "Adressen van instellingen, vestigingen en besturen in het speciaal onderwijs",
+  "resources": [
+   [
+    "Adressen van besturen in het speciaal onderwijs",
+    "https://onderwijsdata.duo.nl/dataset/033ab279-8e6f-44a2-8455-6ad42147762f/resource/cb92b932-6b7f-4948-b405-4dd97e561aba/download/besturenso.csv"
+   ],
+   [
+    "Adressen van instellingen in het speciaal onderwijs",
+    "https://onderwijsdata.duo.nl/dataset/033ab279-8e6f-44a2-8455-6ad42147762f/resource/8a215187-9687-485b-af5c-6db50ed53d63/download/instellingenso.csv"
+   ],
+   [
+    "Adressen van vestigingen in het speciaal onderwijs",
+    "https://onderwijsdata.duo.nl/dataset/033ab279-8e6f-44a2-8455-6ad42147762f/resource/8f0f1639-712d-4adb-bb59-cabd43730dc8/download/vestigingenso.csv"
+   ]
+  ]
+ },
+ "adressen_vo": {
+  "title": "Adressen van instellingen, vestigingen en besturen in het voortgezet onderwijs",
+  "resources": [
+   [
+    "Adressen van besturen in het voortgezet onderwijs",
+    "https://onderwijsdata.duo.nl/dataset/c8e6ffdd-cc2b-44ee-880f-0ff03f72e868/resource/bfc13171-de6b-4a3b-a095-e05d312107c4/download/besturenvo.csv"
+   ],
+   [
+    "Adressen van instellingen in het voortgezet onderwijs",
+    "https://onderwijsdata.duo.nl/dataset/c8e6ffdd-cc2b-44ee-880f-0ff03f72e868/resource/0ef14f5e-89bf-4e92-b28e-8d323b7b8dbc/download/instellingenvo.csv"
+   ],
+   [
+    "Adressen van vestigingen in het voortgezet onderwijs",
+    "https://onderwijsdata.duo.nl/dataset/c8e6ffdd-cc2b-44ee-880f-0ff03f72e868/resource/5187f8d5-ff9c-4284-8e06-4311f0354956/download/vestigingenvo.csv"
+   ]
+  ]
+ },
+ "bogewicht-v1": {
+  "title": "Leerlingen bo per vestiging naar gewicht",
+  "resources": [
+   [
+    "Leerlingen bo per vestiging naar gewicht",
+    "https://beheer-ggm-ckan-prd.apps.prd.duo.rijksapps.nl/dataset/ee0b0510-d3fb-4c7f-b534-54e1aebbf954/resource/ed4c4738-9315-4a5c-8c65-2a0353ae7611/download/brin6_gewicht.csv"
+   ]
+  ]
+ },
+ "wpoprognoses": {
+  "title": "Prognoses bo en sbo per vestiging",
+  "resources": [
+   [
+    "Prognoses bo en sbo per vestiging",
+    "https://onderwijsdata.duo.nl/dataset/7cf3a1f0-78d6-4d4e-a820-64017d5aafcb/resource/f27c0d5c-59a0-41b9-b23f-f3a7ee03d4ba/download/brin6_prognosespo.csv"
+   ]
+  ]
+ },
+ "wpoheroverweging-v1": {
+  "title": "Heroverwegingen en bijgestelde adviezen bo en sbo",
+  "resources": [
+   [
+    "Heroverwegingen en bijgestelde adviezen bo en sbo",
+    "https://onderwijsdata.duo.nl/dataset/6f15b8be-2e6b-48b3-9955-f2e2a9548f7c/resource/ab35e2f6-d565-449a-9dcd-d0f688e997e8/download/brin6_heroverweging.csv"
+   ]
+  ]
+ },
+ "wpo-eindscores": {
+  "title": "Gemiddelde eindscores per vestiging bo en sbo",
+  "resources": [
+   [
+    "Gemiddelde eindscores per vestiging in het bo en sbo",
+    "https://onderwijsdata.duo.nl/dataset/36397882-2746-42f7-8eca-2ae203242b30/resource/be21eafb-63fa-4230-80a8-bbd73b3a79ff/download/brin6_eindscores.csv"
+   ]
+  ]
+ },
+ "wpoleerjaar": {
+  "title": "Leerlingen bo en sbo per vestiging naar leerjaar",
+  "resources": [
+   [
+    "Leerlingen bo en sbo per vestiging naar leerjaar",
+    "https://onderwijsdata.duo.nl/dataset/b1c8c9e6-f771-4e02-8888-af4673cec92c/resource/ddc2a9e9-ab70-4309-b32c-4ab824e2f157/download/brin6_leerjaar.csv"
+   ]
+  ]
+ },
+ "wpozittenblijvers-v1": {
+  "title": "Zittenblijvers in het bo en sbo per vestiging",
+  "resources": [
+   [
+    "Aantal zittenblijvers bo en sbo per schoolvestiging",
+    "https://onderwijsdata.duo.nl/dataset/f0c79c94-6ffb-44bf-a3d5-9a05aef4ade4/resource/df7297a9-70a3-4a3a-b4a6-d289c7d16014/download/brin6_zittenblijvers.csv"
+   ]
+  ]
+ },
+ "wpoadvies-v1": {
+  "title": "Leerlingen bo en sbo per vestiging naar advies",
+  "resources": [
+   [
+    "Leerlingen bo en sbo per vestiging naar advies",
+    "https://onderwijsdata.duo.nl/dataset/d6903313-8c64-4b12-b4ac-07e5655ef9f4/resource/454c5dd4-6815-4b52-ae2f-b9eebc6afa6d/download/brin6_advies.csv"
+   ]
+  ]
+ },
+ "rio_nfo_po_vo_vavo_mbo_ho": {
+  "title": "RIO nfo, po, vo, vavo, mbo en ho",
+  "resources": [
+   [
+    "aangeboden_bo_opleidingen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/bfa671d9-4414-4c2c-8400-08bd9561330b/download/aangeboden_bo_opleidingen.csv"
+   ],
+   [
+    "aangeboden_ho_opleidingen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/c0e73372-076d-46ac-b5fd-9d27e9f154f6/download/aangeboden_ho_opleidingen.csv"
+   ],
+   [
+    "aangeboden_ho_opleidingsonderdeel_cohorten",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/30480fda-98ee-4b63-8a20-96eb509a5917/download/aangeboden_ho_opleidingsonderdeel_cohorten.csv"
+   ],
+   [
+    "aangeboden_ho_opleidingsonderdelen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/0ff32f1a-2855-4a5d-80f9-8df7b90ac825/download/aangeboden_ho_opleidingsonderdelen.csv"
+   ],
+   [
+    "aangeboden_ho_opleiding_cohorten",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/cd2f850c-2e8d-48ce-a0b9-3c26aa2c4835/download/aangeboden_ho_opleiding_cohorten.csv"
+   ],
+   [
+    "aangeboden_mbo_opleidingen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/c528ffef-907c-43c4-bef2-b724fa925c3c/download/aangeboden_mbo_opleidingen.csv"
+   ],
+   [
+    "aangeboden_mbo_opleidingsonderdeel_cohorten",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/8bd87a36-de13-4232-a544-d27cc7f98c93/download/aangeboden_mbo_opleidingsonderdeel_cohorten.csv"
+   ],
+   [
+    "aangeboden_mbo_opleidingsonderdelen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/cceb3e72-6555-440d-b937-69ca3e619e8c/download/aangeboden_mbo_opleidingsonderdelen.csv"
+   ],
+   [
+    "aangeboden_mbo_opleiding_cohorten",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/1b7b0058-0f87-4cd9-9c0c-fb37c1e16256/download/aangeboden_mbo_opleiding_cohorten.csv"
+   ],
+   [
+    "aangeboden_nfo_opleidingen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/b5e37f7a-4a66-42ba-9cdf-8f7b10fa3c48/download/aangeboden_nfo_opleidingen.csv"
+   ],
+   [
+    "aangeboden_nfo_opleiding_cohorten",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/97dbf0cc-cc13-46bb-a339-2f99134d87ce/download/aangeboden_nfo_opleiding_cohorten.csv"
+   ],
+   [
+    "aangeboden_so_opleidingen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/e556d3af-5a00-43f3-86f2-58c816a2da56/download/aangeboden_so_opleidingen.csv"
+   ],
+   [
+    "aangeboden_vavo_opleidingen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/d220362d-1732-46c4-b7e5-3d1b112d56eb/download/aangeboden_vavo_opleidingen.csv"
+   ],
+   [
+    "aangeboden_vavo_opleiding_cohorten",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/36f8ca3f-4251-4f6a-9109-eadc70b9d227/download/aangeboden_vavo_opleiding_cohorten.csv"
+   ],
+   [
+    "aangeboden_vso_opleidingen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/9fd6f950-1f0c-431c-8ca1-310c98fd79b9/download/aangeboden_vso_opleidingen.csv"
+   ],
+   [
+    "bevoegd_gezag_erkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/64bc1ba3-5ce1-4e28-a915-86226f3b7dd4/download/bevoegd_gezag_erkenningen.csv"
+   ],
+   [
+    "bo_onderwijslicenties",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/8ef75478-2789-4d96-847c-57f7fa091947/download/bo_onderwijslicenties.csv"
+   ],
+   [
+    "contactadressen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/3fe23e7b-6671-4667-aa0b-ec7079feada5/download/contactadressen.csv"
+   ],
+   [
+    "examenlicenties",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/12aefec6-7cf5-477d-a03c-1d02bb34b1d7/download/examenlicenties.csv"
+   ],
+   [
+    "formele_instellingsadressen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/6496afbc-867b-4a3d-9ec4-0ae01235966d/download/formele_instellingsadressen.csv"
+   ],
+   [
+    "ho_opleidingen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/94152b85-14ed-4107-adae-f9b3634e2c1d/download/ho_opleidingen.csv"
+   ],
+   [
+    "ho_opleidingsonderdelen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/890033f0-10f9-4cbc-8076-49dd98bf2926/download/ho_opleidingsonderdelen.csv"
+   ],
+   [
+    "ho_relaties_opleidingseenheden",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/4b07dbfb-6f23-450d-9df3-1b82aca2d037/download/ho_relaties_opleidingseenheden.csv"
+   ],
+   [
+    "ho_relaties_opleidingseenheden_erkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/eab71488-fa39-458d-90be-510a62194e76/download/ho_relaties_opleidingseenheden_erkenningen.csv"
+   ],
+   [
+    "mbo_generieke_examen_onderdeelerkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/5f158e6a-d50f-4188-9192-9dfe6046089c/download/mbo_generieke_examen_onderdeelerkenningen.csv"
+   ],
+   [
+    "mbo_groepen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/7f5b8f09-0254-4974-9d2b-6bb3d6b1e4e6/download/mbo_groepen.csv"
+   ],
+   [
+    "mbo_onderwijslicenties",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/820dd8a0-231f-4284-8dbb-3e3c4cb1dfc2/download/mbo_onderwijslicenties.csv"
+   ],
+   [
+    "mbo_opleidingen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/17111d6d-b463-4276-a401-29bf27d3d30b/download/mbo_opleidingen.csv"
+   ],
+   [
+    "mbo_opleidingserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/92fb0aad-3673-41ff-92c3-f955efd4695e/download/mbo_opleidingserkenningen.csv"
+   ],
+   [
+    "mbo_opleidingsonderdelen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/38f48ede-4cc3-472a-8019-ec596c7eccaf/download/mbo_opleidingsonderdelen.csv"
+   ],
+   [
+    "mbo_relaties_opleidingseenheden",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/91249063-52a6-4dd7-a8cf-a583e2e69eb5/download/mbo_relaties_opleidingseenheden.csv"
+   ],
+   [
+    "mbo_relaties_opleidingseenheden_erkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/be92c95f-d3d6-4bd9-8e97-cde826bcfc06/download/mbo_relaties_opleidingseenheden_erkenningen.csv"
+   ],
+   [
+    "mbo_sancties",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/0570e0ea-1f79-4028-8f87-3fb74ae25da9/download/mbo_sancties.csv"
+   ],
+   [
+    "mbo_structuren",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/23c4107c-2ab2-43a6-8cd6-a0a62c7cb6d0/download/mbo_structuren.csv"
+   ],
+   [
+    "nfo_opleidingen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/c44341cd-a803-4932-8e98-d66a0cd0f566/download/nfo_opleidingen.csv"
+   ],
+   [
+    "nfo_relaties_opleidingseenheden_erkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/9671019a-c152-4aca-988c-b9d60ef0c3c4/download/nfo_relaties_opleidingseenheden_erkenningen.csv"
+   ],
+   [
+    "onderwijsaanbieders",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/5cd58c3c-e44e-4840-a8e9-b029e7aa06e2/download/onderwijsaanbieders.csv"
+   ],
+   [
+    "onderwijsaanbiedersgroepen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/c5f27ce7-8f45-4ada-a9a7-abf70931cd76/download/onderwijsaanbiedersgroepen.csv"
+   ],
+   [
+    "onderwijsbesturen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/918b5325-5f63-42ad-977a-63e4f0cc983e/download/onderwijsbesturen.csv"
+   ],
+   [
+    "onderwijslocatiegebruiken",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/a86ef529-66dd-4fee-94f2-a947d4fc4617/download/onderwijslocatiegebruiken.csv"
+   ],
+   [
+    "onderwijslocaties",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/a7e3f323-6e46-4dca-a834-369d9d520aa8/download/onderwijslocaties.csv"
+   ],
+   [
+    "onderwijsondersteunerserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/6bab4f09-f117-4ebc-9f0e-fbe4c84044f5/download/onderwijsondersteunerserkenningen.csv"
+   ],
+   [
+    "po_groepen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/f616a8a6-fd4e-427b-8fa1-3eb9eb03a25f/download/po_groepen.csv"
+   ],
+   [
+    "po_opleidingen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/dffc5fab-6141-4cb6-a1ec-a57439a60b83/download/po_opleidingen.csv"
+   ],
+   [
+    "po_opleidingserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/cc187320-7b54-463d-8a05-75ffd0c82537/download/po_opleidingserkenningen.csv"
+   ],
+   [
+    "po_opleidingsfasen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/2dfe3bac-343e-4051-a0db-04f8bf0a44d4/download/po_opleidingsfasen.csv"
+   ],
+   [
+    "po_relaties_opleidingseenheden",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/fd55235b-d23e-4fdb-aaa9-01634c0870cf/download/po_relaties_opleidingseenheden.csv"
+   ],
+   [
+    "po_relaties_opleidingseenheden_erkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/1f97ecd0-d005-4ae1-bf07-747c7ef8857c/download/po_relaties_opleidingseenheden_erkenningen.csv"
+   ],
+   [
+    "regio_erkende_samenwerkingen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/05e68307-411d-4c91-ba0a-3955397e7225/download/regio_erkende_samenwerkingen.csv"
+   ],
+   [
+    "relaties_bevoegdgezagerkenningen_onderwijsondersteunerserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/b84f770d-203b-48e0-97f5-aa8c395d46cb/download/relaties_bevoegdgezagerkenningen_onderwijsondersteunerserkenningen.csv"
+   ],
+   [
+    "relaties_bevoegdgezagerkenningen_samenwerkingserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/83af5dc0-5fbc-4197-912f-1fadb8b67c33/download/relaties_bevoegdgezagerkenningen_samenwerkingserkenningen.csv"
+   ],
+   [
+    "relaties_onderwijsaanbiedersgroepen_onderwijsaanbieders",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/cefdda99-c782-46e3-b83b-06f0be1b47ed/download/relaties_onderwijsaanbiedersgroepen_onderwijsaanbieders.csv"
+   ],
+   [
+    "relaties_onderwijsaanbieders_onderwijsinstellingserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/6aac8002-8458-42fd-8e4b-604387b56273/download/relaties_onderwijsaanbieders_onderwijsinstellingserkenningen.csv"
+   ],
+   [
+    "relaties_onderwijsbesturen_bevoegdgezagerkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/8adbdf01-d124-47a7-ac60-5e66dc3f0fbb/download/relaties_onderwijsbesturen_bevoegdgezagerkenningen.csv"
+   ],
+   [
+    "relaties_onderwijsbesturen_onderwijsaanbieders",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/0a44fd74-5e18-4156-9d6c-d87cb01cd0be/download/relaties_onderwijsbesturen_onderwijsaanbieders.csv"
+   ],
+   [
+    "relaties_onderwijsbesturen_onderwijsaanbiedersgroepen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/88173002-b3df-49a8-a4b1-06ae79926774/download/relaties_onderwijsbesturen_onderwijsaanbiedersgroepen.csv"
+   ],
+   [
+    "relaties_onderwijsinstellingserkenningen_vestigingserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/9d6f76f8-6a34-41ca-93f8-8a7293966736/download/relaties_onderwijsinstellingserkenningen_vestigingserkenningen.csv"
+   ],
+   [
+    "relaties_onderwijslocatiegebruiken_vestigingserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/c18ec7dd-aa4e-4b51-997c-782955f1aa38/download/relaties_onderwijslocatiegebruiken_vestigingserkenningen.csv"
+   ],
+   [
+    "relaties_onderwijsondersteunerserkenningen_onderwijsinstellingserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/3a577d34-a71c-45f8-b2fb-f0313c783c7c/download/relaties_onderwijsondersteunerserkenningen_onderwijsinstellingserkenningen.csv"
+   ],
+   [
+    "relaties_onderwijsondersteunerserkenningen_vestigingserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/618ffeb5-9e6a-46c8-a352-58107d9198b7/download/relaties_onderwijsondersteunerserkenningen_vestigingserkenningen.csv"
+   ],
+   [
+    "relaties_samenwerkingserkenningen_onderwijsinstellingserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/f2f66171-cd42-462d-8f77-765dd20d2273/download/relaties_samenwerkingserkenningen_onderwijsinstellingserkenningen.csv"
+   ],
+   [
+    "relaties_samenwerkingserkenningen_onderwijsondersteunerserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/c1c2484f-6bb9-49ca-bf05-01f1ffb6295e/download/relaties_samenwerkingserkenningen_onderwijsondersteunerserkenningen.csv"
+   ],
+   [
+    "relaties_samenwerkingserkenningen_vestigingserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/50757f8a-b6fe-46ba-a9c2-5753409efa8c/download/relaties_samenwerkingserkenningen_vestigingserkenningen.csv"
+   ],
+   [
+    "samenwerkingserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/57eeb88e-325d-4e95-ad80-08fa07810aed/download/samenwerkingserkenningen.csv"
+   ],
+   [
+    "so_onderwijslicenties",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/29ead79f-a0bc-413d-9734-01a2a541efed/download/so_onderwijslicenties.csv"
+   ],
+   [
+    "vavo_groepen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/97c771bf-1663-422a-b5fb-a273af1e68b0/download/vavo_groepen.csv"
+   ],
+   [
+    "vavo_onderwijslicenties",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/a24d2ace-ee6a-4549-b64b-c5fb2969741d/download/vavo_onderwijslicenties.csv"
+   ],
+   [
+    "vavo_opleidingen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/20116bb9-8071-458b-97e6-79d1a25a573d/download/vavo_opleidingen.csv"
+   ],
+   [
+    "vavo_opleidingserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/d6654f45-e513-4922-af11-8ad0c1ec2054/download/vavo_opleidingserkenningen.csv"
+   ],
+   [
+    "vavo_opleidingsfasen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/fa3867f2-9906-4ac4-9823-0e5eaaea65dd/download/vavo_opleidingsfasen.csv"
+   ],
+   [
+    "vavo_relaties_opleidingseenheden",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/f00136e2-ba69-4bde-9939-79772dfcc8f5/download/vavo_relaties_opleidingseenheden.csv"
+   ],
+   [
+    "vavo_relaties_opleidingseenheden_erkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/239d34a6-8e6e-434f-956d-34f1260d9320/download/vavo_relaties_opleidingseenheden_erkenningen.csv"
+   ],
+   [
+    "vestigingserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/01fd2a5f-40af-456f-864d-13265a51e5e2/download/vestigingserkenningen.csv"
+   ],
+   [
+    "vo_groepen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/6eb969a3-99db-4580-95d3-1c5e352195b6/download/vo_groepen.csv"
+   ],
+   [
+    "vo_groepserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/bdb3910f-2b11-4b58-a9f5-e719e68737f7/download/vo_groepserkenningen.csv"
+   ],
+   [
+    "vo_onderwijslicenties",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/0f24357b-24b3-42a6-8a58-c57e1e298e82/download/vo_onderwijslicenties.csv"
+   ],
+   [
+    "vo_opleidingen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/04d1ab34-36f9-4eb1-9245-6ab8dc6cb52a/download/vo_opleidingen.csv"
+   ],
+   [
+    "vo_opleidingserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/1f325ab9-ab65-417b-b0f5-4098e4a600cb/download/vo_opleidingserkenningen.csv"
+   ],
+   [
+    "vo_opleidingsfasen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/85638e08-d774-49d6-a440-e0f8fb9c0402/download/vo_opleidingsfasen.csv"
+   ],
+   [
+    "vo_opleidingsonderdelen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/c286a63c-8b02-456d-ba85-0893a5c2226f/download/vo_opleidingsonderdelen.csv"
+   ],
+   [
+    "vo_relaties_opleidingseenheden_erkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/3af731ff-1fc8-4dd9-98aa-57887df43aea/download/vo_relaties_opleidingseenheden_erkenningen.csv"
+   ],
+   [
+    "vo_relaties_vakken_erkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/eebe003f-d306-47a3-a156-d2c33cccb59a/download/vo_relaties_vakken_erkenningen.csv"
+   ],
+   [
+    "vo_vakerkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/e8e4a782-e0b2-49f4-8d38-ef3854613cdb/download/vo_vakerkenningen.csv"
+   ],
+   [
+    "vso_onderwijslicenties",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/298a3279-09db-4190-8e5c-10dd51f09867/download/vso_onderwijslicenties.csv"
+   ],
+   [
+    "ho_opleidingserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/f25db392-dad0-449a-b09a-ab5cb3f6063d/download/ho_opleidingserkenningen.csv"
+   ],
+   [
+    "nfo_opleidingserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/3b65b439-9e8e-47ef-b937-9131d7e6239c/download/nfo_opleidingserkenningen.csv"
+   ],
+   [
+    "ho_onderwijsaccreditaties",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/e89f7588-8646-45fc-96f9-7987681353c6/download/ho_onderwijsaccreditaties.csv"
+   ],
+   [
+    "ho_onderwijslicenties",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/a20cef1d-173d-403c-86c0-91f22f45877b/download/ho_onderwijslicenties.csv"
+   ],
+   [
+    "ho_relaties_onderwijslicenties",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/434b7377-0cbe-42e9-bdeb-be758630ae1b/download/ho_relaties_onderwijslicenties.csv"
+   ],
+   [
+    "nfo_onderwijslicenties",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/f29a9103-48da-431c-a021-636164ff30e3/download/nfo_onderwijslicenties.csv"
+   ],
+   [
+    "vestigingslicenties",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/e2ff6367-6833-43fd-8e1d-2835c6bc063a/download/vestigingslicenties.csv"
+   ],
+   [
+    "overgangen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/7d3aadfe-c236-4c83-9535-3be35ff9c3d3/download/overgangen.csv"
+   ],
+   [
+    "waarschuwingen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/286a3504-9452-4cd2-be3d-282511820d43/download/waarschuwingen.csv"
+   ],
+   [
+    "onderwijsbegeleidingsaanbieders",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/de85f3b0-a09a-4380-b99c-213414473dc3/download/onderwijsbegeleidingsaanbieders.csv"
+   ],
+   [
+    "relaties_onderwijsbegeleidingsaanbieders_onderwijsinstellingserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/3ee0dc01-9ef7-419c-956e-450a5b825fd5/download/relaties_onderwijsbegeleidingsaanbieders_onderwijsinstellingserkenningen.csv"
+   ],
+   [
+    "relaties_onderwijsbesturen_onderwijsbegeleidingsaanbieders",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/4ffd4afa-062c-41d0-9a19-8958f844bf6f/download/relaties_onderwijsbesturen_onderwijsbegeleidingsaanbieders.csv"
+   ],
+   [
+    "educatie_relaties_opleidingseenheden_erkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/2dfd5ba0-f4aa-4acf-a47b-f2cede6672c8/download/educatie_relaties_opleidingseenheden_erkenningen.csv"
+   ],
+   [
+    "educatie_relaties_opleidingseenheden",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/1fd2391f-668d-4b8c-b88f-44bec8cb820d/download/educatie_relaties_opleidingseenheden.csv"
+   ],
+   [
+    "educatie_opleidingserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/1a818b9d-f522-462a-84bb-585bb39f9bdb/download/educatie_opleidingserkenningen.csv"
+   ],
+   [
+    "educatie_opleidingen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/07352deb-8ed1-43c7-8780-f394824d505b/download/educatie_opleidingen.csv"
+   ],
+   [
+    "educatie_onderwijslicenties",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/abac316b-5d76-4a56-a6b2-32523eb566cf/download/educatie_onderwijslicenties.csv"
+   ],
+   [
+    "educatie_opleidingsonderdelen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/20a559e3-ef7d-4538-8f05-702cbbd25684/download/educatie_opleidingsonderdelen.csv"
+   ],
+   [
+    "relaties_bevoegdgezagerkenningen_onderwijsinstellingserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/a407c81b-593d-4545-9076-f756e85e9ae7/download/relaties_bevoegdgezagerkenningen_onderwijsinstellingserkenningen.csv"
+   ],
+   [
+    "onderwijsinstellingserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/f78b0e96-0876-442b-ac14-a704616ad7fa/download/onderwijsinstellingserkenningen.csv"
+   ],
+   [
+    "aangeboden_vo_opleidingen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/15111cdd-4dd2-4eb7-b7c6-77f48bf7d7f9/download/aangeboden_vo_opleidingen.csv"
+   ],
+   [
+    "btl_opleidingen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/6e3a8d88-2cb5-4c13-b0ad-2ae0c36517dc/download/btl_opleidingen.csv"
+   ],
+   [
+    "btl_opleidingserkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/b1ec67a8-de52-4733-abfc-09a279333ae4/download/btl_opleidingserkenningen.csv"
+   ],
+   [
+    "btl_relaties_opleidingseenheden_erkenningen",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/546de9da-152a-4640-89ae-dc09d8cd496a/download/btl_relaties_opleidingseenheden_erkenningen.csv"
+   ],
+   [
+    "financieringsbesluiten",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/66045d77-6213-4af9-a6a8-b87059ba361b/download/financieringsbesluiten.csv"
+   ],
+   [
+    "aanmerkingen_erkenners",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/09f00118-aa45-4898-9cf3-ae1906584c21/download/aanmerkingen_erkenners.csv"
+   ],
+   [
+    "erkenners",
+    "https://onderwijsdata.duo.nl/dataset/c416acd1-e083-4ec6-9203-3b20f98fe143/resource/85c9767b-3b94-4419-b357-3c8505a810d8/download/erkenners.csv"
+   ],
+   [
+    "controlebestand",
+    "https://onderwijsdata.duo.nl/datastore/dump/747f73ae-abe4-46bf-a283-0bf698c2d28e"
+   ]
+  ]
+ },
+ "pogemeente": {
+  "title": "Leerlingen po per gemeente",
+  "resources": [
+   [
+    "Leerlingen po per gemeente naar geslacht",
+    "https://onderwijsdata.duo.nl/dataset/800ba8ae-b1a2-4023-b4bf-d9aa7a807b1d/resource/f6c423ae-db72-453a-be28-9885fbbe392e/download/gemeente_geslacht.csv"
+   ],
+   [
+    "Leerlingen po per gemeente naar leeftijd",
+    "https://onderwijsdata.duo.nl/dataset/800ba8ae-b1a2-4023-b4bf-d9aa7a807b1d/resource/f1771ce8-cb13-4c18-a255-9c473dd7602f/download/gemeente_leeftijd.csv"
+   ],
+   [
+    "Leerlingen po per gemeente naar postcode4",
+    "https://onderwijsdata.duo.nl/dataset/800ba8ae-b1a2-4023-b4bf-d9aa7a807b1d/resource/386e4aa9-b70a-45b5-9e45-9bd5a987f3be/download/gemeente_pc4.csv"
+   ],
+   [
+    "Leerlingen po per gemeente",
+    "https://onderwijsdata.duo.nl/dataset/800ba8ae-b1a2-4023-b4bf-d9aa7a807b1d/resource/626f4408-767c-4971-aa43-aad310538648/download/gemeente_totaal.csv"
+   ]
+  ]
+ },
+ "poachtergrond": {
+  "title": "Leerlingen po per vestiging naar achtergrond",
+  "resources": [
+   [
+    "Leerlingen sbo, so en vso per vestiging naar cumi",
+    "https://onderwijsdata.duo.nl/dataset/e3ab98c0-881a-413a-ba8a-676dd1313593/resource/fb5290c9-b19e-46fb-9496-9582162a106a/download/brin6_cumi.csv"
+   ],
+   [
+    "Leerlingen bo per vestiging naar noat",
+    "https://onderwijsdata.duo.nl/dataset/e3ab98c0-881a-413a-ba8a-676dd1313593/resource/2899e6a2-cfee-41a6-9250-43276db16e69/download/brin6_noat.csv"
+   ]
+  ]
+ },
+ "popostcode4-v1": {
+  "title": "Leerlingen po per vestiging naar postcode4",
+  "resources": [
+   [
+    "Leerlingen po per vestiging naar postcode4",
+    "https://onderwijsdata.duo.nl/dataset/4ea91ae5-51ef-48a4-aa67-7098343f75bc/resource/402c5a69-eea8-41b4-b8ad-ecac301c28a8/download/brin6_pc4.csv"
+   ]
+  ]
+ },
+ "poswv": {
+  "title": "Leerlingen po per samenwerkingsverband",
+  "resources": [
+   [
+    "Leerlingen po per Samenwerkingsverband naar geslacht",
+    "https://onderwijsdata.duo.nl/dataset/89d18feb-146c-4d8e-9dbe-87dacd6e29c0/resource/e468a90a-9435-4854-9285-17ba5709a46d/download/swv_geslacht.csv"
+   ],
+   [
+    "Leerlingen po per Samenwerkingsverband naar leeftijd",
+    "https://onderwijsdata.duo.nl/dataset/89d18feb-146c-4d8e-9dbe-87dacd6e29c0/resource/c45164f1-e894-47db-a94e-9bbd5e4a3759/download/swv_geslacht.csv"
+   ],
+   [
+    "Leerlingen po per Samenwerkingsverband naar postcode4",
+    "https://onderwijsdata.duo.nl/dataset/89d18feb-146c-4d8e-9dbe-87dacd6e29c0/resource/37467812-d271-44e2-90f9-d8c0ec7a1fb3/download/swv_pc4.csv"
+   ],
+   [
+    "Leerlingen po per Samenwerkingsverband",
+    "https://onderwijsdata.duo.nl/dataset/89d18feb-146c-4d8e-9dbe-87dacd6e29c0/resource/dfdba065-478a-4ebb-80f3-36058a313dc8/download/swv_totaal.csv"
+   ]
+  ]
+ },
+ "pobestuur": {
+  "title": "Leerlingen po per bevoegd gezag",
+  "resources": [
+   [
+    "Leerlingen po per bevoegd gezag naar geslacht",
+    "https://onderwijsdata.duo.nl/dataset/9b0ea6ef-372c-4a5f-b9d2-8ef79b78a86a/resource/a9a89541-e8c1-4ad6-b6f2-cc7450652c47/download/bestuur_geslacht.csv"
+   ],
+   [
+    "Leerlingen po per bevoegd gezag naar postcode4",
+    "https://onderwijsdata.duo.nl/dataset/9b0ea6ef-372c-4a5f-b9d2-8ef79b78a86a/resource/931eefaa-e8bd-4d2f-a433-6cc2ba9421ba/download/bestuur_pc4.csv"
+   ],
+   [
+    "Leerlingen po per bevoegd gezag naar leeftijd",
+    "https://onderwijsdata.duo.nl/dataset/9b0ea6ef-372c-4a5f-b9d2-8ef79b78a86a/resource/6b24745e-d8b7-4940-82e8-50e9a964ee38/download/bestuur_leeftijd.csv"
+   ],
+   [
+    "Leerlingen po per bevoegd gezag",
+    "https://onderwijsdata.duo.nl/dataset/9b0ea6ef-372c-4a5f-b9d2-8ef79b78a86a/resource/20849983-7ebb-47f5-a4b8-a216c07c7833/download/bestuur_totaal.csv"
+   ]
+  ]
+ },
+ "historische-leerlingenaantallen-po": {
+  "title": "Historische leerlingenaantallen PO",
+  "resources": [
+   [
+    "Historische leerlingentellingen PO vestigingen per jaar",
+    "https://onderwijsdata.duo.nl/dataset/323841f2-75b9-4f03-9fe9-c4d2679f2b2b/resource/0e7c3205-761b-41cb-9149-30576619a944/download/06-historische-leerlingenaantallen-po-vestigingen-api.csv"
+   ],
+   [
+    "Historische leerlingentellingen PO gemeente per jaar",
+    "https://onderwijsdata.duo.nl/dataset/323841f2-75b9-4f03-9fe9-c4d2679f2b2b/resource/947ecf4a-3744-4f59-ad98-6ce4107dafa2/download/06-historische-leerlingenaantallen-po-gemeenten-api.csv"
+   ]
+  ]
+ },
+ "functiemix": {
+  "title": "Functiemix",
+  "resources": [
+   [
+    "Functiemix besturen",
+    "https://onderwijsdata.duo.nl/dataset/68f23148-ceba-4e3d-b11e-594f4eadca4d/resource/d6d012bf-bac1-4c83-a08c-cfffeaccbfe3/download/functiemix-besturen.csv"
+   ],
+   [
+    "Functiemix gemiddelden",
+    "https://onderwijsdata.duo.nl/dataset/68f23148-ceba-4e3d-b11e-594f4eadca4d/resource/ae4827a9-4968-41a1-9faf-f3f99c68296b/download/functiemix-gemiddelden.csv"
+   ],
+   [
+    "Functiemix instellingen",
+    "https://onderwijsdata.duo.nl/dataset/68f23148-ceba-4e3d-b11e-594f4eadca4d/resource/8f781c95-8e1b-470f-9596-edcffc11cf0a/download/functiemix-instellingen.csv"
+   ],
+   [
+    "Functiemix maatwerkafspraken",
+    "https://onderwijsdata.duo.nl/dataset/68f23148-ceba-4e3d-b11e-594f4eadca4d/resource/724cca30-1e1d-461d-a107-ec9f309a4e28/download/functiemix-maatwerkafspraken.csv"
+   ]
+  ]
+ },
+ "voprognoses": {
+  "title": "Prognoses vo per instelling",
+  "resources": [
+   [
+    "Prognoses vo per instelling",
+    "https://onderwijsdata.duo.nl/dataset/fa03fb37-6595-4e81-bd74-8818058bbcf9/resource/7a7ba341-1a01-47ed-9b94-c7f4aa478e88/download/brin4_prognosesvo.csv"
+   ]
+  ]
+ },
+ "oordelen-v02": {
+  "title": "Kwaliteitsoordelen bevoegde gezagen, po, so en vo",
+  "resources": [
+   [
+    "Kwaliteitsoordelen po, so en vso",
+    "https://beheer-ggm-ckan-prd.apps.prd.duo.rijksapps.nl/dataset/31da72f2-2858-4bc3-848e-dfe4875ba669/resource/b48d6835-0534-4008-82c8-1754b9080113/download/oordeel_po_so_vo.csv"
+   ],
+   [
+    "Kwaliteitsoordelen bevoegd gezag",
+    "https://beheer-ggm-ckan-prd.apps.prd.duo.rijksapps.nl/dataset/31da72f2-2858-4bc3-848e-dfe4875ba669/resource/754124e9-4cc4-479c-b1ee-2d94f077335c/download/___"
+   ]
+  ]
+ },
+ "rio_nfo_po_vo_vavo_mbo_ho-changelog": {
+  "title": "Changelog van RIO nfo po vo vavo mbo ho",
+  "resources": [
+   [
+    "changelog_rio_nfo_po_vo_vavo_mbo_ho v8.0.0",
+    "https://onderwijsdata.duo.nl/dataset/55a0c332-c35f-41f3-93fe-48cc32855854/resource/240abff5-9c75-4986-83d3-beec4ced3d9f/download/changelog_rio_nfo_po_vo_vavo_mbo_ho-v8.0.0.pdf"
+   ],
+   [
+    "PVL aangebodenOpleidingen tbv RIO CSV bestanden generiek_specifiek (nfo, po, vo, vavo, mbo, ho) v4.0",
+    "https://onderwijsdata.duo.nl/dataset/55a0c332-c35f-41f3-93fe-48cc32855854/resource/ff9eb636-bb3d-4f84-8ff6-4b5f3ef1a14d/download/pvl-aangebodenopleidingen-tbv-rio-csv-bestanden-generiek_specifiek-nfo-po-vo-vavo-mbo-ho-v4.0.pdf"
+   ],
+   [
+    "PVL CSV RIO - Overkoepelend model (nfo, po, vo, vavo, mbo, ho) 250626",
+    "https://onderwijsdata.duo.nl/dataset/55a0c332-c35f-41f3-93fe-48cc32855854/resource/3ca96e53-306c-45e1-925c-c8691a39d22d/download/pvl-csv-rio-overkoepelend-model-nfo-po-vo-vavo-mbo-ho-250626.jpg"
+   ],
+   [
+    "PVL instellingserkenningen tbv RIO CSV bestanden generiek_specifiek (nfo, po, vo, vavo, mbo, ho) v5.0",
+    "https://onderwijsdata.duo.nl/dataset/55a0c332-c35f-41f3-93fe-48cc32855854/resource/8e7a992d-4395-4426-948e-75a6e7a1ac13/download/pvl-instellingserkenningen-tbv-rio-csv-bestanden-generiek_specifiek-nfo-po-vo-vavo-mbo-ho-v5.0.pdf"
+   ],
+   [
+    "PVL licenties tbv RIO CSV bestanden generiek_specifiek (nfo, po, vo, vavo, mbo, ho) v5.3",
+    "https://onderwijsdata.duo.nl/dataset/55a0c332-c35f-41f3-93fe-48cc32855854/resource/3d991fe6-cd8a-40bf-b0b6-1246ea93f162/download/pvl-licenties-tbv-rio-csv-bestanden-generiek_specifiek-nfo-po-vo-vavo-mbo-ho-v5.3.pdf"
+   ],
+   [
+    "PVL onderwijslocaties tbv RIO CSV bestanden generiek_specifiek (nfo, po, vo, vavo, mbo, ho) v3.1",
+    "https://onderwijsdata.duo.nl/dataset/55a0c332-c35f-41f3-93fe-48cc32855854/resource/4db61535-9837-44fd-be3b-038d97e25016/download/pvl-onderwijslocaties-tbv-rio-csv-bestanden-generiek_specifiek-nfo-po-vo-vavo-mbo-ho-v3.1.pdf"
+   ],
+   [
+    "PVL opleidingseenheden tbv RIO CSV bestanden generiek_specifiek (nfo, po, vo, vavo, mbo, ho) v9.0",
+    "https://onderwijsdata.duo.nl/dataset/55a0c332-c35f-41f3-93fe-48cc32855854/resource/cec68c8b-83cb-4d6a-863c-65af86328220/download/pvl-opleidingseenheden-tbv-rio-csv-bestanden-generiek_specifiek-nfo-po-vo-vavo-mbo-ho-v9.0.pdf"
+   ],
+   [
+    "PVL opleidingserkenningen tbv RIO CSV bestanden generiek_specifiek (nfo, po, vo, vavo, mbo, ho) v6.0",
+    "https://onderwijsdata.duo.nl/dataset/55a0c332-c35f-41f3-93fe-48cc32855854/resource/e141b9a3-9280-439d-818a-a77bd052830e/download/pvl-opleidingserkenningen-tbv-rio-csv-bestanden-generiek_specifiek-nfo-po-vo-vavo-mbo-ho-v6.0.pdf"
+   ],
+   [
+    "PVL organisatorischeEenheden tbv RIO CSV bestanden generiek_specifiek (nfo, po, vo, vavo, mbo, ho) v3.3",
+    "https://onderwijsdata.duo.nl/dataset/55a0c332-c35f-41f3-93fe-48cc32855854/resource/ffc142e9-4d8b-4a09-9105-831be2cd9b04/download/pvl-organisatorischeeenheden-tbv-rio-csv-bestanden-generiek_specifiek-nfo-po-vo-vavo-mbo-ho-v3.3.pdf"
+   ],
+   [
+    "PVL erkenners tbv RIO CSV bestanden generiek_specifiek (nfo, po, vo, vavo, mbo, ho) v1.0",
+    "https://onderwijsdata.duo.nl/dataset/55a0c332-c35f-41f3-93fe-48cc32855854/resource/48844566-cf1f-4fd9-80c0-ecd0ce54ad8b/download/pvl-erkenners-tbv-rio-csv-bestanden-generiek_specifiek-nfo-po-vo-vavo-mbo-ho-v1.0.pdf"
+   ]
+  ]
+ },
+ "01voins-v1": {
+  "title": "VO-leerlingen per vestiging naar onderwijstype, sector en afdeling.",
+  "resources": [
+   [
+    "VO-leerlingen per vestiging naar onderwijstype, sector en afdeling.",
+    "https://beheer-ggm-ckan-prd.apps.prd.duo.rijksapps.nl/dataset/173cbf21-1567-464a-bccd-518cd7a46bd0/resource/d49219cc-2f36-4c2d-8007-b385ba44ec8d/download/01voins.csv"
+   ]
+  ]
+ },
+ "02voins-v1": {
+  "title": "VO-leerlingen per vestiging en leerjaar naar postcode, plaats en gemeente.",
+  "resources": [
+   [
+    "VO-leerlingen en leerjaar naar postcode, plaats en gemeente.",
+    "https://beheer-ggm-ckan-prd.apps.prd.duo.rijksapps.nl/dataset/19c81dcb-a7c5-4410-8122-145f0996d082/resource/a0ca4915-9aae-4826-bf5b-6825ce95b8b4/download/02voins.csv"
+   ]
+  ]
+ },
+ "04_voex-v1": {
+  "title": "Aantal afgenomen examens en gemiddelde examencijfers per vak per vestiging",
+  "resources": [
+   [
+    "Aantal afgenomen examens en gemiddelde examencijfers per vak per vestiging.",
+    "https://beheer-ggm-ckan-prd.apps.prd.duo.rijksapps.nl/dataset/30ac7a0a-b848-4bf0-8b1d-40b54c7cad1b/resource/1d9cc55f-ac27-44a7-8269-9cc3a998c5ed/download/04_voex.csv"
+   ]
+  ]
+ },
+ "03_voex-v1": {
+  "title": "Slagingspercentages en gemiddelde examencijfers per vestiging",
+  "resources": [
+   [
+    "Slagingspercentages en gemiddelde examencijfers per vestiging",
+    "https://beheer-ggm-ckan-prd.apps.prd.duo.rijksapps.nl/dataset/9ac19d12-2781-4e61-a26e-7122631dabb6/resource/0423457d-c69e-4950-a12c-51912fc48faf/download/03_voex.csv"
+   ]
+  ]
+ },
+ "06_vomtgo": {
+  "title": "Het toegestane voortgezet onderwijs per schoolvestiging en leerjaar.",
+  "resources": [
+   [
+    "Het toegestane voortgezet onderwijs per schoolvestiging en leerjaar.",
+    "https://beheer-ggm-ckan-prd.apps.prd.duo.rijksapps.nl/dataset/3be5930b-46f2-41f2-a82e-293bb7e051c5/resource/7f13f0b3-6fba-4211-ae7f-da95b6ff9bb8/download/vo_onderwijslicenties.csv"
+   ]
+  ]
+ },
+ "wporeferentieniveau-v1": {
+  "title": "Referentieniveau per toets en vestiging.",
+  "resources": [
+   [
+    "Referentieniveau per toets en vestiging",
+    "https://onderwijsdata.duo.nl/dataset/c62ea867-72d4-41ae-81af-8b4db27c5e52/resource/89920163-8b28-4e1a-b322-c3bb90f74f41/download/brin6_referentieniveau.csv"
+   ]
+  ]
+ },
+ "poleerlingen-v1": {
+  "title": "Leerlingen po per vestiging",
+  "resources": [
+   [
+    "Leerlingen po per vestiging",
+    "https://onderwijsdata.duo.nl/dataset/cf80e90d-ed19-4a10-a138-00c5c345cb5e/resource/9278ae97-4014-49f4-91fc-8cc255c2595d/download/brin6_totaal.csv"
+   ]
+  ]
+ },
+ "pogeslacht-v1": {
+  "title": "Leerlingen po per vestiging naar geslacht",
+  "resources": [
+   [
+    "Leerlingen po per vestiging naar geslacht",
+    "https://onderwijsdata.duo.nl/dataset/7239b972-8766-4077-b228-744870d790f5/resource/cbc1df7e-d201-4ae4-9c98-fbbf41e38864/download/brin6_geslacht.csv"
+   ]
+  ]
+ },
+ "poleeftijd-v2": {
+  "title": "Leerlingen po per vestiging naar leeftijd",
+  "resources": [
+   [
+    "Leerlingen po per vestiging naar leeftijd",
+    "https://onderwijsdata.duo.nl/dataset/068b4ce0-3f3c-4db1-8633-a6dff2496078/resource/7c5b59d0-0754-4ca5-923a-9d4b26bedeb4/download/brin6_leeftijd.csv"
+   ]
+  ]
+ },
+ "po-impulsgebied": {
+  "title": "Leerlingen po per vestiging naar impulsgebied",
+  "resources": [
+   [
+    "Leerlingen po per vestiging naar impulsgebied",
+    "https://onderwijsdata.duo.nl/dataset/aaa5b511-8a03-46ec-bf56-7e454527ed99/resource/d9c04506-8c3c-41ea-80d7-de2255227419/download/brin6_impulsgebied.csv"
+   ]
+  ]
+ },
+ "boschoolgewicht": {
+  "title": "Schoolgewicht per schoolvestiging",
+  "resources": [
+   [
+    "Schoolgewicht per schoolvestiging",
+    "https://beheer-ggm-ckan-prd.apps.prd.duo.rijksapps.nl/dataset/c8a7aa23-893b-4119-9cf9-205eb580a006/resource/59383f9c-2b0b-4aae-97f9-dab8d92cd873/download/brin6_schoolgewicht.csv"
+   ]
+  ]
+ },
+ "sectorale_ontwikkelpaden-changelog": {
+  "title": "Changelog van Sectorale Ontwikkelspaden",
+  "resources": [
+   [
+    "pvl-sectorale-ontwikkelpaden-tbv-open-onderwijsdata v1.2",
+    "https://onderwijsdata.duo.nl/dataset/e4905b9f-f1fe-4521-bd89-be9f1ec7aa7b/resource/70f4f903-45da-45cc-a9bf-498b4819f219/download/pvl-sectorale-ontwikkelpaden-tbv-open-onderwijsdata-v1.2.pdf"
+   ]
+  ]
+ },
+ "weccluster-v1": {
+  "title": "Aantal leerlingen per cluster per schoolvestiging",
+  "resources": [
+   [
+    "Aantal leerlingen per cluster per schoolvestiging",
+    "https://onderwijsdata.duo.nl/dataset/93e8481b-c555-4d77-89fa-b05ea352e475/resource/034f89b5-a4da-4e75-9ead-c4cf7c2c7393/download/brin6_cluster.csv"
+   ]
+  ]
+ },
+ "leerling_so_en_vso-v1": {
+  "title": "Leerlingen SO en VSO",
+  "resources": [
+   [
+    "Leerlingen so en vso per samenwerkingsverband naar bekostigingscategorie",
+    "https://onderwijsdata.duo.nl/dataset/b4c931a3-b5c9-4ad9-a2bc-194d30be8d98/resource/fe64829d-06c9-443c-8f98-8be4d6f5bbb7/download/___"
+   ],
+   [
+    "Leerlingen so en vso per samenwerkingsverband, residenti�le plaatsen",
+    "https://onderwijsdata.duo.nl/dataset/b4c931a3-b5c9-4ad9-a2bc-194d30be8d98/resource/f8af6861-5630-4594-a6be-712dd2041389/download/so_vso_rp.csv"
+   ],
+   [
+    "Leerlingen so en vso per samenwerkingsverband naar uitstroomprofiel",
+    "https://onderwijsdata.duo.nl/dataset/b4c931a3-b5c9-4ad9-a2bc-194d30be8d98/resource/d1021ca3-8978-4659-bb59-4a8d896fb884/download/so_vso_uitstroom.csv"
+   ]
+  ]
+ },
+ "wi-2021": {
+  "title": "WI 2021 Instroom, Uitstroom en Leerroute",
+  "resources": [
+   [
+    "DUO_SCI_OPENDATA_WI2021.csv",
+    "https://onderwijsdata.duo.nl/dataset/87dc92dd-11a2-4630-ad5a-1e051644c5f3/resource/91238c04-3ad3-4b3f-982d-e150e15f6ca1/download/duo_sci_opendata_wi2021.csv"
+   ],
+   [
+    "controlebestand",
+    "https://onderwijsdata.duo.nl/datastore/dump/82c05792-a40c-49cc-9e7d-791e95f359cf"
+   ]
+  ]
+ },
+ "gediplomeerde-mbo-studenten": {
+  "title": "Gediplomeerde mbo-studenten",
+  "resources": [
+   [
+    "Gediplomeerden",
+    "https://onderwijsdata.duo.nl/dataset/725a741e-77e4-46f5-87be-671a68d27f24/resource/aa057440-a653-41c4-8d73-d63cb0556135/download/2020-2024-gediplomeerden.csv"
+   ]
+  ]
+ },
+ "mbo-studenten-per-sectorkamer-en-leerweg": {
+  "title": "Mbo-studenten per sectorkamer en leerweg",
+  "resources": [
+   [
+    "Studenten per sectorkamer leerweg niveau woonprovincie",
+    "https://onderwijsdata.duo.nl/dataset/467eb74f-05be-4466-9226-005c278c100b/resource/da6669b9-5894-4ba6-9ba4-bfd42f8d3387/download/2021-2025-sectorkamer01-studenten-per-sectorkamer-leerweg-niveau-woonprovincie.csv"
+   ],
+   [
+    "Studenten per sectorkamer leerweg niveau woonprovincie leeftijdscategorie",
+    "https://onderwijsdata.duo.nl/dataset/467eb74f-05be-4466-9226-005c278c100b/resource/ef08d2f4-ab61-4167-aa89-c08528a03581/download/2021-2025-sectorkamer02-studenten-per-sectorkamer-leerweg-niveau-woonprovincie-leeftijdscategori.csv"
+   ],
+   [
+    "Studenten per sectorkamer leerweg niveau woongemeente woonprovincie",
+    "https://onderwijsdata.duo.nl/dataset/467eb74f-05be-4466-9226-005c278c100b/resource/44a2a5e0-8218-44ed-bc5b-33b4bcceb480/download/2021-2025-sectorkamer03-studenten-per-sectorkamer-leerweg-niveau-woongemeente-woonprovincie.csv"
+   ],
+   [
+    "Studenten per leerweg niveau woongemeente woonprovincie leeftijdscategorie",
+    "https://onderwijsdata.duo.nl/dataset/467eb74f-05be-4466-9226-005c278c100b/resource/08d9a87a-caa5-4961-9be8-3103d63b10bb/download/2021-2025-typembo01-studenten-per-leerweg-niveau-woongemeente-woonprovincie-leeftijdscategorie.csv"
+   ],
+   [
+    "Studenten per leerweg opleiding verblijfsjaar",
+    "https://onderwijsdata.duo.nl/dataset/467eb74f-05be-4466-9226-005c278c100b/resource/51bea174-cc7f-44aa-b1b8-a6cf0893c79a/download/2021-2025-typembo02-studenten-per-leerweg-opleiding-verblijfsjaar.csv"
+   ]
+  ]
+ },
+ "mbo-studenten-per-instelling": {
+  "title": "Mbo-studenten per instelling",
+  "resources": [
+   [
+    "Studenten per instelling bevoegd gezag plaats gemeente provincie van de instelling en leerweg",
+    "https://onderwijsdata.duo.nl/dataset/63c2b502-5675-4110-83a0-a111c3f46332/resource/0f1fba7c-5003-459d-8845-20ff055b9dc1/download/2021-2025-01-studenten-per-instelling-bevoegd-gezag-plaats-gemeente-provincie-van-de-instelling-.csv"
+   ],
+   [
+    "Student per instelling bevoegd gezag plaats gemeente provincie van de instelling en sectorkamer",
+    "https://onderwijsdata.duo.nl/dataset/63c2b502-5675-4110-83a0-a111c3f46332/resource/8d25e951-92ed-48ca-b4a9-4185f4835748/download/2021-2025-02-studenten-per-instelling-bevoegd-gezag-plaats-gemeente-provincie-van-de-instelling-.csv"
+   ],
+   [
+    "Studenten per instelling plaats van de instelling sectorkamer leerweg opleiding niveau geslacht",
+    "https://onderwijsdata.duo.nl/dataset/63c2b502-5675-4110-83a0-a111c3f46332/resource/0cf33778-666c-4a6d-bd58-0b4d1ddefb61/download/2021-2025-03-studenten-per-instelling-plaats-van-de-instelling-sectorkamer-leerweg-opleiding-niv.csv"
+   ],
+   [
+    "Studenten per instelling bevoegd gezag gemeente instelling leerweg beroepsopleiding verblijfsjaar",
+    "https://onderwijsdata.duo.nl/dataset/63c2b502-5675-4110-83a0-a111c3f46332/resource/2442d620-b5ac-42ba-92ea-f7b3c31e918e/download/2021-2025-08-studenten-per-instelling-bevoegd-gezag-gemeente-instelling-leerweg-beroepsopleiding.csv"
+   ],
+   [
+    "Studenten per instelling plaats instelling leerweg woongemeente woonprovincie leeftijdscategorie",
+    "https://onderwijsdata.duo.nl/dataset/63c2b502-5675-4110-83a0-a111c3f46332/resource/4ca1ec61-61aa-46f2-b01f-b657633fadf0/download/2021-2025-11-studenten-per-instelling-plaats-instelling-leerweg-woongemeente-woonprovincie-leeft.csv"
+   ],
+   [
+    "Studenten per instelling bevoegd gezag plaats van de instelling beroepsopleiding woonprovincie",
+    "https://onderwijsdata.duo.nl/dataset/63c2b502-5675-4110-83a0-a111c3f46332/resource/99053b39-5852-4645-914c-d6d16421b266/download/2021-2025-12-studenten-per-instelling-bevoegd-gezag-plaats-van-de-instelling-beroepsopleiding-wo.csv"
+   ]
+  ]
+ },
+ "instromende-mbo-studenten": {
+  "title": "Instromende mbo-studenten",
+  "resources": [
+   [
+    "2021 nieuw-instromende-studenten-per-instelling-hoofdgroep-leerweg-beroepsopleiding-niveau-vooropleiding",
+    "https://onderwijsdata.duo.nl/dataset/61c740bf-36be-4e56-a827-e606be12f9ca/resource/49498b8b-f8d8-4585-b2ca-1a11c95f6dcd/download/2021-nieuw-instromende-studenten-per-instelling-hoofdgroep-leerweg-beroepsopleiding-niveau-vooro.csv"
+   ],
+   [
+    "2021 nieuw-instromende-studenten-per-instelling-niveau-leerweg-beroepsopleiding-met-soorten-instroom",
+    "https://onderwijsdata.duo.nl/dataset/61c740bf-36be-4e56-a827-e606be12f9ca/resource/27338ecd-da65-4bd3-85c5-ca7b3a213d9f/download/2021-nieuw-instromende-studenten-per-instelling-niveau-leerweg-beroepsopleiding-met-soorten-inst.csv"
+   ],
+   [
+    "2022 nieuw-instromende-studenten-per-instelling-hoofdgroep-leerweg-beroepsopleiding-niveau-vooropleiding",
+    "https://onderwijsdata.duo.nl/dataset/61c740bf-36be-4e56-a827-e606be12f9ca/resource/0c6e7e5f-da10-4b9b-8d88-165459e9c0eb/download/2022-nieuw-instromende-studenten-per-instelling-hoofdgroep-leerweg-beroepsopleiding-niveau-vooro.csv"
+   ],
+   [
+    "2022 nieuw-instromende-studenten-per-instelling-niveau-leerweg-beroepsopleiding-met-soorten-instroom",
+    "https://onderwijsdata.duo.nl/dataset/61c740bf-36be-4e56-a827-e606be12f9ca/resource/4c92ba29-dd5d-4639-8432-b49af11cd716/download/2022-nieuw-instromende-studenten-per-instelling-niveau-leerweg-beroepsopleiding-met-soorten-inst.csv"
+   ],
+   [
+    "2023 nieuw-instromende-studenten-per-instelling-hoofdgroep-leerweg-beroepsopleiding-niveau-vooropleiding",
+    "https://onderwijsdata.duo.nl/dataset/61c740bf-36be-4e56-a827-e606be12f9ca/resource/006ad0f5-b02c-4bad-b966-970e460937c6/download/2023-nieuw-instromende-studenten-per-instelling-hoofdgroep-leerweg-beroepsopleiding-niveau-vooro.csv"
+   ],
+   [
+    "2023 nieuw-instromende-studenten-per-instelling-niveau-leerweg-beroepsopleiding-met-soorten-instroom",
+    "https://onderwijsdata.duo.nl/dataset/61c740bf-36be-4e56-a827-e606be12f9ca/resource/c439fbbc-3a02-4c8e-a7f4-672db50e0427/download/2023-nieuw-instromende-studenten-per-instelling-niveau-leerweg-beroepsopleiding-met-soorten-inst.csv"
+   ],
+   [
+    "2024 nieuw-instromende-studenten-per-instelling-hoofdgroep-leerweg-beroepsopleiding-niveau-vooropleiding",
+    "https://onderwijsdata.duo.nl/dataset/61c740bf-36be-4e56-a827-e606be12f9ca/resource/3d88cd62-7b2f-4602-b242-3c4051f64cd3/download/2024-nieuw-instromende-studenten-per-instelling-hoofdgroep-leerweg-beroepsopleiding-niveau-vooro.csv"
+   ],
+   [
+    "2024 nieuw-instromende-studenten-per-instelling-niveau-leerweg-beroepsopleiding-met-soorten-instroom",
+    "https://onderwijsdata.duo.nl/dataset/61c740bf-36be-4e56-a827-e606be12f9ca/resource/b66983af-5ab1-45f5-9683-afc5836da84b/download/2024-nieuw-instromende-studenten-per-instelling-niveau-leerweg-beroepsopleiding-met-soorten-inst.csv"
+   ],
+   [
+    "2025 nieuw-instromende-studenten-per-instelling-hoofdgroep-leerweg-beroepsopleiding-niveau-vooropleiding",
+    "https://onderwijsdata.duo.nl/dataset/61c740bf-36be-4e56-a827-e606be12f9ca/resource/cdb82e0e-3fff-4839-b4a0-8b852bc3f212/download/2025-nieuw-instromende-studenten-per-instelling-hoofdgroep-leerweg-beroepsopleiding-niveau-vooro.csv"
+   ],
+   [
+    "2025 nieuw-instromende-studenten-per-instelling-niveau-leerweg-beroepsopleiding-met-soorten-instroom",
+    "https://onderwijsdata.duo.nl/dataset/61c740bf-36be-4e56-a827-e606be12f9ca/resource/9c9d219f-242a-4406-bf4d-60a8f76f34f5/download/2025-nieuw-instromende-studenten-per-instelling-niveau-leerweg-beroepsopleiding-met-soorten-inst.csv"
+   ]
+  ]
+ },
+ "p02ho1ejrs": {
+  "title": "Eerstejaars ingeschrevenen hoger onderwijs in het domein hoger onderwijs",
+  "resources": [
+   [
+    "Eerstejaarsingeschrevenen hoger beroepsonderwijs inclusief geslacht in het domein hoger onderwijs",
+    "https://onderwijsdata.duo.nl/dataset/eec8c988-66a6-4b06-9bcf-4038d016f2a1/resource/5338f63e-af6a-434c-8086-c4584767c3fc/download/eerstejaarsingeschrevenengeslhbo.csv"
+   ],
+   [
+    "Eerstejaarsingeschrevenen wetenschappelijk onderwijs inclusief geslacht in het domein hoger onderwijs",
+    "https://onderwijsdata.duo.nl/dataset/eec8c988-66a6-4b06-9bcf-4038d016f2a1/resource/2e0a58a1-f7aa-4ed6-9a76-65bc569edcfc/download/eerstejaarsingeschrevenengeslwo.csv"
+   ],
+   [
+    "Eerstejaarsingeschrevenen hoger beroepsonderwijs niveau opleiding in het domein hoger onderwijs",
+    "https://onderwijsdata.duo.nl/dataset/eec8c988-66a6-4b06-9bcf-4038d016f2a1/resource/0f594842-cca9-4f17-8cbc-e502dba408b4/download/eerstejaarsingeschrevenenhbo.csv"
+   ],
+   [
+    "Eerstejaarsingeschrevenen hoger beroepsonderwijs inclusief opleidingsvorm in het domein hoger onderwijs",
+    "https://onderwijsdata.duo.nl/dataset/eec8c988-66a6-4b06-9bcf-4038d016f2a1/resource/2ddccc54-ae20-45dd-ba0a-5af9a69ef713/download/eerstejaarsingeschrevenenoplvhbo.csv"
+   ],
+   [
+    "Eerstejaarsingeschrevenen wetenschappelijk onderwijs inclusief opleidingsvorm in het domein hoger onderwijs",
+    "https://onderwijsdata.duo.nl/dataset/eec8c988-66a6-4b06-9bcf-4038d016f2a1/resource/5639a642-bf6a-4fad-a8ab-d4bf62010c0c/download/eerstejaarsingeschrevenenoplvwo.csv"
+   ],
+   [
+    "Eerstejaarsingeschrevenen wetenschappelijk onderwijs niveau opleiding in het domein hoger onderwijs",
+    "https://onderwijsdata.duo.nl/dataset/eec8c988-66a6-4b06-9bcf-4038d016f2a1/resource/1a67316d-db9f-415c-8057-8c47bee19d44/download/eerstejaarsingeschrevenenwo.csv"
+   ]
+  ]
+ },
+ "p03hoinschr": {
+  "title": "Inschrijvingen in het hoger onderwijs",
+  "resources": [
+   [
+    "Inschrijvingen hoger beroepsonderwijs inclusief geslacht",
+    "https://onderwijsdata.duo.nl/dataset/3638ab93-ed1f-4df2-ad2b-164e31b792bb/resource/50c36789-8073-41ad-88bd-5dc178d091cb/download/inschrijvingengeslhbo.csv"
+   ],
+   [
+    "Inschrijvingen wetenschappelijk onderwijs inclusief geslacht",
+    "https://onderwijsdata.duo.nl/dataset/3638ab93-ed1f-4df2-ad2b-164e31b792bb/resource/3cd18619-a881-4ec5-bba1-53cd47af712c/download/inschrijvingengeslwo.csv"
+   ],
+   [
+    "Inschrijvingen hoger beroepsonderwijs niveau opleiding",
+    "https://onderwijsdata.duo.nl/dataset/3638ab93-ed1f-4df2-ad2b-164e31b792bb/resource/9ec2ffc8-6121-485f-acda-1838d8c44a93/download/inschrijvingenhbo.csv"
+   ],
+   [
+    "Inschrijvingen hoger beroepsonderwijs inclusief opleidingsvorm",
+    "https://onderwijsdata.duo.nl/dataset/3638ab93-ed1f-4df2-ad2b-164e31b792bb/resource/6a012a57-4664-4e6c-bd4a-82c7e3f587cd/download/inschrijvingenoplvhbo.csv"
+   ],
+   [
+    "Inschrijvingen wetenschappelijk onderwijs inclusief opleidingsvorm in het domein hoger onderwijs",
+    "https://onderwijsdata.duo.nl/dataset/3638ab93-ed1f-4df2-ad2b-164e31b792bb/resource/2a95ae4e-3d9b-49cf-bebd-5a3e5a289e52/download/inschrijvingenoplvwo.csv"
+   ],
+   [
+    "Inschrijvingen wetenschappelijk onderwijs niveau opleiding",
+    "https://onderwijsdata.duo.nl/dataset/3638ab93-ed1f-4df2-ad2b-164e31b792bb/resource/84b7bec1-0774-4e0a-bcdf-1ac460f2fc2e/download/inschrijvingenwo.csv"
+   ]
+  ]
+ },
+ "p04hogdipl": {
+  "title": "Gediplomeerden in het hoger onderwijs in het domein soort diploma soort hoger onderwijs",
+  "resources": [
+   [
+    "Gediplomeerden hoger beroepsonderwijs inclusief geslacht",
+    "https://onderwijsdata.duo.nl/dataset/169aef42-1588-4602-b1ac-d06616db788b/resource/e7b2aabd-1c10-4990-a33c-bf558f02ed12/download/gediplomeerdengeslhbo.csv"
+   ],
+   [
+    "Gediplomeerden wetenschappelijk onderwijs inclusief geslacht",
+    "https://onderwijsdata.duo.nl/dataset/169aef42-1588-4602-b1ac-d06616db788b/resource/4938e55f-45f5-4f74-a512-baa2db99f5a9/download/gediplomeerdengeslwo.csv"
+   ],
+   [
+    "Gediplomeerden hoger beroepsonderwijs niveau opleiding",
+    "https://onderwijsdata.duo.nl/dataset/169aef42-1588-4602-b1ac-d06616db788b/resource/0488fa97-d0ba-4285-9569-19bf26050204/download/gediplomeerdenhbo.csv"
+   ],
+   [
+    "Gediplomeerden hoger beroepsonderwijs inclusief opleidingsvorm",
+    "https://onderwijsdata.duo.nl/dataset/169aef42-1588-4602-b1ac-d06616db788b/resource/3f2541ca-6acd-4b98-ac08-7b68d05bb06a/download/gediplomeerdenoplvhbo.csv"
+   ],
+   [
+    "Gediplomeerden wetenschappelijk onderwijs inclusief opleidingsvorm in het domein hoger onderwijs",
+    "https://onderwijsdata.duo.nl/dataset/169aef42-1588-4602-b1ac-d06616db788b/resource/63dc7252-5538-42b1-98ac-19b8ba7522dd/download/gediplomeerdenoplvwo.csv"
+   ],
+   [
+    "Gediplomeerden wetenschappelijk onderwijs niveau opleiding",
+    "https://onderwijsdata.duo.nl/dataset/169aef42-1588-4602-b1ac-d06616db788b/resource/b74aeac5-ea8c-4697-a909-3aaae7e25f09/download/gediplomeerdenwo.csv"
+   ]
+  ]
+ },
+ "p01hoinges": {
+  "title": "Ingeschrevenen hoger onderwijs in het domein hoger onderwijs",
+  "resources": [
+   [
+    "Ingeschrevenen hoger beroepsonderwijs inclusief geslacht in het domein hoger onderwijs",
+    "https://onderwijsdata.duo.nl/dataset/978f900e-088e-4d27-804f-2d897c161c70/resource/c454d7e1-b9b1-4460-b9ff-55938c85788e/download/ingeschrevenengeslhbo.csv"
+   ],
+   [
+    "Ingeschrevenen wetenschappelijk onderwijs inclusief geslacht in het domein hoger onderwijs",
+    "https://onderwijsdata.duo.nl/dataset/978f900e-088e-4d27-804f-2d897c161c70/resource/b88721ef-9787-4299-afc7-5d74380d29ba/download/ingeschrevenengeslwo.csv"
+   ],
+   [
+    "Ingeschrevenen hoger beroepsonderwijs niveau opleiding in het domein hoger onderwijs",
+    "https://onderwijsdata.duo.nl/dataset/978f900e-088e-4d27-804f-2d897c161c70/resource/7761bd6a-b87b-4389-a943-829872116f92/download/ingeschrevenenhbo.csv"
+   ],
+   [
+    "Ingeschrevenen hoger beroepsonderwijs inclusief opleidingsvorm in het domein hoger onderwijs",
+    "https://onderwijsdata.duo.nl/dataset/978f900e-088e-4d27-804f-2d897c161c70/resource/ef11448c-e8c3-4afe-899f-67f90a3c3be0/download/ingeschrevenenoplvhbo.csv"
+   ],
+   [
+    "Ingeschrevenen wetenschappelijk onderwijs inclusief opleidingsvorm in het domein hoger onderwijs",
+    "https://onderwijsdata.duo.nl/dataset/978f900e-088e-4d27-804f-2d897c161c70/resource/f9a16992-8f11-4579-809c-bcdbc93c9d2b/download/ingeschrevenenoplvwo.csv"
+   ],
+   [
+    "Ingeschrevenen wetenschappelijk onderwijs niveau opleiding in het domein hoger onderwijs",
+    "https://onderwijsdata.duo.nl/dataset/978f900e-088e-4d27-804f-2d897c161c70/resource/6a7e10c1-6ae8-4949-89da-b6e59151698c/download/ingeschrevenenwo.csv"
+   ]
+  ]
+ },
+ "overzicht-erkenningen-ho": {
+  "title": "Overzicht Erkenningen ho",
+  "resources": [
+   [
+    "HO_Erkenningen_RIO",
+    "https://onderwijsdata.duo.nl/dataset/bb07cc6e-00fe-4100-9528-a0c5fd27d2fb/resource/28a4d89b-c223-4dbc-8deb-9d02a533f215/download/ho_erkenningen_rio.csv"
+   ],
+   [
+    "Toelichting",
+    "https://onderwijsdata.duo.nl/dataset/bb07cc6e-00fe-4100-9528-a0c5fd27d2fb/resource/48299fdf-b1af-4a94-8832-4422f500663a/download/toelichting-overzicht-erkenningen-ho-v1.8.pdf"
+   ],
+   [
+    "controlebestand",
+    "https://onderwijsdata.duo.nl/datastore/dump/e617e9b6-ef2f-4838-b1c9-11a9dc675337"
+   ]
+  ]
+ },
+ "studentprognoses-mbo-per-instelling": {
+  "title": "Studentprognoses mbo per instelling",
+  "resources": [
+   [
+    "mbo-studentenprognose_gemeente_leeftijdscategorie",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/1c60b70a-8ba1-4523-90a9-60a7bf98a3a8/download/mbo-studentenprognose_gemeente_leeftijdscategorie.csv"
+   ],
+   [
+    "mbo-studentenprognose_gemeente_leerweg",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/8ac76eb7-ee3b-47e5-8d9a-1df89079fb83/download/mbo-studentenprognose_gemeente_leerweg.csv"
+   ],
+   [
+    "mbo-studentenprognose_gemeente_sectorkamer",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/dbe66d7a-e271-4801-9fe4-c2f94fb11c83/download/mbo-studentenprognose_gemeente_sectorkamer.csv"
+   ],
+   [
+    "mbo-studentenprognose_instelling",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/29b0675f-51a5-4d35-8c9a-8ea8695b70b2/download/mbo-studentenprognose_instelling.csv"
+   ],
+   [
+    "mbo-studentenprognose_kwalificatieniveau",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/e7ce4cf3-a8ff-40f9-8443-569faaa392ae/download/mbo-studentenprognose_kwalificatieniveau.csv"
+   ],
+   [
+    "mbo-studentenprognose_kwalificatieniveau_instelling",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/fec0987b-24ab-48af-88aa-3336dcd9ce0d/download/mbo-studentenprognose_kwalificatieniveau_instelling.csv"
+   ],
+   [
+    "mbo-studentenprognose_leeftijdscategorie",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/2e76d021-f92a-4699-92c7-68945027deb0/download/mbo-studentenprognose_leeftijdscategorie.csv"
+   ],
+   [
+    "mbo-studentenprognose_leeftijdscategorie_instelling",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/505f9c9b-567e-4445-8062-8965116f0e20/download/mbo-studentenprognose_leeftijdscategorie_instelling.csv"
+   ],
+   [
+    "mbo-studentenprognose_leeftijdscategorie_kwalificatieniveau",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/5d2149ee-4f42-44b6-a080-6b29350e73f3/download/mbo-studentenprognose_leeftijdscategorie_kwalificatieniveau.csv"
+   ],
+   [
+    "mbo-studentenprognose_leeftijdscategorie_leerweg",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/19e14c57-64fb-4d96-ba16-c6a5a1018410/download/mbo-studentenprognose_leeftijdscategorie_leerweg.csv"
+   ],
+   [
+    "mbo-studentenprognose_leeftijdscategorie_sectorkamer",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/ac783b50-7ea9-4a4f-8c5f-c19162f91ca7/download/mbo-studentenprognose_leeftijdscategorie_sectorkamer.csv"
+   ],
+   [
+    "mbo-studentenprognose_leerweg",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/58b52f49-2360-4533-a5c1-403faaba2e0e/download/mbo-studentenprognose_leerweg.csv"
+   ],
+   [
+    "mbo-studentenprognose_leerweg_instelling",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/bd2ca1c9-ae2d-42b4-9107-3d57ab284a39/download/mbo-studentenprognose_leerweg_instelling.csv"
+   ],
+   [
+    "mbo-studentenprognose_leerweg_kwalificatieniveau",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/b6fa1832-106b-400e-8bed-5a6deb60146b/download/mbo-studentenprognose_leerweg_kwalificatieniveau.csv"
+   ],
+   [
+    "mbo-studentenprognose_sectorkamer",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/d73ea32d-a7cd-40b5-ac21-5fbad0c81c14/download/mbo-studentenprognose_sectorkamer.csv"
+   ],
+   [
+    "mbo-studentenprognose_sectorkamer_instelling",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/787e4ede-4ccf-44c5-a453-77db67229fd3/download/mbo-studentenprognose_sectorkamer_instelling.csv"
+   ],
+   [
+    "mbo-studentenprognose_sectorkamer_kwalificatieniveau",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/0c842ae3-7e1c-4987-b987-cd53b15e74fa/download/mbo-studentenprognose_sectorkamer_kwalificatieniveau.csv"
+   ],
+   [
+    "mbo-studentenprognose_sectorkamer_leerweg",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/fc4dde3f-29d8-4155-b7fb-b64fa71cd9fa/download/mbo-studentenprognose_sectorkamer_leerweg.csv"
+   ],
+   [
+    "mbo-studentenprognose_gemeente_kwalificatieniveau",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/d353136a-380b-4aa2-a2b8-f00068232902/download/mbo-studentenprognose_gemeente_kwalificatieniveau.csv"
+   ],
+   [
+    "mbo-studentenprognose_gemeente_instelling",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/1ed16a73-4c5d-4949-a9d0-9f2a9dd4eceb/download/mbo-studentenprognose_gemeente_instelling.csv"
+   ],
+   [
+    "mbo-studentenprognose_gemeente",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/8c7c551e-7c5d-43ed-b14c-0e8e22bfc61f/download/mbo-studentenprognose_gemeente.csv"
+   ],
+   [
+    "mbo-studentenprognose_gemeente_onderwijslocatie",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/d8262ba4-9ad2-4a82-bc62-6cb620b3e2ab/download/mbo-studentenprognose_gemeente_onderwijslocatie.csv"
+   ],
+   [
+    "mbo-studentenprognose_kwalificatieniveau_onderwijslocatie",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/ae752823-28e5-49c0-97c4-e3d6cc2ae960/download/mbo-studentenprognose_kwalificatieniveau_onderwijslocatie.csv"
+   ],
+   [
+    "mbo-studentenprognose_leeftijdscategorie_onderwijslocatie",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/11d1a0dc-1239-47f0-b3ec-cab583940637/download/mbo-studentenprognose_leeftijdscategorie_onderwijslocatie.csv"
+   ],
+   [
+    "mbo-studentenprognose_leerweg_instelling",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/2d05fb1c-f084-48d5-9bb9-799e311db486/download/mbo-studentenprognose_leerweg_instelling.csv"
+   ],
+   [
+    "mbo-studentenprognose_leerweg_onderwijslocatie",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/e6c59b71-74c3-40d4-896d-d25bf746b446/download/mbo-studentenprognose_leerweg_onderwijslocatie.csv"
+   ],
+   [
+    "mbo-studentenprognose_onderwijslocatie",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/1a43381b-9567-451a-a0a5-bed82a22e0e6/download/mbo-studentenprognose_onderwijslocatie.csv"
+   ],
+   [
+    "mbo-studentenprognose_sectorkamer_onderwijslocatie",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/dbc3d4c0-3dde-4443-8c4b-b9e0ea1d31d8/download/mbo-studentenprognose_sectorkamer_onderwijslocatie.csv"
+   ],
+   [
+    "mbo-studentenprognose_arbeidsmarktregio",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/514362f4-4d02-4caa-90b5-ac5bf3d3576d/download/mbo-studentenprognose_arbeidsmarktregio.csv"
+   ],
+   [
+    "mbo-studentenprognose_arbeidsmarktregio_instelling",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/b1dfbd5d-6a1e-4149-bbcc-8c75d8347664/download/mbo-studentenprognose_arbeidsmarktregio_instelling.csv"
+   ],
+   [
+    "mbo-studentenprognose_arbeidsmarktregio_kwalificatieniveau",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/73fedf35-7033-4215-988e-1079d9953fc6/download/mbo-studentenprognose_arbeidsmarktregio_kwalificatieniveau.csv"
+   ],
+   [
+    "mbo-studentenprognose_arbeidsmarktregio_leeftijdscategorie",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/cbaa7b7e-9b9d-4520-8375-666086aaee44/download/mbo-studentenprognose_arbeidsmarktregio_leeftijdscategorie.csv"
+   ],
+   [
+    "mbo-studentenprognose_arbeidsmarktregio_leerweg",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/1fec2fa6-317c-4fc4-adb2-9a74a748155c/download/mbo-studentenprognose_arbeidsmarktregio_leerweg.csv"
+   ],
+   [
+    "mbo-studentenprognose_arbeidsmarktregio_onderwijslocatie",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/61fdcbbd-fdec-4a1d-b3ec-64df6c35035b/download/mbo-studentenprognose_arbeidsmarktregio_onderwijslocatie.csv"
+   ],
+   [
+    "mbo-studentenprognose_arbeidsmarktregio_sectorkamer",
+    "https://onderwijsdata.duo.nl/dataset/a9e3a468-3c11-4d7d-aa8b-1935d3709b5e/resource/f8c10a2d-9024-42ff-aa43-0ee1b2c6ceb7/download/mbo-studentenprognose_arbeidsmarktregio_sectorkamer.csv"
+   ]
+  ]
+ },
+ "mbo_opleidingsaanbod": {
+  "title": "MBO Opleidingsaanbod",
+  "resources": [
+   [
+    "mbo_opleidingsaanbod",
+    "https://onderwijsdata.duo.nl/dataset/894ebe77-15e7-48e6-9daf-c93da08b1ab9/resource/5776abd4-d34b-4489-9b1b-fd639b05acdb/download/mbo_opleidingsaanbod.csv"
+   ],
+   [
+    "mbo_opleidingsaanbod_cohorten",
+    "https://onderwijsdata.duo.nl/dataset/894ebe77-15e7-48e6-9daf-c93da08b1ab9/resource/ac441b5c-f2a3-45f2-b8d1-a06a71a2a009/download/mbo_opleidingsaanbod_cohorten.csv"
+   ],
+   [
+    "controlebestand",
+    "https://onderwijsdata.duo.nl/datastore/dump/65d30e34-228c-4083-9b4f-20bc9c6fd1a8"
+   ]
+  ]
+ },
+ "ho_opleidingsoverzicht": {
+  "title": "HO Opleidingsoverzicht",
+  "resources": [
+   [
+    "ho_opleidingsoverzicht",
+    "https://onderwijsdata.duo.nl/dataset/7c0686f4-b5c2-418e-8e44-7be0057d8084/resource/ffffa7ad-e6a2-4ba7-9fc2-a09df4128555/download/ho_opleidingsoverzicht.csv"
+   ],
+   [
+    "controlebestand",
+    "https://onderwijsdata.duo.nl/datastore/dump/c86df083-df59-4a5c-839e-bc7488f8a484"
+   ]
+  ]
+ }
+}

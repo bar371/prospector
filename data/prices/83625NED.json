@@ -1,0 +1,560 @@
+[
+ {
+  "ID": 0,
+  "RegioS": "NL01  ",
+  "Perioden": "1995JJ00",
+  "GemiddeldeVerkoopprijs_1": 93750
+ },
+ {
+  "ID": 1,
+  "RegioS": "NL01  ",
+  "Perioden": "1996JJ00",
+  "GemiddeldeVerkoopprijs_1": 102607
+ },
+ {
+  "ID": 2,
+  "RegioS": "NL01  ",
+  "Perioden": "1997JJ00",
+  "GemiddeldeVerkoopprijs_1": 113163
+ },
+ {
+  "ID": 3,
+  "RegioS": "NL01  ",
+  "Perioden": "1998JJ00",
+  "GemiddeldeVerkoopprijs_1": 124540
+ },
+ {
+  "ID": 4,
+  "RegioS": "NL01  ",
+  "Perioden": "1999JJ00",
+  "GemiddeldeVerkoopprijs_1": 144778
+ },
+ {
+  "ID": 5,
+  "RegioS": "NL01  ",
+  "Perioden": "2000JJ00",
+  "GemiddeldeVerkoopprijs_1": 172050
+ },
+ {
+  "ID": 6,
+  "RegioS": "NL01  ",
+  "Perioden": "2001JJ00",
+  "GemiddeldeVerkoopprijs_1": 188397
+ },
+ {
+  "ID": 7,
+  "RegioS": "NL01  ",
+  "Perioden": "2002JJ00",
+  "GemiddeldeVerkoopprijs_1": 199752
+ },
+ {
+  "ID": 8,
+  "RegioS": "NL01  ",
+  "Perioden": "2003JJ00",
+  "GemiddeldeVerkoopprijs_1": 204829
+ },
+ {
+  "ID": 9,
+  "RegioS": "NL01  ",
+  "Perioden": "2004JJ00",
+  "GemiddeldeVerkoopprijs_1": 212723
+ },
+ {
+  "ID": 10,
+  "RegioS": "NL01  ",
+  "Perioden": "2005JJ00",
+  "GemiddeldeVerkoopprijs_1": 222706
+ },
+ {
+  "ID": 11,
+  "RegioS": "NL01  ",
+  "Perioden": "2006JJ00",
+  "GemiddeldeVerkoopprijs_1": 235843
+ },
+ {
+  "ID": 12,
+  "RegioS": "NL01  ",
+  "Perioden": "2007JJ00",
+  "GemiddeldeVerkoopprijs_1": 248325
+ },
+ {
+  "ID": 13,
+  "RegioS": "NL01  ",
+  "Perioden": "2008JJ00",
+  "GemiddeldeVerkoopprijs_1": 254918
+ },
+ {
+  "ID": 14,
+  "RegioS": "NL01  ",
+  "Perioden": "2009JJ00",
+  "GemiddeldeVerkoopprijs_1": 238259
+ },
+ {
+  "ID": 15,
+  "RegioS": "NL01  ",
+  "Perioden": "2010JJ00",
+  "GemiddeldeVerkoopprijs_1": 239530
+ },
+ {
+  "ID": 16,
+  "RegioS": "NL01  ",
+  "Perioden": "2011JJ00",
+  "GemiddeldeVerkoopprijs_1": 240059
+ },
+ {
+  "ID": 17,
+  "RegioS": "NL01  ",
+  "Perioden": "2012JJ00",
+  "GemiddeldeVerkoopprijs_1": 226661
+ },
+ {
+  "ID": 18,
+  "RegioS": "NL01  ",
+  "Perioden": "2013JJ00",
+  "GemiddeldeVerkoopprijs_1": 213353
+ },
+ {
+  "ID": 19,
+  "RegioS": "NL01  ",
+  "Perioden": "2014JJ00",
+  "GemiddeldeVerkoopprijs_1": 222218
+ },
+ {
+  "ID": 20,
+  "RegioS": "NL01  ",
+  "Perioden": "2015JJ00",
+  "GemiddeldeVerkoopprijs_1": 230194
+ },
+ {
+  "ID": 21,
+  "RegioS": "NL01  ",
+  "Perioden": "2016JJ00",
+  "GemiddeldeVerkoopprijs_1": 243837
+ },
+ {
+  "ID": 22,
+  "RegioS": "NL01  ",
+  "Perioden": "2017JJ00",
+  "GemiddeldeVerkoopprijs_1": 263295
+ },
+ {
+  "ID": 23,
+  "RegioS": "NL01  ",
+  "Perioden": "2018JJ00",
+  "GemiddeldeVerkoopprijs_1": 287267
+ },
+ {
+  "ID": 24,
+  "RegioS": "NL01  ",
+  "Perioden": "2019JJ00",
+  "GemiddeldeVerkoopprijs_1": 307978
+ },
+ {
+  "ID": 25,
+  "RegioS": "NL01  ",
+  "Perioden": "2020JJ00",
+  "GemiddeldeVerkoopprijs_1": 334488
+ },
+ {
+  "ID": 26,
+  "RegioS": "NL01  ",
+  "Perioden": "2021JJ00",
+  "GemiddeldeVerkoopprijs_1": 386714
+ },
+ {
+  "ID": 27,
+  "RegioS": "NL01  ",
+  "Perioden": "2022JJ00",
+  "GemiddeldeVerkoopprijs_1": 428591
+ },
+ {
+  "ID": 28,
+  "RegioS": "NL01  ",
+  "Perioden": "2023JJ00",
+  "GemiddeldeVerkoopprijs_1": 416153
+ },
+ {
+  "ID": 29,
+  "RegioS": "NL01  ",
+  "Perioden": "2024JJ00",
+  "GemiddeldeVerkoopprijs_1": 450985
+ },
+ {
+  "ID": 30,
+  "RegioS": "NL01  ",
+  "Perioden": "2025JJ00",
+  "GemiddeldeVerkoopprijs_1": 479527
+ },
+ {
+  "ID": 992,
+  "RegioS": "GM0484",
+  "Perioden": "1995JJ00",
+  "GemiddeldeVerkoopprijs_1": 100965
+ },
+ {
+  "ID": 993,
+  "RegioS": "GM0484",
+  "Perioden": "1996JJ00",
+  "GemiddeldeVerkoopprijs_1": 112026
+ },
+ {
+  "ID": 994,
+  "RegioS": "GM0484",
+  "Perioden": "1997JJ00",
+  "GemiddeldeVerkoopprijs_1": 116687
+ },
+ {
+  "ID": 995,
+  "RegioS": "GM0484",
+  "Perioden": "1998JJ00",
+  "GemiddeldeVerkoopprijs_1": 125996
+ },
+ {
+  "ID": 996,
+  "RegioS": "GM0484",
+  "Perioden": "1999JJ00",
+  "GemiddeldeVerkoopprijs_1": 146359
+ },
+ {
+  "ID": 997,
+  "RegioS": "GM0484",
+  "Perioden": "2000JJ00",
+  "GemiddeldeVerkoopprijs_1": 181567
+ },
+ {
+  "ID": 998,
+  "RegioS": "GM0484",
+  "Perioden": "2001JJ00",
+  "GemiddeldeVerkoopprijs_1": 198489
+ },
+ {
+  "ID": 999,
+  "RegioS": "GM0484",
+  "Perioden": "2002JJ00",
+  "GemiddeldeVerkoopprijs_1": 203049
+ },
+ {
+  "ID": 1000,
+  "RegioS": "GM0484",
+  "Perioden": "2003JJ00",
+  "GemiddeldeVerkoopprijs_1": 215776
+ },
+ {
+  "ID": 1001,
+  "RegioS": "GM0484",
+  "Perioden": "2004JJ00",
+  "GemiddeldeVerkoopprijs_1": 213741
+ },
+ {
+  "ID": 1002,
+  "RegioS": "GM0484",
+  "Perioden": "2005JJ00",
+  "GemiddeldeVerkoopprijs_1": 223145
+ },
+ {
+  "ID": 1003,
+  "RegioS": "GM0484",
+  "Perioden": "2006JJ00",
+  "GemiddeldeVerkoopprijs_1": 236262
+ },
+ {
+  "ID": 1004,
+  "RegioS": "GM0484",
+  "Perioden": "2007JJ00",
+  "GemiddeldeVerkoopprijs_1": 234586
+ },
+ {
+  "ID": 1005,
+  "RegioS": "GM0484",
+  "Perioden": "2008JJ00",
+  "GemiddeldeVerkoopprijs_1": 248638
+ },
+ {
+  "ID": 1006,
+  "RegioS": "GM0484",
+  "Perioden": "2009JJ00",
+  "GemiddeldeVerkoopprijs_1": 187425
+ },
+ {
+  "ID": 1007,
+  "RegioS": "GM0484",
+  "Perioden": "2010JJ00",
+  "GemiddeldeVerkoopprijs_1": 193252
+ },
+ {
+  "ID": 1008,
+  "RegioS": "GM0484",
+  "Perioden": "2011JJ00",
+  "GemiddeldeVerkoopprijs_1": 211847
+ },
+ {
+  "ID": 1009,
+  "RegioS": "GM0484",
+  "Perioden": "2012JJ00",
+  "GemiddeldeVerkoopprijs_1": 198369
+ },
+ {
+  "ID": 1010,
+  "RegioS": "GM0484",
+  "Perioden": "2013JJ00",
+  "GemiddeldeVerkoopprijs_1": 214234
+ },
+ {
+  "ID": 1011,
+  "RegioS": "GM0484",
+  "Perioden": "2014JJ00",
+  "GemiddeldeVerkoopprijs_1": 224102
+ },
+ {
+  "ID": 1012,
+  "RegioS": "GM0484",
+  "Perioden": "2015JJ00",
+  "GemiddeldeVerkoopprijs_1": 210948
+ },
+ {
+  "ID": 1013,
+  "RegioS": "GM0484",
+  "Perioden": "2016JJ00",
+  "GemiddeldeVerkoopprijs_1": 223430
+ },
+ {
+  "ID": 1014,
+  "RegioS": "GM0484",
+  "Perioden": "2017JJ00",
+  "GemiddeldeVerkoopprijs_1": 246886
+ },
+ {
+  "ID": 1015,
+  "RegioS": "GM0484",
+  "Perioden": "2018JJ00",
+  "GemiddeldeVerkoopprijs_1": 269286
+ },
+ {
+  "ID": 1016,
+  "RegioS": "GM0484",
+  "Perioden": "2019JJ00",
+  "GemiddeldeVerkoopprijs_1": 286500
+ },
+ {
+  "ID": 1017,
+  "RegioS": "GM0484",
+  "Perioden": "2020JJ00",
+  "GemiddeldeVerkoopprijs_1": 320239
+ },
+ {
+  "ID": 1018,
+  "RegioS": "GM0484",
+  "Perioden": "2021JJ00",
+  "GemiddeldeVerkoopprijs_1": 360031
+ },
+ {
+  "ID": 1019,
+  "RegioS": "GM0484",
+  "Perioden": "2022JJ00",
+  "GemiddeldeVerkoopprijs_1": 411170
+ },
+ {
+  "ID": 1020,
+  "RegioS": "GM0484",
+  "Perioden": "2023JJ00",
+  "GemiddeldeVerkoopprijs_1": 401474
+ },
+ {
+  "ID": 1021,
+  "RegioS": "GM0484",
+  "Perioden": "2024JJ00",
+  "GemiddeldeVerkoopprijs_1": 445481
+ },
+ {
+  "ID": 1022,
+  "RegioS": "GM0484",
+  "Perioden": "2025JJ00",
+  "GemiddeldeVerkoopprijs_1": 459675
+ },
+ {
+  "ID": 11067,
+  "RegioS": "GM0546",
+  "Perioden": "1995JJ00",
+  "GemiddeldeVerkoopprijs_1": 96880
+ },
+ {
+  "ID": 11068,
+  "RegioS": "GM0546",
+  "Perioden": "1996JJ00",
+  "GemiddeldeVerkoopprijs_1": 107861
+ },
+ {
+  "ID": 11069,
+  "RegioS": "GM0546",
+  "Perioden": "1997JJ00",
+  "GemiddeldeVerkoopprijs_1": 120187
+ },
+ {
+  "ID": 11070,
+  "RegioS": "GM0546",
+  "Perioden": "1998JJ00",
+  "GemiddeldeVerkoopprijs_1": 130218
+ },
+ {
+  "ID": 11071,
+  "RegioS": "GM0546",
+  "Perioden": "1999JJ00",
+  "GemiddeldeVerkoopprijs_1": 149526
+ },
+ {
+  "ID": 11072,
+  "RegioS": "GM0546",
+  "Perioden": "2000JJ00",
+  "GemiddeldeVerkoopprijs_1": 169188
+ },
+ {
+  "ID": 11073,
+  "RegioS": "GM0546",
+  "Perioden": "2001JJ00",
+  "GemiddeldeVerkoopprijs_1": 191841
+ },
+ {
+  "ID": 11074,
+  "RegioS": "GM0546",
+  "Perioden": "2002JJ00",
+  "GemiddeldeVerkoopprijs_1": 204813
+ },
+ {
+  "ID": 11075,
+  "RegioS": "GM0546",
+  "Perioden": "2003JJ00",
+  "GemiddeldeVerkoopprijs_1": 210740
+ },
+ {
+  "ID": 11076,
+  "RegioS": "GM0546",
+  "Perioden": "2004JJ00",
+  "GemiddeldeVerkoopprijs_1": 214734
+ },
+ {
+  "ID": 11077,
+  "RegioS": "GM0546",
+  "Perioden": "2005JJ00",
+  "GemiddeldeVerkoopprijs_1": 228423
+ },
+ {
+  "ID": 11078,
+  "RegioS": "GM0546",
+  "Perioden": "2006JJ00",
+  "GemiddeldeVerkoopprijs_1": 245703
+ },
+ {
+  "ID": 11079,
+  "RegioS": "GM0546",
+  "Perioden": "2007JJ00",
+  "GemiddeldeVerkoopprijs_1": 247905
+ },
+ {
+  "ID": 11080,
+  "RegioS": "GM0546",
+  "Perioden": "2008JJ00",
+  "GemiddeldeVerkoopprijs_1": 260213
+ },
+ {
+  "ID": 11081,
+  "RegioS": "GM0546",
+  "Perioden": "2009JJ00",
+  "GemiddeldeVerkoopprijs_1": 247186
+ },
+ {
+  "ID": 11082,
+  "RegioS": "GM0546",
+  "Perioden": "2010JJ00",
+  "GemiddeldeVerkoopprijs_1": 247368
+ },
+ {
+  "ID": 11083,
+  "RegioS": "GM0546",
+  "Perioden": "2011JJ00",
+  "GemiddeldeVerkoopprijs_1": 253126
+ },
+ {
+  "ID": 11084,
+  "RegioS": "GM0546",
+  "Perioden": "2012JJ00",
+  "GemiddeldeVerkoopprijs_1": 228000
+ },
+ {
+  "ID": 11085,
+  "RegioS": "GM0546",
+  "Perioden": "2013JJ00",
+  "GemiddeldeVerkoopprijs_1": 215905
+ },
+ {
+  "ID": 11086,
+  "RegioS": "GM0546",
+  "Perioden": "2014JJ00",
+  "GemiddeldeVerkoopprijs_1": 223600
+ },
+ {
+  "ID": 11087,
+  "RegioS": "GM0546",
+  "Perioden": "2015JJ00",
+  "GemiddeldeVerkoopprijs_1": 236456
+ },
+ {
+  "ID": 11088,
+  "RegioS": "GM0546",
+  "Perioden": "2016JJ00",
+  "GemiddeldeVerkoopprijs_1": 254080
+ },
+ {
+  "ID": 11089,
+  "RegioS": "GM0546",
+  "Perioden": "2017JJ00",
+  "GemiddeldeVerkoopprijs_1": 283245
+ },
+ {
+  "ID": 11090,
+  "RegioS": "GM0546",
+  "Perioden": "2018JJ00",
+  "GemiddeldeVerkoopprijs_1": 314549
+ },
+ {
+  "ID": 11091,
+  "RegioS": "GM0546",
+  "Perioden": "2019JJ00",
+  "GemiddeldeVerkoopprijs_1": 349233
+ },
+ {
+  "ID": 11092,
+  "RegioS": "GM0546",
+  "Perioden": "2020JJ00",
+  "GemiddeldeVerkoopprijs_1": 359467
+ },
+ {
+  "ID": 11093,
+  "RegioS": "GM0546",
+  "Perioden": "2021JJ00",
+  "GemiddeldeVerkoopprijs_1": 405468
+ },
+ {
+  "ID": 11094,
+  "RegioS": "GM0546",
+  "Perioden": "2022JJ00",
+  "GemiddeldeVerkoopprijs_1": 462784
+ },
+ {
+  "ID": 11095,
+  "RegioS": "GM0546",
+  "Perioden": "2023JJ00",
+  "GemiddeldeVerkoopprijs_1": 454317
+ },
+ {
+  "ID": 11096,
+  "RegioS": "GM0546",
+  "Perioden": "2024JJ00",
+  "GemiddeldeVerkoopprijs_1": 474092
+ },
+ {
+  "ID": 11097,
+  "RegioS": "GM0546",
+  "Perioden": "2025JJ00",
+  "GemiddeldeVerkoopprijs_1": 492047
+ }
+]

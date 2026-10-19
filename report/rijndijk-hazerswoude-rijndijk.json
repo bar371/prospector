@@ -1,0 +1,2182 @@
+{
+ "key": "rijndijk-hazerswoude-rijndijk",
+ "straat": "Rijndijk",
+ "woonplaats": "Hazerswoude-Rijndijk",
+ "gemeente": "Alphen aan den Rijn",
+ "gemeentecode": "GM0484",
+ "centrum": {
+  "lon": 4.574349,
+  "lat": 52.130867
+ },
+ "adressen": 583,
+ "scores": {
+  "veiligheid": 48,
+  "leefbaarheid": 47,
+  "onderwijs": 34,
+  "bereikbaarheid": 51,
+  "autoluw": 40,
+  "voorzieningen": 40,
+  "rust": 28
+ },
+ "buurten": [
+  {
+   "buurtcode": "BU04849401",
+   "buurtnaam": "Rijndijk",
+   "wijknaam": "Hazerswoude-Rijndijk",
+   "inwoners": 965.0,
+   "huishoudens": 435.0,
+   "kerncijfers": {
+    "gemiddeldeWoningwaarde": 540,
+    "percentageKoopwoningen": 73,
+    "percentageHuurwoningen": 27,
+    "percHuurwoningenInBezitWoningcorporaties": 15,
+    "percentageEengezinswoning": 81,
+    "percentageMeergezinswoning": 19,
+    "percentageBouwjaarklasseTot2000": null,
+    "percentageBouwjaarklasseVanaf2000": null,
+    "gemiddeldInkomenPerInwoner": null,
+    "percentageHuishoudensMetKinderen": 35,
+    "percentageEenpersoonshuishoudens": 39,
+    "personenautosPerHuishouden": 1.2,
+    "bevolkingsdichtheidInwonersPerKm2": 568,
+    "percentageWoningenMetZonnestroom": 51.0,
+    "gemiddeldAardgasverbruik": 650,
+    "opritHoofdverkeerswegGemiddeldeAfstandInKm": 1.6,
+    "treinstationGemiddeldeAfstandInKm": 6.5,
+    "overstapstationGemiddeldeAfstandInKm": 8.0,
+    "basisonderwijsGemiddeldeAfstandInKm": 2.2,
+    "voortgezetOnderwijsGemAfstandInKm": 4.7,
+    "havoVwoGemiddeldeAfstandInKm": 5.2,
+    "huisartsenpraktijkGemiddeldeAfstandInKm": 2.2,
+    "groteSupermarktGemiddeldeAfstandInKm": 2.0,
+    "kinderdagverblijfGemiddeldeAfstandInKm": 2.2,
+    "afstandTotOpenbaarGroenTotaal": null,
+    "afstandTotParkOfPlantsoen": null,
+    "jaar": 2024
+   },
+   "percentielen": {
+    "gemiddeldeWoningwaarde": 80,
+    "gemiddeldInkomenPerInwoner": null,
+    "percentageKoopwoningen": 48,
+    "opritHoofdverkeerswegGemiddeldeAfstandInKm": 51,
+    "treinstationGemiddeldeAfstandInKm": 34,
+    "overstapstationGemiddeldeAfstandInKm": 63,
+    "basisonderwijsGemiddeldeAfstandInKm": 14,
+    "voortgezetOnderwijsGemAfstandInKm": 29,
+    "huisartsenpraktijkGemiddeldeAfstandInKm": 27,
+    "groteSupermarktGemiddeldeAfstandInKm": 28,
+    "kinderdagverblijfGemiddeldeAfstandInKm": 14,
+    "afstandTotOpenbaarGroenTotaal": null,
+    "afstandTotParkOfPlantsoen": null,
+    "personenautosPerHuishouden": 49,
+    "bevolkingsdichtheidInwonersPerKm2": 36
+   },
+   "criminaliteit": {
+    "jaar": "2025",
+    "totaal": 33,
+    "per_1000_inwoners": 34.2,
+    "percentiel": 39,
+    "landelijke_mediaan_per_1000": 26.4,
+    "per_jaar": {
+     "2021": 23,
+     "2022": 32,
+     "2023": 28,
+     "2024": 22,
+     "2025": 33
+    },
+    "meest_voorkomend": [
+     {
+      "soort": "Vernieling",
+      "aantal": 7
+     },
+     {
+      "soort": "Fietsdiefstal",
+      "aantal": 3
+     },
+     {
+      "soort": "Woninginbraak",
+      "aantal": 2
+     },
+     {
+      "soort": "Bedreiging",
+      "aantal": 1
+     },
+     {
+      "soort": "Mishandeling",
+      "aantal": 1
+     }
+    ],
+    "per_maand": [
+     [
+      "2023MM10",
+      1
+     ],
+     [
+      "2023MM11",
+      2
+     ],
+     [
+      "2023MM12",
+      3
+     ],
+     [
+      "2024MM01",
+      1
+     ],
+     [
+      "2024MM02",
+      2
+     ],
+     [
+      "2024MM03",
+      1
+     ],
+     [
+      "2024MM04",
+      0
+     ],
+     [
+      "2024MM05",
+      1
+     ],
+     [
+      "2024MM06",
+      1
+     ],
+     [
+      "2024MM07",
+      3
+     ],
+     [
+      "2024MM08",
+      4
+     ],
+     [
+      "2024MM09",
+      1
+     ],
+     [
+      "2024MM10",
+      5
+     ],
+     [
+      "2024MM11",
+      1
+     ],
+     [
+      "2024MM12",
+      2
+     ],
+     [
+      "2025MM01",
+      5
+     ],
+     [
+      "2025MM02",
+      1
+     ],
+     [
+      "2025MM03",
+      4
+     ],
+     [
+      "2025MM04",
+      5
+     ],
+     [
+      "2025MM05",
+      4
+     ],
+     [
+      "2025MM06",
+      4
+     ],
+     [
+      "2025MM07",
+      2
+     ],
+     [
+      "2025MM08",
+      1
+     ],
+     [
+      "2025MM09",
+      1
+     ],
+     [
+      "2025MM10",
+      1
+     ],
+     [
+      "2025MM11",
+      4
+     ],
+     [
+      "2025MM12",
+      1
+     ],
+     [
+      "2026MM01",
+      3
+     ],
+     [
+      "2026MM02",
+      1
+     ],
+     [
+      "2026MM03",
+      3
+     ],
+     [
+      "2026MM04",
+      4
+     ],
+     [
+      "2026MM05",
+      5
+     ],
+     [
+      "2026MM06",
+      4
+     ],
+     [
+      "2026MM07",
+      4
+     ],
+     [
+      "2026MM08",
+      2
+     ],
+     [
+      "2026MM09",
+      2
+     ]
+    ]
+   },
+   "leefbaarometer": {
+    "jaar": "2024",
+    "score": 4.18087365844127,
+    "percentiel": 54,
+    "dimensies": {
+     "fysieke omgeving": {
+      "waarde": -0.0255550475301445,
+      "percentiel": 20
+     },
+     "overlast en onveiligheid": {
+      "waarde": 0.062821009387747,
+      "percentiel": 47
+     },
+     "sociale samenhang": {
+      "waarde": 0.0659435592354479,
+      "percentiel": 63
+     },
+     "voorzieningen": {
+      "waarde": -0.0555059110113699,
+      "percentiel": 57
+     },
+     "woningvoorraad": {
+      "waarde": 0.0309051972158997,
+      "percentiel": 45
+     }
+    },
+    "trend": [
+     [
+      "2002",
+      4.053
+     ],
+     [
+      "2008",
+      4.039
+     ],
+     [
+      "2012",
+      4.05
+     ],
+     [
+      "2014",
+      4.118
+     ],
+     [
+      "2016",
+      4.036
+     ],
+     [
+      "2018",
+      4.03
+     ],
+     [
+      "2020",
+      4.15
+     ],
+     [
+      "2022",
+      4.164
+     ],
+     [
+      "2024",
+      4.181
+     ]
+    ]
+   },
+   "gezondheidsmonitor": {
+    "jaar": 2024,
+    "b_tevr_wo": {
+     "waarde": 90,
+     "percentiel": 51
+    },
+    "b_tevr_won": {
+     "waarde": 91,
+     "percentiel": 55
+    },
+    "b_tevr_gr": {
+     "waarde": 89.1,
+     "percentiel": 60
+    },
+    "b_gel_weg": {
+     "waarde": 8.4,
+     "percentiel": 24
+    },
+    "b_gel_trei": {
+     "waarde": 1,
+     "percentiel": 22
+    },
+    "b_gel_vv": {
+     "waarde": 3.7,
+     "percentiel": 17
+    },
+    "b_sv_weg": {
+     "waarde": 3.6,
+     "percentiel": 26
+    },
+    "b_gel_bu": {
+     "waarde": 3.6,
+     "percentiel": 48
+    },
+    "b_nverk_bi": {
+     "waarde": 31.2,
+     "percentiel": 51
+    }
+   },
+   "adressen_op_straat": 383
+  },
+  {
+   "buurtcode": "BU04849404",
+   "buurtnaam": "Buitengebied Hazerswoude-Rijndijk",
+   "wijknaam": "Hazerswoude-Rijndijk",
+   "inwoners": 1475.0,
+   "huishoudens": 630.0,
+   "kerncijfers": {
+    "gemiddeldeWoningwaarde": 426,
+    "percentageKoopwoningen": 75,
+    "percentageHuurwoningen": 25,
+    "percHuurwoningenInBezitWoningcorporaties": 23,
+    "percentageEengezinswoning": 86,
+    "percentageMeergezinswoning": 14,
+    "percentageBouwjaarklasseTot2000": null,
+    "percentageBouwjaarklasseVanaf2000": null,
+    "gemiddeldInkomenPerInwoner": null,
+    "percentageHuishoudensMetKinderen": 38,
+    "percentageEenpersoonshuishoudens": 25,
+    "personenautosPerHuishouden": 1.2,
+    "bevolkingsdichtheidInwonersPerKm2": 479,
+    "percentageWoningenMetZonnestroom": 48.0,
+    "gemiddeldAardgasverbruik": 760,
+    "opritHoofdverkeerswegGemiddeldeAfstandInKm": 1.4,
+    "treinstationGemiddeldeAfstandInKm": 5.4,
+    "overstapstationGemiddeldeAfstandInKm": 11.2,
+    "basisonderwijsGemiddeldeAfstandInKm": 0.7,
+    "voortgezetOnderwijsGemAfstandInKm": 4.4,
+    "havoVwoGemiddeldeAfstandInKm": 4.8,
+    "huisartsenpraktijkGemiddeldeAfstandInKm": 0.8,
+    "groteSupermarktGemiddeldeAfstandInKm": 1.1,
+    "kinderdagverblijfGemiddeldeAfstandInKm": 0.6,
+    "afstandTotOpenbaarGroenTotaal": null,
+    "afstandTotParkOfPlantsoen": null,
+    "jaar": 2024
+   },
+   "percentielen": {
+    "gemiddeldeWoningwaarde": 57,
+    "gemiddeldInkomenPerInwoner": null,
+    "percentageKoopwoningen": 52,
+    "opritHoofdverkeerswegGemiddeldeAfstandInKm": 59,
+    "treinstationGemiddeldeAfstandInKm": 42,
+    "overstapstationGemiddeldeAfstandInKm": 49,
+    "basisonderwijsGemiddeldeAfstandInKm": 59,
+    "voortgezetOnderwijsGemAfstandInKm": 31,
+    "huisartsenpraktijkGemiddeldeAfstandInKm": 68,
+    "groteSupermarktGemiddeldeAfstandInKm": 49,
+    "kinderdagverblijfGemiddeldeAfstandInKm": 61,
+    "afstandTotOpenbaarGroenTotaal": null,
+    "afstandTotParkOfPlantsoen": null,
+    "personenautosPerHuishouden": 49,
+    "bevolkingsdichtheidInwonersPerKm2": 34
+   },
+   "criminaliteit": {
+    "jaar": "2025",
+    "totaal": 29,
+    "per_1000_inwoners": 19.7,
+    "percentiel": 65,
+    "landelijke_mediaan_per_1000": 26.4,
+    "per_jaar": {
+     "2021": 37,
+     "2022": 33,
+     "2023": 27,
+     "2024": 22,
+     "2025": 29
+    },
+    "meest_voorkomend": [
+     {
+      "soort": "Bedreiging",
+      "aantal": 2
+     },
+     {
+      "soort": "Mishandeling",
+      "aantal": 2
+     },
+     {
+      "soort": "Diefstal uit/vanaf auto",
+      "aantal": 1
+     },
+     {
+      "soort": "Fietsdiefstal",
+      "aantal": 1
+     },
+     {
+      "soort": "Openlijk geweld",
+      "aantal": 1
+     },
+     {
+      "soort": "Vernieling",
+      "aantal": 1
+     }
+    ],
+    "per_maand": [
+     [
+      "2023MM10",
+      1
+     ],
+     [
+      "2023MM11",
+      1
+     ],
+     [
+      "2023MM12",
+      1
+     ],
+     [
+      "2024MM01",
+      2
+     ],
+     [
+      "2024MM02",
+      2
+     ],
+     [
+      "2024MM03",
+      4
+     ],
+     [
+      "2024MM04",
+      1
+     ],
+     [
+      "2024MM05",
+      1
+     ],
+     [
+      "2024MM06",
+      1
+     ],
+     [
+      "2024MM07",
+      1
+     ],
+     [
+      "2024MM08",
+      0
+     ],
+     [
+      "2024MM09",
+      3
+     ],
+     [
+      "2024MM10",
+      2
+     ],
+     [
+      "2024MM11",
+      2
+     ],
+     [
+      "2024MM12",
+      3
+     ],
+     [
+      "2025MM01",
+      4
+     ],
+     [
+      "2025MM02",
+      4
+     ],
+     [
+      "2025MM03",
+      0
+     ],
+     [
+      "2025MM04",
+      3
+     ],
+     [
+      "2025MM05",
+      5
+     ],
+     [
+      "2025MM06",
+      6
+     ],
+     [
+      "2025MM07",
+      3
+     ],
+     [
+      "2025MM08",
+      0
+     ],
+     [
+      "2025MM09",
+      0
+     ],
+     [
+      "2025MM10",
+      1
+     ],
+     [
+      "2025MM11",
+      0
+     ],
+     [
+      "2025MM12",
+      3
+     ],
+     [
+      "2026MM01",
+      3
+     ],
+     [
+      "2026MM02",
+      1
+     ],
+     [
+      "2026MM03",
+      4
+     ],
+     [
+      "2026MM04",
+      2
+     ],
+     [
+      "2026MM05",
+      0
+     ],
+     [
+      "2026MM06",
+      5
+     ],
+     [
+      "2026MM07",
+      5
+     ],
+     [
+      "2026MM08",
+      0
+     ],
+     [
+      "2026MM09",
+      1
+     ]
+    ]
+   },
+   "leefbaarometer": {
+    "jaar": "2024",
+    "score": 4.09215685335672,
+    "percentiel": 25,
+    "dimensies": {
+     "fysieke omgeving": {
+      "waarde": -0.0543245002445121,
+      "percentiel": 10
+     },
+     "overlast en onveiligheid": {
+      "waarde": 0.0729317001929643,
+      "percentiel": 53
+     },
+     "sociale samenhang": {
+      "waarde": 0.0133882580274419,
+      "percentiel": 33
+     },
+     "voorzieningen": {
+      "waarde": -0.0722237100411812,
+      "percentiel": 52
+     },
+     "woningvoorraad": {
+      "waarde": 0.0301202542783198,
+      "percentiel": 44
+     }
+    },
+    "trend": [
+     [
+      "2002",
+      4.018
+     ],
+     [
+      "2008",
+      4.015
+     ],
+     [
+      "2012",
+      3.999
+     ],
+     [
+      "2014",
+      4.055
+     ],
+     [
+      "2016",
+      4.051
+     ],
+     [
+      "2018",
+      4.077
+     ],
+     [
+      "2020",
+      4.089
+     ],
+     [
+      "2022",
+      4.08
+     ],
+     [
+      "2024",
+      4.092
+     ]
+    ]
+   },
+   "gezondheidsmonitor": {
+    "jaar": 2024,
+    "b_tevr_wo": {
+     "waarde": 90.3,
+     "percentiel": 53
+    },
+    "b_tevr_won": {
+     "waarde": 91.7,
+     "percentiel": 62
+    },
+    "b_tevr_gr": {
+     "waarde": 81.2,
+     "percentiel": 34
+    },
+    "b_gel_weg": {
+     "waarde": 6.7,
+     "percentiel": 41
+    },
+    "b_gel_trei": {
+     "waarde": 1,
+     "percentiel": 22
+    },
+    "b_gel_vv": {
+     "waarde": 3,
+     "percentiel": 23
+    },
+    "b_sv_weg": {
+     "waarde": 3.2,
+     "percentiel": 33
+    },
+    "b_gel_bu": {
+     "waarde": 4.7,
+     "percentiel": 30
+    },
+    "b_nverk_bi": {
+     "waarde": 38.3,
+     "percentiel": 32
+    }
+   },
+   "adressen_op_straat": 118
+  },
+  {
+   "buurtcode": "BU04849403",
+   "buurtnaam": "Zonneveld",
+   "wijknaam": "Hazerswoude-Rijndijk",
+   "inwoners": 2285.0,
+   "huishoudens": 995.0,
+   "kerncijfers": {
+    "gemiddeldeWoningwaarde": 355,
+    "percentageKoopwoningen": 64,
+    "percentageHuurwoningen": 36,
+    "percHuurwoningenInBezitWoningcorporaties": 28,
+    "percentageEengezinswoning": 81,
+    "percentageMeergezinswoning": 19,
+    "percentageBouwjaarklasseTot2000": null,
+    "percentageBouwjaarklasseVanaf2000": null,
+    "gemiddeldInkomenPerInwoner": null,
+    "percentageHuishoudensMetKinderen": 39,
+    "percentageEenpersoonshuishoudens": 30,
+    "personenautosPerHuishouden": 1.1,
+    "bevolkingsdichtheidInwonersPerKm2": 5808,
+    "percentageWoningenMetZonnestroom": 42.0,
+    "gemiddeldAardgasverbruik": 830,
+    "opritHoofdverkeerswegGemiddeldeAfstandInKm": 0.9,
+    "treinstationGemiddeldeAfstandInKm": 6.0,
+    "overstapstationGemiddeldeAfstandInKm": 10.7,
+    "basisonderwijsGemiddeldeAfstandInKm": 0.3,
+    "voortgezetOnderwijsGemAfstandInKm": 4.3,
+    "havoVwoGemiddeldeAfstandInKm": 5.4,
+    "huisartsenpraktijkGemiddeldeAfstandInKm": 0.4,
+    "groteSupermarktGemiddeldeAfstandInKm": 0.5,
+    "kinderdagverblijfGemiddeldeAfstandInKm": 0.2,
+    "afstandTotOpenbaarGroenTotaal": null,
+    "afstandTotParkOfPlantsoen": null,
+    "jaar": 2024
+   },
+   "percentielen": {
+    "gemiddeldeWoningwaarde": 36,
+    "gemiddeldInkomenPerInwoner": null,
+    "percentageKoopwoningen": 35,
+    "opritHoofdverkeerswegGemiddeldeAfstandInKm": 79,
+    "treinstationGemiddeldeAfstandInKm": 38,
+    "overstapstationGemiddeldeAfstandInKm": 51,
+    "basisonderwijsGemiddeldeAfstandInKm": 95,
+    "voortgezetOnderwijsGemAfstandInKm": 32,
+    "huisartsenpraktijkGemiddeldeAfstandInKm": 93,
+    "groteSupermarktGemiddeldeAfstandInKm": 83,
+    "kinderdagverblijfGemiddeldeAfstandInKm": 98,
+    "afstandTotOpenbaarGroenTotaal": null,
+    "afstandTotParkOfPlantsoen": null,
+    "personenautosPerHuishouden": 61,
+    "bevolkingsdichtheidInwonersPerKm2": 80
+   },
+   "criminaliteit": {
+    "jaar": "2025",
+    "totaal": 36,
+    "per_1000_inwoners": 15.8,
+    "percentiel": 75,
+    "landelijke_mediaan_per_1000": 26.4,
+    "per_jaar": {
+     "2021": 43,
+     "2022": 41,
+     "2023": 31,
+     "2024": 39,
+     "2025": 36
+    },
+    "meest_voorkomend": [
+     {
+      "soort": "Vernieling",
+      "aantal": 8
+     },
+     {
+      "soort": "Fietsdiefstal",
+      "aantal": 5
+     },
+     {
+      "soort": "Diefstal uit/vanaf auto",
+      "aantal": 2
+     },
+     {
+      "soort": "Woninginbraak",
+      "aantal": 1
+     },
+     {
+      "soort": "Mishandeling",
+      "aantal": 1
+     }
+    ],
+    "per_maand": [
+     [
+      "2023MM10",
+      6
+     ],
+     [
+      "2023MM11",
+      2
+     ],
+     [
+      "2023MM12",
+      2
+     ],
+     [
+      "2024MM01",
+      2
+     ],
+     [
+      "2024MM02",
+      1
+     ],
+     [
+      "2024MM03",
+      7
+     ],
+     [
+      "2024MM04",
+      0
+     ],
+     [
+      "2024MM05",
+      3
+     ],
+     [
+      "2024MM06",
+      5
+     ],
+     [
+      "2024MM07",
+      5
+     ],
+     [
+      "2024MM08",
+      1
+     ],
+     [
+      "2024MM09",
+      1
+     ],
+     [
+      "2024MM10",
+      6
+     ],
+     [
+      "2024MM11",
+      2
+     ],
+     [
+      "2024MM12",
+      6
+     ],
+     [
+      "2025MM01",
+      5
+     ],
+     [
+      "2025MM02",
+      5
+     ],
+     [
+      "2025MM03",
+      5
+     ],
+     [
+      "2025MM04",
+      2
+     ],
+     [
+      "2025MM05",
+      2
+     ],
+     [
+      "2025MM06",
+      2
+     ],
+     [
+      "2025MM07",
+      3
+     ],
+     [
+      "2025MM08",
+      2
+     ],
+     [
+      "2025MM09",
+      1
+     ],
+     [
+      "2025MM10",
+      2
+     ],
+     [
+      "2025MM11",
+      3
+     ],
+     [
+      "2025MM12",
+      4
+     ],
+     [
+      "2026MM01",
+      2
+     ],
+     [
+      "2026MM02",
+      4
+     ],
+     [
+      "2026MM03",
+      2
+     ],
+     [
+      "2026MM04",
+      3
+     ],
+     [
+      "2026MM05",
+      4
+     ],
+     [
+      "2026MM06",
+      3
+     ],
+     [
+      "2026MM07",
+      1
+     ],
+     [
+      "2026MM08",
+      0
+     ],
+     [
+      "2026MM09",
+      3
+     ]
+    ]
+   },
+   "leefbaarometer": {
+    "jaar": "2024",
+    "score": 4.06532642986266,
+    "percentiel": 19,
+    "dimensies": {
+     "fysieke omgeving": {
+      "waarde": -0.0184535252528038,
+      "percentiel": 26
+     },
+     "overlast en onveiligheid": {
+      "waarde": 0.0581798022393406,
+      "percentiel": 43
+     },
+     "sociale samenhang": {
+      "waarde": -0.0122686901524004,
+      "percentiel": 20
+     },
+     "voorzieningen": {
+      "waarde": -0.0641118824934791,
+      "percentiel": 55
+     },
+     "woningvoorraad": {
+      "waarde": -0.00028412562168748,
+      "percentiel": 20
+     }
+    },
+    "trend": [
+     [
+      "2002",
+      3.932
+     ],
+     [
+      "2008",
+      3.949
+     ],
+     [
+      "2012",
+      3.951
+     ],
+     [
+      "2014",
+      4.027
+     ],
+     [
+      "2016",
+      4.059
+     ],
+     [
+      "2018",
+      4.031
+     ],
+     [
+      "2020",
+      4.04
+     ],
+     [
+      "2022",
+      4.06
+     ],
+     [
+      "2024",
+      4.065
+     ]
+    ]
+   },
+   "gezondheidsmonitor": {
+    "jaar": 2024,
+    "b_tevr_wo": {
+     "waarde": 87,
+     "percentiel": 39
+    },
+    "b_tevr_won": {
+     "waarde": 89.7,
+     "percentiel": 47
+    },
+    "b_tevr_gr": {
+     "waarde": 81.7,
+     "percentiel": 35
+    },
+    "b_gel_weg": {
+     "waarde": 5.3,
+     "percentiel": 59
+    },
+    "b_gel_trei": {
+     "waarde": 1.5,
+     "percentiel": 12
+    },
+    "b_gel_vv": {
+     "waarde": 3.4,
+     "percentiel": 19
+    },
+    "b_sv_weg": {
+     "waarde": 2.6,
+     "percentiel": 47
+    },
+    "b_gel_bu": {
+     "waarde": 6.3,
+     "percentiel": 16
+    },
+    "b_nverk_bi": {
+     "waarde": 46.2,
+     "percentiel": 18
+    }
+   },
+   "adressen_op_straat": 51
+  },
+  {
+   "buurtcode": "BU04849402",
+   "buurtnaam": "Rhynenburch",
+   "wijknaam": "Hazerswoude-Rijndijk",
+   "inwoners": 1130.0,
+   "huishoudens": 530.0,
+   "kerncijfers": {
+    "gemiddeldeWoningwaarde": 356,
+    "percentageKoopwoningen": 66,
+    "percentageHuurwoningen": 34,
+    "percHuurwoningenInBezitWoningcorporaties": 19,
+    "percentageEengezinswoning": 59,
+    "percentageMeergezinswoning": 41,
+    "percentageBouwjaarklasseTot2000": null,
+    "percentageBouwjaarklasseVanaf2000": null,
+    "gemiddeldInkomenPerInwoner": null,
+    "percentageHuishoudensMetKinderen": 30,
+    "percentageEenpersoonshuishoudens": 38,
+    "personenautosPerHuishouden": 1.2,
+    "bevolkingsdichtheidInwonersPerKm2": 3797,
+    "percentageWoningenMetZonnestroom": 34.0,
+    "gemiddeldAardgasverbruik": 720,
+    "opritHoofdverkeerswegGemiddeldeAfstandInKm": 0.3,
+    "treinstationGemiddeldeAfstandInKm": 6.5,
+    "overstapstationGemiddeldeAfstandInKm": 10.1,
+    "basisonderwijsGemiddeldeAfstandInKm": 0.3,
+    "voortgezetOnderwijsGemAfstandInKm": 3.7,
+    "havoVwoGemiddeldeAfstandInKm": 5.8,
+    "huisartsenpraktijkGemiddeldeAfstandInKm": 0.7,
+    "groteSupermarktGemiddeldeAfstandInKm": 0.3,
+    "kinderdagverblijfGemiddeldeAfstandInKm": 0.3,
+    "afstandTotOpenbaarGroenTotaal": null,
+    "afstandTotParkOfPlantsoen": null,
+    "jaar": 2024
+   },
+   "percentielen": {
+    "gemiddeldeWoningwaarde": 36,
+    "gemiddeldInkomenPerInwoner": null,
+    "percentageKoopwoningen": 38,
+    "opritHoofdverkeerswegGemiddeldeAfstandInKm": 98,
+    "treinstationGemiddeldeAfstandInKm": 34,
+    "overstapstationGemiddeldeAfstandInKm": 54,
+    "basisonderwijsGemiddeldeAfstandInKm": 95,
+    "voortgezetOnderwijsGemAfstandInKm": 37,
+    "huisartsenpraktijkGemiddeldeAfstandInKm": 74,
+    "groteSupermarktGemiddeldeAfstandInKm": 96,
+    "kinderdagverblijfGemiddeldeAfstandInKm": 92,
+    "afstandTotOpenbaarGroenTotaal": null,
+    "afstandTotParkOfPlantsoen": null,
+    "personenautosPerHuishouden": 49,
+    "bevolkingsdichtheidInwonersPerKm2": 65
+   },
+   "criminaliteit": {
+    "jaar": "2025",
+    "totaal": 29,
+    "per_1000_inwoners": 25.7,
+    "percentiel": 51,
+    "landelijke_mediaan_per_1000": 26.4,
+    "per_jaar": {
+     "2021": 35,
+     "2022": 45,
+     "2023": 33,
+     "2024": 22,
+     "2025": 29
+    },
+    "meest_voorkomend": [
+     {
+      "soort": "Mishandeling",
+      "aantal": 2
+     },
+     {
+      "soort": "Vernieling",
+      "aantal": 2
+     },
+     {
+      "soort": "Woninginbraak",
+      "aantal": 1
+     },
+     {
+      "soort": "Bedreiging",
+      "aantal": 1
+     }
+    ],
+    "per_maand": [
+     [
+      "2023MM10",
+      0
+     ],
+     [
+      "2023MM11",
+      2
+     ],
+     [
+      "2023MM12",
+      4
+     ],
+     [
+      "2024MM01",
+      0
+     ],
+     [
+      "2024MM02",
+      3
+     ],
+     [
+      "2024MM03",
+      2
+     ],
+     [
+      "2024MM04",
+      1
+     ],
+     [
+      "2024MM05",
+      3
+     ],
+     [
+      "2024MM06",
+      2
+     ],
+     [
+      "2024MM07",
+      3
+     ],
+     [
+      "2024MM08",
+      2
+     ],
+     [
+      "2024MM09",
+      1
+     ],
+     [
+      "2024MM10",
+      2
+     ],
+     [
+      "2024MM11",
+      1
+     ],
+     [
+      "2024MM12",
+      2
+     ],
+     [
+      "2025MM01",
+      2
+     ],
+     [
+      "2025MM02",
+      2
+     ],
+     [
+      "2025MM03",
+      0
+     ],
+     [
+      "2025MM04",
+      9
+     ],
+     [
+      "2025MM05",
+      3
+     ],
+     [
+      "2025MM06",
+      4
+     ],
+     [
+      "2025MM07",
+      3
+     ],
+     [
+      "2025MM08",
+      1
+     ],
+     [
+      "2025MM09",
+      0
+     ],
+     [
+      "2025MM10",
+      3
+     ],
+     [
+      "2025MM11",
+      2
+     ],
+     [
+      "2025MM12",
+      0
+     ],
+     [
+      "2026MM01",
+      3
+     ],
+     [
+      "2026MM02",
+      2
+     ],
+     [
+      "2026MM03",
+      1
+     ],
+     [
+      "2026MM04",
+      2
+     ],
+     [
+      "2026MM05",
+      2
+     ],
+     [
+      "2026MM06",
+      4
+     ],
+     [
+      "2026MM07",
+      2
+     ],
+     [
+      "2026MM08",
+      2
+     ],
+     [
+      "2026MM09",
+      0
+     ]
+    ]
+   },
+   "leefbaarometer": {
+    "jaar": "2024",
+    "score": 4.10847970625605,
+    "percentiel": 30,
+    "dimensies": {
+     "fysieke omgeving": {
+      "waarde": -0.00441327757024303,
+      "percentiel": 41
+     },
+     "overlast en onveiligheid": {
+      "waarde": 0.062770178408532,
+      "percentiel": 47
+     },
+     "sociale samenhang": {
+      "waarde": 0.00718667802073636,
+      "percentiel": 30
+     },
+     "voorzieningen": {
+      "waarde": -0.0606152543946032,
+      "percentiel": 56
+     },
+     "woningvoorraad": {
+      "waarde": 0.0012865306479377,
+      "percentiel": 21
+     }
+    },
+    "trend": [
+     [
+      "2002",
+      4.007
+     ],
+     [
+      "2008",
+      4.016
+     ],
+     [
+      "2012",
+      4.027
+     ],
+     [
+      "2014",
+      4.06
+     ],
+     [
+      "2016",
+      4.078
+     ],
+     [
+      "2018",
+      4.077
+     ],
+     [
+      "2020",
+      4.1
+     ],
+     [
+      "2022",
+      4.122
+     ],
+     [
+      "2024",
+      4.108
+     ]
+    ]
+   },
+   "gezondheidsmonitor": {
+    "jaar": 2024,
+    "b_tevr_wo": {
+     "waarde": 89.8,
+     "percentiel": 50
+    },
+    "b_tevr_won": {
+     "waarde": 90.9,
+     "percentiel": 55
+    },
+    "b_tevr_gr": {
+     "waarde": 85.6,
+     "percentiel": 45
+    },
+    "b_gel_weg": {
+     "waarde": 7.5,
+     "percentiel": 33
+    },
+    "b_gel_trei": {
+     "waarde": 1.9,
+     "percentiel": 8
+    },
+    "b_gel_vv": {
+     "waarde": 3.3,
+     "percentiel": 20
+    },
+    "b_sv_weg": {
+     "waarde": 3.5,
+     "percentiel": 27
+    },
+    "b_gel_bu": {
+     "waarde": 5.2,
+     "percentiel": 25
+    },
+    "b_nverk_bi": {
+     "waarde": 42.4,
+     "percentiel": 24
+    }
+   },
+   "adressen_op_straat": 31
+  }
+ ],
+ "gemeente_vergelijking": {
+  "leefbaarometer": {
+   "jaar": "2024",
+   "score": 4.08126233410507
+  },
+  "gemiddeldeWoningwaarde": 373,
+  "inwoners": 114966,
+  "criminaliteit_per_jaar": {
+   "2021": 4208,
+   "2022": 4147,
+   "2023": 3813,
+   "2024": 3857,
+   "2025": 3894
+  },
+  "gemiddelde_verkoopprijs": [
+   [
+    "2014",
+    224102
+   ],
+   [
+    "2015",
+    210948
+   ],
+   [
+    "2016",
+    223430
+   ],
+   [
+    "2017",
+    246886
+   ],
+   [
+    "2018",
+    269286
+   ],
+   [
+    "2019",
+    286500
+   ],
+   [
+    "2020",
+    320239
+   ],
+   [
+    "2021",
+    360031
+   ],
+   [
+    "2022",
+    411170
+   ],
+   [
+    "2023",
+    401474
+   ],
+   [
+    "2024",
+    445481
+   ],
+   [
+    "2025",
+    459675
+   ]
+  ],
+  "gemiddelde_verkoopprijs_nl": [
+   [
+    "2014",
+    222218
+   ],
+   [
+    "2015",
+    230194
+   ],
+   [
+    "2016",
+    243837
+   ],
+   [
+    "2017",
+    263295
+   ],
+   [
+    "2018",
+    287267
+   ],
+   [
+    "2019",
+    307978
+   ],
+   [
+    "2020",
+    334488
+   ],
+   [
+    "2021",
+    386714
+   ],
+   [
+    "2022",
+    428591
+   ],
+   [
+    "2023",
+    416153
+   ],
+   [
+    "2024",
+    450985
+   ],
+   [
+    "2025",
+    479527
+   ]
+  ]
+ },
+ "scholen": [
+  {
+   "naam": "RKB De Tweeklank",
+   "sector": "po",
+   "afstand_km": 1.06,
+   "denominatie": "Rooms-Katholiek",
+   "adres": "da Costasingel 42, Hazerswoude-Rijndijk",
+   "onderwijsstructuur": null,
+   "website": "www.tweeklank.nl",
+   "lon": 4.58837581,
+   "lat": 52.12687869,
+   "doorstroomtoets": {
+    "jaar": "2024",
+    "toets": "LIB",
+    "gemiddelde": 173.22,
+    "leerlingen": 32.0,
+    "percentiel": 25
+   },
+   "inspectie": null
+  },
+  {
+   "naam": "O.B.S. Groeiwijs",
+   "sector": "po",
+   "afstand_km": 1.28,
+   "denominatie": "Openbaar",
+   "adres": "Joseph Haydnlaan 1, Hazerswoude-Rijndijk",
+   "onderwijsstructuur": null,
+   "website": "www.obs-groeiwijs.nl",
+   "lon": 4.59289526,
+   "lat": 52.12895856,
+   "doorstroomtoets": {
+    "jaar": "2024",
+    "toets": "IEP",
+    "gemiddelde": 77.38,
+    "leerlingen": 26.0,
+    "percentiel": 41
+   },
+   "inspectie": null
+  },
+  {
+   "naam": "Samenwerkingsschool MeerWaarde",
+   "sector": "po",
+   "afstand_km": 1.77,
+   "denominatie": "Samenwerking Opb., PC",
+   "adres": "Prinses Margrietstraat 2, Koudekerk Aan Den Rijn",
+   "onderwijsstructuur": null,
+   "website": "sws-meerwaarde.nl",
+   "lon": 4.59985233,
+   "lat": 52.13363061,
+   "doorstroomtoets": {
+    "jaar": "2024",
+    "toets": "DOE",
+    "gemiddelde": 291.02,
+    "leerlingen": 41.0,
+    "percentiel": 28
+   },
+   "inspectie": null
+  },
+  {
+   "naam": "Chr. SGM Groene Hart voor vwo, havo, mavo, vbo vest. Rijnwoude",
+   "sector": "vo",
+   "afstand_km": 3.72,
+   "denominatie": "Bijzonder",
+   "adres": "Sportparklaan 4, Hazerswoude-Dorp",
+   "onderwijsstructuur": "VBO/MAVO",
+   "website": null,
+   "lon": 4.59391234,
+   "lat": 52.09964537,
+   "doorstroomtoets": null,
+   "inspectie": null
+  },
+  {
+   "naam": "Stedelijk Gymnasium",
+   "sector": "vo",
+   "afstand_km": 5.27,
+   "denominatie": "Openbaar",
+   "adres": "Fruinlaan 15, Leiden",
+   "onderwijsstructuur": "VWO",
+   "website": "www.gymnasiumleiden.nl",
+   "lon": 4.50603659,
+   "lat": 52.15295668,
+   "doorstroomtoets": null,
+   "inspectie": null
+  },
+  {
+   "naam": "Bonaventuracollege SGM voor Gym. Ath. Havo Vmbo",
+   "sector": "vo",
+   "afstand_km": 5.27,
+   "denominatie": "Bijzonder",
+   "adres": "Burggravenlaan 2, Leiden",
+   "onderwijsstructuur": "VBO/MAVO/HAVO/VWO",
+   "website": "www.bonaventuracollege.nl",
+   "lon": 4.50779539,
+   "lat": 52.15493503,
+   "doorstroomtoets": null,
+   "inspectie": null
+  },
+  {
+   "naam": "Chr. SGM Groene Hart voor vwo, havo, mavo, vbo",
+   "sector": "vo",
+   "afstand_km": 5.28,
+   "denominatie": "Bijzonder",
+   "adres": "Prinses Beatrixlaan 4, Alphen Aan Den Rijn",
+   "onderwijsstructuur": "VBO/MAVO",
+   "website": "www.groenehartscholen.nl",
+   "lon": 4.65172403,
+   "lat": 52.13144411,
+   "doorstroomtoets": null,
+   "inspectie": null
+  },
+  {
+   "naam": "Groene Hart Pro College",
+   "sector": "vo",
+   "afstand_km": 5.4,
+   "denominatie": "Bijzonder",
+   "adres": "Anna van Burenlaan 15, Alphen Aan Den Rijn",
+   "onderwijsstructuur": "PRO",
+   "website": "www.groenehartprocollege.nl",
+   "lon": 4.65347889,
+   "lat": 52.13206519,
+   "doorstroomtoets": null,
+   "inspectie": null
+  },
+  {
+   "naam": "Scala College voor Atheneum Havo Vmbo-Loot",
+   "sector": "vo",
+   "afstand_km": 5.52,
+   "denominatie": "Openbaar",
+   "adres": "Dr. A.D. Sacharovlaan 1, Alphen Aan Den Rijn",
+   "onderwijsstructuur": "VWO",
+   "website": null,
+   "lon": 4.65513359,
+   "lat": 52.12811867,
+   "doorstroomtoets": null,
+   "inspectie": null
+  },
+  {
+   "naam": "Yuverta",
+   "sector": "vo",
+   "afstand_km": 5.61,
+   "denominatie": "Bijzonder",
+   "adres": "Kalkovenweg 62, Alphen Aan Den Rijn",
+   "onderwijsstructuur": "VBO",
+   "website": "yuverta.nl/vmboalphenaandenrijn",
+   "lon": 4.64958749,
+   "lat": 52.15130293,
+   "doorstroomtoets": null,
+   "inspectie": null
+  },
+  {
+   "naam": "Ashram College KSG voor vwo, havo, mavo en vbo",
+   "sector": "vo",
+   "afstand_km": 5.7,
+   "denominatie": "Bijzonder",
+   "adres": "Marsdiep 293, Alphen Aan Den Rijn",
+   "onderwijsstructuur": "VBO/MAVO/HAVO/VWO",
+   "website": "www.ashramcollege.nl",
+   "lon": 4.65405978,
+   "lat": 52.14631761,
+   "doorstroomtoets": null,
+   "inspectie": null
+  },
+  {
+   "naam": "Chr. SGM Groene Hart voor vwo, havo, mavo, vbo Marsdiep dependance",
+   "sector": "vo",
+   "afstand_km": 5.71,
+   "denominatie": "Overige",
+   "adres": "Marsdiep 291, Alphen Aan Den Rijn",
+   "onderwijsstructuur": "HAVO/VWO",
+   "website": null,
+   "lon": 4.65407851,
+   "lat": 52.14642903,
+   "doorstroomtoets": null,
+   "inspectie": null
+  },
+  {
+   "naam": "Da Vinci College Openbare Scholengemeenschap voor ATH HAVO MAVO VBO LWOO",
+   "sector": "vo",
+   "afstand_km": 5.72,
+   "denominatie": "Openbaar",
+   "adres": "Betaplein 24, Leiden",
+   "onderwijsstructuur": "VBO/MAVO",
+   "website": "www.davinci-leiden.nl",
+   "lon": 4.49410482,
+   "lat": 52.14571365,
+   "doorstroomtoets": null,
+   "inspectie": null
+  },
+  {
+   "naam": "Chr. SGM Groene Hart voor vwo, havo, mavo, vbo vest. Lyceum",
+   "sector": "vo",
+   "afstand_km": 5.74,
+   "denominatie": "Bijzonder",
+   "adres": "Tolstraat 11, Alphen Aan Den Rijn",
+   "onderwijsstructuur": "HAVO/VWO",
+   "website": null,
+   "lon": 4.65818918,
+   "lat": 52.13539196,
+   "doorstroomtoets": null,
+   "inspectie": null
+  },
+  {
+   "naam": "Chr. SGM Groene Hart voor vwo, havo, mavo, vbo vest. Topmavo",
+   "sector": "vo",
+   "afstand_km": 5.84,
+   "denominatie": "Bijzonder",
+   "adres": "Tolstraat 9, Alphen Aan Den Rijn",
+   "onderwijsstructuur": "VBO/MAVO",
+   "website": null,
+   "lon": 4.65957044,
+   "lat": 52.13551357,
+   "doorstroomtoets": null,
+   "inspectie": null
+  }
+ ],
+ "bodem": {
+  "monsters": 8,
+  "niet_gekarteerd": 1,
+  "bodemtypen": [
+   {
+    "naam": "Kalkarme poldervaaggronden; klei, profielverloop 3, of 3 en 4, of 4",
+    "monsters": 5
+   },
+   {
+    "naam": "Kalkrijke leek-/woudeerdgronden; zavel, profielverloop 5",
+    "monsters": 1
+   },
+   {
+    "naam": "Leek-/woudeerdgronden; zavel, profielverloop 5, of 5 en 2, of 2",
+    "monsters": 1
+   }
+  ]
+ },
+ "bebouwing": {
+  "adressen": 583,
+  "met_bouwjaar": 582,
+  "bouwjaar_mediaan": 1992,
+  "bouwjaar_min": 1614,
+  "bouwjaar_max": 2026,
+  "bouwjaar_klassen": {
+   "voor 1900": 69,
+   "1900-1944": 99,
+   "1945-1969": 56,
+   "1970-1999": 98,
+   "2000 en later": 260
+  },
+  "oppervlakte_mediaan_m2": 134,
+  "gebruiksdoelen": {
+   "winkelfunctie": 14,
+   "industriefunctie,kantoorfunctie": 2,
+   "woonfunctie": 416,
+   "industriefunctie,woonfunctie": 6,
+   "overige gebruiksfunctie": 4,
+   "industriefunctie": 18,
+   "kantoorfunctie": 9,
+   "kantoorfunctie,sportfunctie": 1,
+   "gezondheidszorgfunctie,woonfunctie": 2,
+   "kantoorfunctie,woonfunctie": 4,
+   "industriefunctie,winkelfunctie": 5,
+   "bijeenkomstfunctie": 2,
+   "bijeenkomstfunctie,sportfunctie,kantoorfunctie": 1,
+   "logiesfunctie": 90,
+   "logiesfunctie,woonfunctie": 3,
+   "sportfunctie": 1,
+   "gezondheidszorgfunctie": 1,
+   "bijeenkomstfunctie,woonfunctie": 3
+  }
+ },
+ "aanbod": {
+  "area": "Rijndijk, Hazerswoude-Rijndijk (gemeente Alphen aan den Rijn)",
+  "found_on": "2026-10-18",
+  "method": "Online search of public listing pages. Values come from search-result snippets; the pages themselves were not opened (blocked from the dev environment).",
+  "price_note": "Asking prices (vraagprijs, kosten koper). Final sale prices are not public for free and can differ.",
+  "listings": [
+   {
+    "address": "Rijndijk 33, 2394 AC",
+    "type": "eengezinswoning",
+    "asking_price_eur": 450000,
+    "listed_on": "2026-01-28",
+    "sold_on": "2026-02-25",
+    "status": "verkocht",
+    "source": "https://www.funda.nl/detail/koop/verkocht/hazerswoude-rijndijk/huis-rijndijk-33/89682073/",
+    "asking_price_indexed_eur": 450000,
+    "indexed_to_year": "2025"
+   },
+   {
+    "address": "Rijndijk 110-WS, 2394 AJ",
+    "type": "woonark",
+    "asking_price_eur": 375000,
+    "listed_on": null,
+    "sold_on": "2025-07-21",
+    "status": "verkocht",
+    "source": "https://www.funda.nl/detail/koop/verkocht/hazerswoude-rijndijk/huis-rijndijk-110-ws/43720884/",
+    "asking_price_indexed_eur": 375000,
+    "indexed_to_year": "2025"
+   },
+   {
+    "address": "Rijndijk 256, 2394 AP",
+    "type": "half-vrijstaand, kluswoning",
+    "asking_price_eur": 450000,
+    "listed_on": "2024-06-14",
+    "sold_on": "2024-07-12",
+    "status": "verkocht",
+    "source": "https://www.funda.nl/detail/koop/verkocht/hazerswoude-rijndijk/huis-rijndijk-256/89990209/",
+    "asking_price_indexed_eur": 464000.0,
+    "indexed_to_year": "2025"
+   },
+   {
+    "address": "Rijndijk 366, 2394 CJ",
+    "type": "woning buitengebied",
+    "asking_price_eur": 650000,
+    "listed_on": "2024-04-12",
+    "sold_on": "2024-05-06",
+    "status": "verkocht",
+    "source": "https://www.funda.nl/detail/koop/verkocht/hazerswoude-rijndijk/huis-rijndijk-366/43443680/",
+    "asking_price_indexed_eur": 671000.0,
+    "indexed_to_year": "2025"
+   },
+   {
+    "address": "Rijndijk 27",
+    "type": "vrijstaand",
+    "asking_price_eur": 695000,
+    "listed_on": null,
+    "sold_on": null,
+    "status": "verkocht (date unknown)",
+    "source": "https://onlinewoningbrochure.nl/makelaars/alphen-aan-den-rijn/houtman-en-de-vogel/aanbod/rijndijk27.nl",
+    "asking_price_indexed_eur": null,
+    "indexed_to_year": "2025"
+   },
+   {
+    "address": "Rijndijk 160-A, 2394 AL",
+    "type": "appartement",
+    "asking_price_eur": 629000,
+    "listed_on": null,
+    "sold_on": null,
+    "status": "verkocht onder voorbehoud (at time of indexing)",
+    "source": "https://www.funda.nl/detail/koop/hazerswoude-rijndijk/appartement-rijndijk-160-a/80865756/",
+    "asking_price_indexed_eur": null,
+    "indexed_to_year": "2025"
+   },
+   {
+    "address": "Rijndijk 28, 2394 AH",
+    "type": "hoekwoning",
+    "asking_price_eur": 350000,
+    "listed_on": null,
+    "sold_on": null,
+    "status": "verkocht onder voorbehoud (at time of indexing)",
+    "source": "https://www.pararius.nl/huis-te-koop/hazerswoude-rijndijk/e024a244/rijndijk",
+    "asking_price_indexed_eur": null,
+    "indexed_to_year": "2025"
+   },
+   {
+    "address": "Rijndijk 5-B, 2394 AA",
+    "type": "tussenwoning",
+    "asking_price_eur": 560000,
+    "listed_on": null,
+    "sold_on": null,
+    "status": "te koop (at time of indexing)",
+    "source": "https://www.funda.nl/detail/koop/hazerswoude-rijndijk/huis-rijndijk-5-b/17265635/",
+    "asking_price_indexed_eur": null,
+    "indexed_to_year": "2025"
+   }
+  ]
+ },
+ "regelingen": [
+  {
+   "gemeente": "Alphen aan den Rijn",
+   "gemeentecode": "GM0484",
+   "checked_on": "2026-10-18",
+   "method": "Online search. Official sources first, others marked as such.",
+   "regelingen": [
+    {
+     "naam": "Starterslening (SVn)",
+     "status": "onbevestigd, waarschijnlijk niet beschikbaar",
+     "samenvatting": "Two third-party sites (Libero, HomeFinance) say Alphen aan den Rijn does not currently offer an SVn starterslening. One other site says it does. No official gemeente page was found. Note: the €420,000 limit that shows up in searches belongs to Alphen-Chaam, a different municipality.",
+     "bronnen": [
+      {
+       "titel": "Starterslening Alphen aan den Rijn (HomeFinance)",
+       "url": "https://www.homefinance.nl/hypotheek/starters/starterslening-alphen-aan-den-rijn/",
+       "officieel": false
+      },
+      {
+       "titel": "Starterslening Alphen aan den Rijn (Libero)",
+       "url": "https://www.liberofinancieel.nl/starterslening/alphen-aan-den-rijn",
+       "officieel": false
+      }
+     ],
+     "actie": "Check with gemeente Alphen aan den Rijn or the SVn leningzoeker."
+    },
+    {
+     "naam": "Opkoopbescherming",
+     "status": "niet ingevoerd (volgens nieuwsberichten en een raadsvoorstel uit 2023)",
+     "samenvatting": "The council did not introduce opkoopbescherming; a 2023 raadsvoorstel called it disproportionate. A zelfbewoningsplicht (owner-occupancy obligation) applies to new-build. The regional Huisvestingsverordening Holland Rijnland 2026 has not yet been checked for buyer rules.",
+     "bronnen": [
+      {
+       "titel": "Raadsvoorstel 2023, Alphen aan den Rijn",
+       "url": "https://alphenaandenrijn.bestuurlijkeinformatie.nl/Document/View/22d038a1-20b3-4331-be82-0eda4b1fd897",
+       "officieel": true
+      },
+      {
+       "titel": "Huisvestingsverordening Holland Rijnland 2026",
+       "url": "https://alphenaandenrijn.bestuurlijkeinformatie.nl/Document/View/8d16fe58-431b-4f6a-91d8-cf0ac7f41b22",
+       "officieel": true
+      },
+      {
+       "titel": "Grip op de woningmarkt: wel zelfbewoningsplicht, geen opkoopbescherming (Studio Alphen)",
+       "url": "https://www.studioalphen.nl/nieuws/grip-op-de-woningmarkt-wel-zelfbewoningsplicht-geen-opkoopbescherming/",
+       "officieel": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "checked_on": "2026-10-18",
+   "regelingen": [
+    {
+     "naam": "NHG-kostengrens",
+     "jaar": 2026,
+     "bedrag_eur": 470000,
+     "met_energiebesparing_eur": 498200,
+     "bronnen": [
+      {
+       "titel": "Starterslening 2026 (Starter.nl), quoting NHG",
+       "url": "https://starter.nl/starterslening-2026/",
+       "officieel": false
+      }
+     ],
+     "actie": "Confirm on nhg.nl"
+    },
+    {
+     "naam": "SVn Starterslening, landelijke kaders",
+     "samenvatting": "At most 20% of the purchase price or valuation, and never above the gemeente's maximum (minimum €2,500). Rate 4.40%, fixed for 15 years, on the date checked. Equity limit €57,684 (single) or €115,368 (fiscal partners).",
+     "bronnen": [
+      {
+       "titel": "Starterslening: extra lenen naast hypotheek (Consumentenbond)",
+       "url": "https://www.consumentenbond.nl/hypotheek/starter/starterslening-extra-lenen-naast-je-maximale-hypotheek",
+       "officieel": false
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "bekendmakingen": {
+  "aantal": 464,
+  "per_categorie": {
+   "omgevingsvergunning": 385,
+   "overig": 46,
+   "verkeersbesluit": 20,
+   "evenement": 1,
+   "bestemmingsplan": 12
+  },
+  "recent": [
+   {
+    "title": "Verleende vergunning voor het wijzigen van een eerder verleende omgevingsvergunning (04843752677) aan Rijndijk 280, 2394 AP Hazerswoude-Rijndijk",
+    "available": "2026-10-19",
+    "type": "omgevingsvergunning",
+    "categorie": "omgevingsvergunning",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-485725.html"
+   },
+   {
+    "title": "Verleende vergunning voor het plaatsen van een afdakje aan Rijndijk 162, 2394 AL Hazerswoude-Rijndijk",
+    "available": "2026-10-19",
+    "type": "omgevingsvergunning",
+    "categorie": "omgevingsvergunning",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-486935.html"
+   },
+   {
+    "title": "Verleende vergunning voor het wijzigen van een eerder verleende vergunning v2023/516 waaronder het toevoeg aan Rijndijk 96, 2394 AJ Hazerswoude-Rijndijk",
+    "available": "2026-10-09",
+    "type": "omgevingsvergunning",
+    "categorie": "omgevingsvergunning",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-473232.html"
+   },
+   {
+    "title": "Vergunningvrije activiteit voor het plaatsen van een dakkapel aan Rijndijk 105, 2394 AE Hazerswoude-Rijndijk",
+    "available": "2026-09-15",
+    "type": "omgevingsvergunning",
+    "categorie": "omgevingsvergunning",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-432254.html"
+   },
+   {
+    "title": "Verleende vergunning voor het afwijken van de regels voor omzetten bedrijf naar wonen aan Rijndijk 195, 2394 CB Hazerswoude-Rijndijk, Bopa Rijndijk 195 2394 CB Hazerswoude-Rijndijk",
+    "available": "2026-09-07",
+    "type": "omgevingsvergunning",
+    "categorie": "omgevingsvergunning",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-419528.html"
+   },
+   {
+    "title": "Aanvraag vergunning voor het wijzigen van een eerder verleende omgevingsvergunning (04843752677)  het realiseren van een bijgebouw aan Rijndijk 280, 2394 AP Hazerswoude-Rijndijk",
+    "available": "2026-09-02",
+    "type": "omgevingsvergunning",
+    "categorie": "omgevingsvergunning",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-412918.html"
+   },
+   {
+    "title": "Verleende vergunning voor het restaureren van de rietenkap en realiseren dakraam aan Rijndijk 123, 2394 AG Hazerswoude-Rijndijk",
+    "available": "2026-08-31",
+    "type": "omgevingsvergunning",
+    "categorie": "omgevingsvergunning",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-407722.html"
+   },
+   {
+    "title": "Verlenging beslistermijn voor het vervangen van enkelglas voor isolerend monumentaalglas aan Rijndijk 20, 2394 AH Hazerswoude-Rijndijk",
+    "available": "2026-08-28",
+    "type": "omgevingsvergunning",
+    "categorie": "overig",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-406935.html"
+   },
+   {
+    "title": "Verlenging beslistermijn voor het plaatsen van een afdakje aan Rijndijk 162, 2394 AL Hazerswoude-Rijndijk",
+    "available": "2026-08-24",
+    "type": "omgevingsvergunning",
+    "categorie": "overig",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-397559.html"
+   },
+   {
+    "title": "Gemeente Alphen aan den Rijn heeft op 12-08-2026 een omgevingsvergunning verleend. De gemeente geeft hiermee toestemming voor het bouwen van 20 appartementen aan tussen Rijndijk 108K-110, Hazerswoude-Rijndijk, BOPA tussen Rijndijk 108K-110 Hazerswoude Rijndijk, geregistreerd onder nr. 04843954806.",
+    "available": "2026-08-21",
+    "type": "omgevingsvergunning",
+    "categorie": "omgevingsvergunning",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-396541.html"
+   },
+   {
+    "title": "Gemeente Alphen aan den Rijn heeft op 12-08-2026 een omgevingsvergunning verleend. De gemeente geeft hiermee toestemming voor het afwijken regels voor het realiseren van appartementen naast Scheepjeskerk aan BOPA naast Rijndijk 106 Hazerswoude Rijndijk, geregistreerd onder nr. 04843713903.",
+    "available": "2026-08-21",
+    "type": "omgevingsvergunning",
+    "categorie": "omgevingsvergunning",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-396548.html"
+   },
+   {
+    "title": "Verlenging beslistermijn voor het wijzigen van een eerder verleende vergunning V2023/516 aan Rijndijk 96, 2394 AJ Hazerswoude-Rijndijk",
+    "available": "2026-08-18",
+    "type": "omgevingsvergunning",
+    "categorie": "omgevingsvergunning",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-390761.html"
+   },
+   {
+    "title": "Aanvraag vergunning voor het bouwen van 20 appartementen tussen Rijndijk 108K-110, Hazerswoude-Rijndijk",
+    "available": "2026-08-10",
+    "type": "omgevingsvergunning",
+    "categorie": "omgevingsvergunning",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-379037.html"
+   },
+   {
+    "title": "Aanvraag intrekken voor het bouwen van een garage aan Rijndijk 191G, Hazerswoude-Rijndijk",
+    "available": "2026-07-27",
+    "type": "omgevingsvergunning",
+    "categorie": "omgevingsvergunning",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-360299.html"
+   },
+   {
+    "title": "Verleende vergunning voor het bouwen van een bijgebouw (legalisatie)  aan Rijndijk 5 F, 2394 AA Hazerswoude-Rijndijk",
+    "available": "2026-07-23",
+    "type": "omgevingsvergunning",
+    "categorie": "omgevingsvergunning",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-355320.html"
+   },
+   {
+    "title": "Aanvraag vergunning voor het vervangen van enkelglas voor isolerend monumentaalglas aan Rijndijk 20, 2394 AH Hazerswoude-Rijndijk",
+    "available": "2026-07-20",
+    "type": "omgevingsvergunning",
+    "categorie": "omgevingsvergunning",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-346399.html"
+   },
+   {
+    "title": "Verlenging beslistermijn voor het plaatsen van een dakkapel aan Rijndijk 105, 2394 AE Hazerswoude-Rijndijk",
+    "available": "2026-07-17",
+    "type": "omgevingsvergunning",
+    "categorie": "overig",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-344312.html"
+   },
+   {
+    "title": "Verleende vergunning voor het plaatsen van een tijdelijke kokowall geluidsscherm (tot 1 oktober 2033) aan Rijndijk 139, 2394 AG Hazerswoude-Rijndijk",
+    "available": "2026-06-23",
+    "type": "omgevingsvergunning",
+    "categorie": "omgevingsvergunning",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-298857.html"
+   },
+   {
+    "title": "Aanvraag vergunning voor het wijzigen van een eerder verleende vergunning V2023/516 aan de Rijndijk 96, 2394 AJ Hazerswoude-Rijndijk",
+    "available": "2026-06-17",
+    "type": "omgevingsvergunning",
+    "categorie": "omgevingsvergunning",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-287304.html"
+   },
+   {
+    "title": "Aanvraag intrekken voor het restaureren van de rietenkap  aan Rijndijk 123, 2394 AG Hazerswoude-Rijndijk",
+    "available": "2026-06-10",
+    "type": "omgevingsvergunning",
+    "categorie": "omgevingsvergunning",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-272949.html"
+   },
+   {
+    "title": "Aanvraag vergunning voor het restaureren van de rietenkap  aan Rijndijk 123, 2394 AG Hazerswoude-Rijndijk",
+    "available": "2026-06-10",
+    "type": "omgevingsvergunning",
+    "categorie": "omgevingsvergunning",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-273856.html"
+   },
+   {
+    "title": "Aanvraag intrekken voor het plaatsen van een vlaggenmast aan Rijndijk 366, 2394 CJ Hazerswoude-Rijndijk",
+    "available": "2026-06-04",
+    "type": "omgevingsvergunning",
+    "categorie": "omgevingsvergunning",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-262641.html"
+   },
+   {
+    "title": "Verlenging beslistermijn voor het afwijken van de regels voor omzetten bedrijf naar wonen aan Rijndijk 195, 2394 CB Hazerswoude-Rijndijk",
+    "available": "2026-06-04",
+    "type": "omgevingsvergunning",
+    "categorie": "overig",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-264254.html"
+   },
+   {
+    "title": "Aanvraag vergunning voor het plaatsen van een afdakje aan Rijndijk 162, 2394 AL Hazerswoude-Rijndijk",
+    "available": "2026-06-04",
+    "type": "omgevingsvergunning",
+    "categorie": "omgevingsvergunning",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-262030.html"
+   },
+   {
+    "title": "Verlenging beslistermijn voor het restaureren van de rietenkap  aan Rijndijk 123, 2394 AG Hazerswoude-Rijndijk",
+    "available": "2026-06-04",
+    "type": "omgevingsvergunning",
+    "categorie": "overig",
+    "preferredUrl": "https://zoek.officielebekendmakingen.nl/gmb-2026-264643.html"
+   }
+  ]
+ },
+ "raad": [],
+ "bronnen": [
+  {
+   "naam": "CBS Kerncijfers wijken en buurten 2024",
+   "via": "PDOK WFS wijkenbuurten 2024",
+   "url": "https://service.pdok.nl/cbs/wijkenbuurten/2024/wfs/v1_0"
+  },
+  {
+   "naam": "Politie: geregistreerde misdrijven per wijk/buurt (47018NED, 47022NED)",
+   "via": "CBS dataderden",
+   "url": "https://dataderden.cbs.nl/ODataApi/odata/47018NED"
+  },
+  {
+   "naam": "Leefbaarometer 3.0, meting 2024 (BZK)",
+   "url": "https://www.leefbaarometer.nl/page/Opendata"
+  },
+  {
+   "naam": "RIVM Gezondheidsmonitor Volwassenen en Ouderen 2024 (buurt)",
+   "via": "Atlas Leefomgeving WFS",
+   "url": "https://data.rivm.nl/geo/alo/wfs"
+  },
+  {
+   "naam": "DUO open onderwijsdata: vestigingen, doorstroomtoets, advies, inspectie-oordelen",
+   "url": "https://onderwijsdata.duo.nl/datasets"
+  },
+  {
+   "naam": "BRO Bodemkaart",
+   "via": "PDOK WMS",
+   "url": "https://service.pdok.nl/bzk/bro-bodemkaart/wms/v1_0"
+  },
+  {
+   "naam": "BAG (Kadaster)",
+   "via": "PDOK OGC API",
+   "url": "https://api.pdok.nl/kadaster/bag/ogc/v2"
+  },
+  {
+   "naam": "CBS gemiddelde verkoopprijzen bestaande koopwoningen (83625NED)",
+   "url": "https://opendata.cbs.nl/ODataApi/odata/83625NED"
+  },
+  {
+   "naam": "Officiële bekendmakingen (Gemeenteblad, Staatscourant)",
+   "via": "KOOP SRU",
+   "url": "https://repository.overheid.nl/sru"
+  },
+  {
+   "naam": "Open Raadsinformatie (Leiden)",
+   "url": "https://api.openraadsinformatie.nl"
+  },
+  {
+   "naam": "PDOK Locatieserver (adressen, buurtindeling)",
+   "url": "https://api.pdok.nl/bzk/locatieserver/search/v3_1"
+  }
+ ]
+}

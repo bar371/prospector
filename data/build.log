@@ -1,0 +1,147 @@
+
+== areas
+  zamenhofstraat-leiden: 59 addresses in 1 buurten: Noordvest (59)
+  rijndijk-hazerswoude-rijndijk: 583 addresses in 4 buurten: Rijndijk (383), Buitengebied Hazerswoude-Rijndijk (118), Zonneveld (51), Rhynenburch (31)
+  wrote areas.json (340 KB)
+
+== buurten
+  buurten GM0484: 100
+  buurten GM0546: 54
+  wrote buurten.geojson (1820 KB)
+  wijken GM0484: 16
+  wijken GM0546: 10
+  wrote wijken.geojson (440 KB)
+  wrote gemeenten.json (19 KB)
+
+== national
+  14668 land buurten nationally
+  wrote national/buurten.json (14419 KB)
+
+== national_geo
+  14668 land buurten with simplified geometry
+  wrote national/buurten-geo.geojson (11766 KB)
+
+== crime
+  47018NED properties: [('SoortMisdrijf', 'Dimension'), ('WijkenEnBuurten', 'GeoDetail'), ('Perioden', 'TimeDimension'), ('GeregistreerdeMisdrijven_1', 'Topic'), ('', 'TopicGroup'), ('Gemeentenaam_2', 'Topic'), ('SoortRegio_3', 'Topic')]
+  47018NED: geo key WijkenEnBuurten, periods 2021JJ00..2025JJ00
+  47018NED: 12480 rows
+  wrote crime/47018NED.json (2692 KB)
+  national 2025JJ00: 14730 buurten
+  wrote national/crime_totals.json (285 KB)
+  47022NED properties: [('SoortMisdrijf', 'Dimension'), ('WijkenEnBuurten', 'GeoDetail'), ('Perioden', 'TimeDimension'), ('GeregistreerdeMisdrijven_1', 'Topic')]
+  47022NED: geo key WijkenEnBuurten, periods 2023MM10..2026MM09
+  47022NED: 5616 rows
+  wrote crime/47022NED.json (748 KB)
+
+== prices
+  83625NED properties: [('RegioS', 'GeoDimension'), ('Perioden', 'TimeDimension'), ('GemiddeldeVerkoopprijs_1', 'Topic')]
+  93 rows for ['NL01  ', 'GM0484', 'GM0546']
+  wrote prices/83625NED.json (9 KB)
+  national: 8736 gemeente-year rows 2014JJ00..2025JJ00
+  wrote national/prices_gemeenten.json (511 KB)
+
+== schools
+  wrote schools/duo_catalog.json (71 KB)
+  adressen_bo: 6088 rows, columns ['PROVINCIE', 'BEVOEGD GEZAG NUMMER', 'INSTELLINGSCODE', 'VESTIGINGSCODE', 'VESTIGINGSNAAM', 'STRAATNAAM', 'HUISNUMMER-TOEVOEGING', 'POSTCODE', 'PLAATSNAAM', 'GEMEENTENUMMER', 'GEMEENTENAAM', 'DENOMINATIE', 'TELEFOONNUMMER', 'INTERNETADRES', 'STRAATNAAM CORRESPONDENTIEADRES', 'HUISNUMMER-TOEVOEGING CORRESPONDENTIEADRES', 'POSTCODE CORRESPONDENTIEADRES', 'PLAATSNAAM CORRESPONDENTIEADRES', 'NODAAL GEBIED CODE', 'NODAAL GEBIED NAAM', 'RPA-GEBIED CODE', 'RPA-GEBIED NAAM', 'WGR-GEBIED CODE', 'WGR-GEBIED NAAM', 'COROPGEBIED CODE', 'COROPGEBIED NAAM', 'ONDERWIJSGEBIED CODE', 'ONDERWIJSGEBIED NAAM', 'RMC-REGIO CODE', 'RMC-REGIO NAAM']
+  adressen_vo: 1630 rows, columns ['PROVINCIE', 'BEVOEGD GEZAG NUMMER', 'INSTELLINGSCODE', 'VESTIGINGSCODE', 'VESTIGINGSNAAM', 'STRAATNAAM', 'HUISNUMMER-TOEVOEGING', 'POSTCODE', 'PLAATSNAAM', 'GEMEENTENUMMER', 'GEMEENTENAAM', 'DENOMINATIE', 'TELEFOONNUMMER', 'INTERNETADRES', 'ONDERWIJSSTRUCTUUR', 'STRAATNAAM CORRESPONDENTIEADRES', 'HUISNUMMER-TOEVOEGING CORRESPONDENTIEADRES', 'POSTCODE CORRESPONDENTIEADRES', 'PLAATSNAAM CORRESPONDENTIEADRES', 'NODAAL GEBIED CODE', 'NODAAL GEBIED NAAM', 'RPA-GEBIED CODE', 'RPA-GEBIED NAAM', 'WGR-GEBIED CODE', 'WGR-GEBIED NAAM', 'COROPGEBIED CODE', 'COROPGEBIED NAAM', 'ONDERWIJSGEBIED CODE', 'ONDERWIJSGEBIED NAAM', 'RMC-REGIO CODE']
+  95 school locations in test gemeenten
+  wrote schools/vestigingen.json (120 KB)
+  wpo-eindscores: 99739 rows nationally, 996 for local schools; sample codes [('00AP', '00'), ('00AP', '00')]
+  wrote schools/wpo-eindscores.json (244 KB)
+  wrote national/eindscores.json (800 KB)
+  wpoadvies-v1: 647750 rows nationally, 6809 for local schools; sample codes [('00AP', '00'), ('00AP', '00')]
+  wrote schools/wpoadvies-v1.json (984 KB)
+  wporeferentieniveau-v1: 436809 rows nationally, 4598 for local schools; sample codes [('00AP', '00'), ('00AP', '00')]
+  wrote schools/wporeferentieniveau-v1.json (898 KB)
+
+== schools_extra
+  wrote schools/duo_notes.json (18 KB)
+  oordelen-v02: could not download https://beheer-ggm-ckan-prd.apps.prd.duo.rijksapps.nl/dataset/31da72f2-2858-4bc3-848e-dfe4875ba669/resource/b48d6835-0534-4008-82c8-1754b9080113/download/oordeel_po_so_vo.csv: <urlopen error [Errno -2] Name or service not known>
+  04_voex-v1/04_voex: 1186470 rows, 47970 local; columns ['SCHOOLJAAR', 'BRIN NUMMER', 'BRINVESTIGINGSNUMMER', 'INSTELLINGSNAAM VESTIGING', 'GEMEENTECODE', 'GEMEENTENAAM', 'PLAATSNAAM', 'PROVINCIE', 'ONDERWIJSTYPE VO', 'LEERWEG', 'VAKCODE', 'VAKNAAMAFKORTING', 'VAK', 'ONDERDEEL EXAMEN', 'SCHOOLEXAMEN BEOORDELING', 'AANTAL', 'GEMIDDELD CIJFER']
+  wrote schools/04_voex-v1-04_voex.json (24476 KB)
+
+== bag
+  pand fields: ['aantal_verblijfsobjecten', 'bouwjaar', 'documentdatum', 'documentnummer', 'gebruiksdoel', 'geconstateerd', 'identificatie', 'rdf_seealso', 'status', 'verblijfsobject.href']
+  zamenhofstraat-leiden: 59 addresses, 59 with building year, range 1985..1987
+  rijndijk-hazerswoude-rijndijk: 583 addresses, 582 with building year, range 1614..2026
+  wrote bag/adressen.json (239 KB)
+
+== leefbaarometer
+  files: ['Leefbaarometer 3.0 - Meting 2024 - open data/', 'Leefbaarometer 3.0 - Meting 2024 - open data/Leefbaarometer-scores buurten 2002-2024.csv', 'Leefbaarometer 3.0 - Meting 2024 - open data/Leefbaarometer-ontwikkeling PC4 2002-2024.csv', 'Leefbaarometer 3.0 - Meting 2024 - open data/Leefbaarometer-scores gemeenten 2002-2024.csv', 'Leefbaarometer 3.0 - Meting 2024 - open data/Leefbaarometer-ontwikkeling grids 2002-2024.csv', 'Leefbaarometer 3.0 - Meting 2024 - open data/Leefbaarometer-ontwikkeling buurten 2002-2024.csv', 'Leefbaarometer 3.0 - Meting 2024 - open data/Leefbaarometer-ontwikkeling wijken 2002-2024.csv', 'Leefbaarometer 3.0 - Meting 2024 - open data/Leefbaarometer-scores wijken 2002-2024.csv', 'Leefbaarometer 3.0 - Meting 2024 - open data/Leefbaarometer-ontwikkeling gemeenten 2002-2024.csv', 'Leefbaarometer 3.0 - Meting 2024 - open data/Leefbaarometer-scores PC4 2002-2024.csv', 'Leefbaarometer 3.0 - Meting 2024 - open data/Leefbaarometer-scores grids 2002-2024.csv']
+  Leefbaarometer-scores buurten 2002-2024.csv: columns ['bu_code', 'bu_naam', 'jaar', 'lbm', 'afw', 'fys', 'onv', 'soc', 'vrz', 'won']
+  Leefbaarometer-scores_buurten_2002-2024: 125105 rows, 1367 local (code column bu_code)
+  wrote leefbaarometer/Leefbaarometer-scores_buurten_2002-2024.json (351 KB)
+  wrote national/leefbaarometer_buurten.json (4086 KB)
+  Leefbaarometer-ontwikkeling PC4 2002-2024.csv: columns ['PC4', 'jaar_van', 'jaar_naar', 'lbm', 'fys', 'onv', 'soc', 'vrz', 'won']
+  Leefbaarometer-ontwikkeling_PC4_2002-2024: 145148 rows, 0 local (code column PC4)
+  wrote leefbaarometer/Leefbaarometer-ontwikkeling_PC4_2002-2024.json (0 KB)
+  Leefbaarometer-scores gemeenten 2002-2024.csv: columns ['gm_code', 'gm_naam', 'jaar', 'lbm', 'afw', 'fys', 'onv', 'soc', 'vrz', 'won']
+  Leefbaarometer-scores_gemeenten_2002-2024: 3078 rows, 18 local (code column gm_code)
+  wrote leefbaarometer/Leefbaarometer-scores_gemeenten_2002-2024.json (4 KB)
+  Leefbaarometer-ontwikkeling buurten 2002-2024.csv: columns ['bu_code', 'bu_naam', 'jaar_van', 'jaar_naar', 'lbm', 'fys', 'onv', 'soc', 'vrz', 'won']
+  Leefbaarometer-ontwikkeling_buurten_2002-2024: 498416 rows, 5448 local (code column bu_code)
+  wrote leefbaarometer/Leefbaarometer-ontwikkeling_buurten_2002-2024.json (1271 KB)
+  Leefbaarometer-ontwikkeling wijken 2002-2024.csv: columns ['wk_code', 'wk_naam', 'jaar_van', 'jaar_naar', 'lbm', 'fys', 'onv', 'soc', 'vrz', 'won']
+  Leefbaarometer-ontwikkeling_wijken_2002-2024: 120392 rows, 936 local (code column wk_code)
+  wrote leefbaarometer/Leefbaarometer-ontwikkeling_wijken_2002-2024.json (216 KB)
+  Leefbaarometer-scores wijken 2002-2024.csv: columns ['wk_code', 'wk_naam', 'jaar', 'lbm', 'afw', 'fys', 'onv', 'soc', 'vrz', 'won']
+  Leefbaarometer-scores_wijken_2002-2024: 30152 rows, 234 local (code column wk_code)
+  wrote leefbaarometer/Leefbaarometer-scores_wijken_2002-2024.json (59 KB)
+  Leefbaarometer-ontwikkeling gemeenten 2002-2024.csv: columns ['gm_code', 'gm_naam', 'jaar_van', 'jaar_naar', 'lbm', 'fys', 'onv', 'soc', 'vrz', 'won']
+  Leefbaarometer-ontwikkeling_gemeenten_2002-2024: 12312 rows, 72 local (code column gm_code)
+  wrote leefbaarometer/Leefbaarometer-ontwikkeling_gemeenten_2002-2024.json (16 KB)
+  Leefbaarometer-scores PC4 2002-2024.csv: columns ['PC4', 'jaar', 'lbm', 'afw', 'fys', 'onv', 'soc', 'vrz', 'won']
+  Leefbaarometer-scores_PC4_2002-2024: 36369 rows, 0 local (code column PC4)
+  wrote leefbaarometer/Leefbaarometer-scores_PC4_2002-2024.json (0 KB)
+
+== rivm
+  FAILED: HTTP Error 400: 
+Traceback (most recent call last):
+  File "/home/runner/work/prospector/prospector/pipeline/build.py", line 80, in run
+    return fn(*args)
+           ^^^^^^^^^
+  File "/home/runner/work/prospector/prospector/pipeline/build.py", line 482, in rivm
+    batch = [f["properties"] for f in fetch_json(f"{RIVM_WFS}?{urllib.parse.urlencode(params)}")["features"]]
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/prospector/prospector/pipeline/build.py", line 59, in fetch_json
+    return json.loads(fetch(url))
+                      ^^^^^^^^^^
+  File "/home/runner/work/prospector/prospector/pipeline/build.py", line 49, in fetch
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/urllib/request.py", line 215, in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/urllib/request.py", line 521, in open
+    response = meth(req, response)
+               ^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/urllib/request.py", line 630, in http_response
+    response = self.parent.error(
+               ^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/urllib/request.py", line 559, in error
+    return self._call_chain(*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/urllib/request.py", line 492, in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/urllib/request.py", line 639, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 400: 
+
+
+== soil
+  zamenhofstraat-leiden: 8 samples; first: []
+  rijndijk-hazerswoude-rijndijk: 8 samples; first: [{"beginlifespan": "", "endlifespan": "", "first_soilcode": "pMn55A", "first_soilname": "Kalkrijke leek-/woudeerdgronden; zavel, profielverloop 5", "maparea_collection": "Eerste opname met uitgebreide veldverkenning", "maparea_id": "V2025-1..soilarea.0000033411", "normal_soilprofile_code": "pMn55A", "normal_soilprofile_name": "Kalkrijke leek-/woudeerdgronden; zavel, profielverloop 5", "soilcode": 
+  wrote soil/bodemkaart.json (5 KB)
+
+== publications
+  zamenhofstraat-leiden: 3 of 3 fetched, 1 about the street
+  rijndijk-hazerswoude-rijndijk: 1523 of 1523 fetched, 464 about the street
+  wrote publications/bekendmakingen.json (1044 KB)
+
+== council
+  zamenhofstraat-leiden 'Zamenhofstraat': 8 hits
+  zamenhofstraat-leiden 'Noordvest': 97 hits
+  wrote council/ori_leiden.json (40 KB)
+
+done in 1072s

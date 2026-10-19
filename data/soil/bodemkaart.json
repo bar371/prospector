@@ -1,0 +1,193 @@
+{
+ "zamenhofstraat-leiden": [
+  {
+   "adres": "Zamenhofstraat 1, 2312NX Leiden",
+   "lon": 4.49056947,
+   "lat": 52.16397079,
+   "bodemkaart": []
+  },
+  {
+   "adres": "Zamenhofstraat 8, 2312NV Leiden",
+   "lon": 4.49085957,
+   "lat": 52.16435186,
+   "bodemkaart": []
+  },
+  {
+   "adres": "Zamenhofstraat 15, 2312NX Leiden",
+   "lon": 4.49048719,
+   "lat": 52.16399535,
+   "bodemkaart": []
+  },
+  {
+   "adres": "Zamenhofstraat 22, 2312NV Leiden",
+   "lon": 4.49085653,
+   "lat": 52.16422074,
+   "bodemkaart": []
+  },
+  {
+   "adres": "Zamenhofstraat 29, 2312NX Leiden",
+   "lon": 4.49053781,
+   "lat": 52.1638264,
+   "bodemkaart": []
+  },
+  {
+   "adres": "Zamenhofstraat 36, 2312NW Leiden",
+   "lon": 4.49082093,
+   "lat": 52.16391212,
+   "bodemkaart": []
+  },
+  {
+   "adres": "Zamenhofstraat 43, 2312NX Leiden",
+   "lon": 4.49048612,
+   "lat": 52.16377438,
+   "bodemkaart": []
+  },
+  {
+   "adres": "Zamenhofstraat 52, 2312NW Leiden",
+   "lon": 4.4909117,
+   "lat": 52.16395863,
+   "bodemkaart": []
+  }
+ ],
+ "rijndijk-hazerswoude-rijndijk": [
+  {
+   "adres": "Rijndijk 2, 2394AH Hazerswoude-Rijndijk",
+   "lon": 4.54968677,
+   "lat": 52.1377945,
+   "bodemkaart": [
+    {
+     "beginlifespan": "",
+     "endlifespan": "",
+     "first_soilcode": "pMn55A",
+     "first_soilname": "Kalkrijke leek-/woudeerdgronden; zavel, profielverloop 5",
+     "maparea_collection": "Eerste opname met uitgebreide veldverkenning",
+     "maparea_id": "V2025-1..soilarea.0000033411",
+     "normal_soilprofile_code": "pMn55A",
+     "normal_soilprofile_name": "Kalkrijke leek-/woudeerdgronden; zavel, profielverloop 5",
+     "soilcode": "pMn55A/pMn55C",
+     "soilslope": "Niet opgenomen"
+    }
+   ]
+  },
+  {
+   "adres": "Rijndijk 39, 2394AC Hazerswoude-Rijndijk",
+   "lon": 4.55723338,
+   "lat": 52.13211687,
+   "bodemkaart": [
+    {
+     "beginlifespan": "",
+     "endlifespan": "",
+     "first_soilcode": "Mn86C",
+     "first_soilname": "Kalkarme poldervaaggronden; klei, profielverloop 3, of 3 en 4, of 4",
+     "maparea_collection": "Eerste opname met uitgebreide veldverkenning",
+     "maparea_id": "V2025-1..soilarea.0000031891",
+     "normal_soilprofile_code": "Mn86C",
+     "normal_soilprofile_name": "Kalkarme poldervaaggronden; klei, profielverloop 3, of 3 en 4, of 4",
+     "soilcode": "Mn86C",
+     "soilslope": "Niet opgenomen"
+    }
+   ]
+  },
+  {
+   "adres": "Rijndijk 87, 2394AD Hazerswoude-Rijndijk",
+   "lon": 4.56993689,
+   "lat": 52.12815453,
+   "bodemkaart": [
+    {
+     "beginlifespan": "",
+     "endlifespan": "",
+     "first_soilcode": "Mn86C",
+     "first_soilname": "Kalkarme poldervaaggronden; klei, profielverloop 3, of 3 en 4, of 4",
+     "maparea_collection": "Eerste opname met uitgebreide veldverkenning",
+     "maparea_id": "V2025-1..soilarea.0000031891",
+     "normal_soilprofile_code": "Mn86C",
+     "normal_soilprofile_name": "Kalkarme poldervaaggronden; klei, profielverloop 3, of 3 en 4, of 4",
+     "soilcode": "Mn86C",
+     "soilslope": "Niet opgenomen"
+    }
+   ]
+  },
+  {
+   "adres": "Rijndijk 96C-17, 2394AJ Hazerswoude-Rijndijk",
+   "lon": 4.55911133,
+   "lat": 52.13220343,
+   "bodemkaart": [
+    {
+     "beginlifespan": "",
+     "endlifespan": "",
+     "first_soilcode": "Mn86C",
+     "first_soilname": "Kalkarme poldervaaggronden; klei, profielverloop 3, of 3 en 4, of 4",
+     "maparea_collection": "Eerste opname met uitgebreide veldverkenning",
+     "maparea_id": "V2025-1..soilarea.0000031891",
+     "normal_soilprofile_code": "Mn86C",
+     "normal_soilprofile_name": "Kalkarme poldervaaggronden; klei, profielverloop 3, of 3 en 4, of 4",
+     "soilcode": "Mn86C",
+     "soilslope": "Niet opgenomen"
+    }
+   ]
+  },
+  {
+   "adres": "Rijndijk 108P-1, 2394AJ Hazerswoude-Rijndijk",
+   "lon": 4.56024825,
+   "lat": 52.13150606,
+   "bodemkaart": [
+    {
+     "beginlifespan": "",
+     "endlifespan": "",
+     "first_soilcode": "Mn86C",
+     "first_soilname": "Kalkarme poldervaaggronden; klei, profielverloop 3, of 3 en 4, of 4",
+     "maparea_collection": "Eerste opname met uitgebreide veldverkenning",
+     "maparea_id": "V2025-1..soilarea.0000031891",
+     "normal_soilprofile_code": "Mn86C",
+     "normal_soilprofile_name": "Kalkarme poldervaaggronden; klei, profielverloop 3, of 3 en 4, of 4",
+     "soilcode": "Mn86C",
+     "soilslope": "Niet opgenomen"
+    }
+   ]
+  },
+  {
+   "adres": "Rijndijk 166A, 2394AL Hazerswoude-Rijndijk",
+   "lon": 4.56724475,
+   "lat": 52.129123,
+   "bodemkaart": [
+    {
+     "beginlifespan": "",
+     "endlifespan": "",
+     "first_soilcode": "Mn86C",
+     "first_soilname": "Kalkarme poldervaaggronden; klei, profielverloop 3, of 3 en 4, of 4",
+     "maparea_collection": "Eerste opname met uitgebreide veldverkenning",
+     "maparea_id": "V2025-1..soilarea.0000031891",
+     "normal_soilprofile_code": "Mn86C",
+     "normal_soilprofile_name": "Kalkarme poldervaaggronden; klei, profielverloop 3, of 3 en 4, of 4",
+     "soilcode": "Mn86C",
+     "soilslope": "Niet opgenomen"
+    }
+   ]
+  },
+  {
+   "adres": "Rijndijk 211, 2394CC Hazerswoude-Rijndijk",
+   "lon": 4.60642869,
+   "lat": 52.12924668,
+   "bodemkaart": [
+    {
+     "beginlifespan": "",
+     "endlifespan": "",
+     "first_soilcode": "pRn59",
+     "first_soilname": "Leek-/woudeerdgronden; zavel, profielverloop 5, of 5 en 2, of 2",
+     "maparea_collection": "Eerste opname met uitgebreide veldverkenning",
+     "maparea_id": "V2025-1..soilarea.0000011900",
+     "normal_soilprofile_code": "pRn59",
+     "normal_soilprofile_name": "Leek-/woudeerdgronden; zavel, profielverloop 5, of 5 en 2, of 2",
+     "soilcode": "epRn59",
+     "soilslope": "Niet opgenomen"
+    }
+   ]
+  },
+  {
+   "adres": "Rijndijk 262, 2394AP Hazerswoude-Rijndijk",
+   "lon": 4.5894269,
+   "lat": 52.13017194,
+   "bodemkaart": []
+  }
+ ]
+}
