@@ -1,0 +1,12 @@
+
+== hazerswoude-rijndijk
+  3295 addresses in 73 streets
+  BAG in bbox: 5851 verblijfsobjecten, 9574 panden
+  soil: 547 lookups for 2481 buildings, 1560 mapped
+  73 rijksmonument points (73 distinct)
+  15 buildings are rijksmonumenten
+  publications: 854 across 61 streets
+  council documents: 39 across 11 streets
+  hazerswoude-rijndijk: {'key': 'hazerswoude-rijndijk', 'naam': 'Hazerswoude-Rijndijk', 'buurtcodes': None, 'woonplaats': 'Hazerswoude-Rijndijk', 'gemeente': 'Alphen aan den Rijn', 'gemeentecode': 'GM0484', 'adressen': 3295, 'gebouwen': 2481, 'straten': 73, 'woningen': 2920, 'bbox': [4.54563, 52.11164, 4.62927, 52.14001], 'bouwjaar_mediaan': 1980, 'fundering': {'high': 123, 'check': 853, 'low': 1505}, 'monumenten': 15}
+
+done in 255s

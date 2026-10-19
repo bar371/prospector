@@ -1,0 +1,41 @@
+{
+ "key": "leiden-centrum",
+ "naam": "Leiden city centre",
+ "buurtcodes": [
+  "BU05460000",
+  "BU05460001",
+  "BU05460002",
+  "BU05460003",
+  "BU05460100",
+  "BU05460101",
+  "BU05460102",
+  "BU05460103",
+  "BU05460104",
+  "BU05460105",
+  "BU05460106",
+  "BU05460107",
+  "BU05460108",
+  "BU05460109",
+  "BU05460200"
+ ],
+ "woonplaats": "Leiden",
+ "gemeente": "Leiden",
+ "gemeentecode": "GM0546",
+ "adressen": 18570,
+ "gebouwen": 7162,
+ "straten": 393,
+ "woningen": 15953,
+ "bbox": [
+  4.47789,
+  52.15159,
+  4.51613,
+  52.17308
+ ],
+ "bouwjaar_mediaan": 1875.0,
+ "fundering": {
+  "high": 5134,
+  "check": 920,
+  "low": 1108
+ },
+ "monumenten": 908
+}

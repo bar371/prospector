@@ -1,0 +1,25 @@
+{
+ "key": "hazerswoude-rijndijk",
+ "naam": "Hazerswoude-Rijndijk",
+ "buurtcodes": null,
+ "woonplaats": "Hazerswoude-Rijndijk",
+ "gemeente": "Alphen aan den Rijn",
+ "gemeentecode": "GM0484",
+ "adressen": 3295,
+ "gebouwen": 2481,
+ "straten": 73,
+ "woningen": 2920,
+ "bbox": [
+  4.54563,
+  52.11164,
+  4.62927,
+  52.14001
+ ],
+ "bouwjaar_mediaan": 1980,
+ "fundering": {
+  "high": 123,
+  "check": 853,
+  "low": 1505
+ },
+ "monumenten": 15
+}
