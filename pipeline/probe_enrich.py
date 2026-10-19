@@ -1,11 +1,9 @@
-"""Probe noise values at points around Hazerswoude-Rijndijk: EEA END image services and Zuid-Holland contours."""
+"""Probe CBS open data with average WOZ per postcode-6 and per 100 m square (PDOK)."""
 import json
-import urllib.parse
 import urllib.request
 
 UA = {"User-Agent": "prospect-pipeline/0.1 (+https://github.com/bar371/prospector)"}
-POINTS = {"Koolrabi": (4.5789, 52.1266), "N11 roadside": (4.5800, 52.1222), "Rijndijk 33": (4.5926, 52.1326),
-          "Valeriusstraat": (4.5908, 52.1262), "railway": (4.5880, 52.1290)}
+PTS = {"Koolrabi": (4.5789, 52.1266), "Valeriusstraat": (4.5908, 52.1262), "Rijndijk 33": (4.5926, 52.1326)}
 
 
 def get(url):
@@ -18,24 +16,25 @@ def get(url):
         return None, str(e)
 
 
-for svc in ("NoiseContours_road_lden", "NoiseContours_rail_lden"):
-    base = f"https://noise.discomap.eea.europa.eu/arcgis/rest/services/noiseStoryMap/{svc}/ImageServer"
-    code, body = get(base + "?f=json")
-    print(f"\n### {svc} info -> {code}\n{body[:1500]}")
-    for name, (lon, lat) in POINTS.items():
-        q = urllib.parse.urlencode({"geometry": json.dumps({"x": lon, "y": lat, "spatialReference": {"wkid": 4326}}),
-                                    "geometryType": "esriGeometryPoint", "returnGeometry": "false", "returnCatalogItems": "false", "f": "json"})
-        code, body = get(f"{base}/identify?{q}")
-        print(f"  {name}: {code} {body[:300]}")
-    code, body = get(base + "/rasterAttributeTable?f=json")
-    print(f"  attribute table -> {code} {body[:1200]}")
-
-wms = "https://geodata.zuid-holland.nl/geoserver/ows"
-for layer in ("milieu:GELUID_2022_CONTOUREN_ETMAAL",):
-    for name, (lon, lat) in POINTS.items():
-        d = 0.0004
-        params = {"service": "WMS", "version": "1.3.0", "request": "GetFeatureInfo", "layers": layer, "query_layers": layer, "styles": "",
-                  "crs": "EPSG:4326", "bbox": f"{lat-d},{lon-d},{lat+d},{lon+d}", "width": "81", "height": "81", "i": "40", "j": "40",
-                  "info_format": "application/json", "feature_count": "5"}
-        code, body = get(f"{wms}?{urllib.parse.urlencode(params)}")
-        print(f"\n### ZH {layer} at {name} -> {code}\n{body[:700]}")
+for base in ["https://api.pdok.nl/cbs/postcode6/ogc/v1", "https://api.pdok.nl/cbs/vierkantstatistieken100m/ogc/v1",
+             "https://api.pdok.nl/cbs/postcode6/ogc/v2", "https://api.pdok.nl/cbs/vierkantstatistieken100m/ogc/v2"]:
+    code, body = get(f"{base}/collections?f=json")
+    print(f"\n### {base} -> {code}")
+    if code != 200:
+        print(body[:200]); continue
+    cols = [c["id"] for c in json.loads(body)["collections"]]
+    print("collections", cols)
+    for col in cols:
+        for name, (lon, lat) in PTS.items():
+            d = 0.0002
+            code, body = get(f"{base}/collections/{col}/items?f=json&limit=3&bbox={lon-d},{lat-d},{lon+d},{lat+d}")
+            try:
+                feats = json.loads(body)["features"]
+            except Exception:
+                print(" ", col, name, code, body[:200]); continue
+            for f in feats[:2]:
+                p = f["properties"]
+                woz = {k: v for k, v in p.items() if "woz" in k.lower() or k.lower() in ("postcode", "postcode6", "jaarstatcode", "jaar", "crs28992res100m", "aantal_woningen", "aantal_inwoners")}
+                print(" ", col, name, woz)
+        if cols.index(col) == 0:
+            print("   all fields:", sorted(feats[0]["properties"]) if feats else "-")

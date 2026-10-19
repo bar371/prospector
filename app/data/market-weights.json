@@ -1,0 +1,23 @@
+{
+ "method": "Within-gemeente regression of log average WOZ per buurt on the theme scores (national percentiles), with owner-occupied share and population density as controls; theme coefficients non-negative.",
+ "buurten": 10390,
+ "gemeenten": 335,
+ "r2_within_gemeente": 0.761,
+ "weights": {
+  "veiligheid": 0.0,
+  "leefbaarheid": 0.946,
+  "bereikbaarheid": 0.054,
+  "autoluw": 0.0,
+  "voorzieningen": 0.0,
+  "rust": 0.0
+ },
+ "value_effect_25_to_75_pct": {
+  "veiligheid": 0.0,
+  "leefbaarheid": 48.5,
+  "bereikbaarheid": 2.3,
+  "autoluw": 0.0,
+  "voorzieningen": 0.0,
+  "rust": 0.0
+ },
+ "source": "CBS Kerncijfers wijken en buurten 2024 (average WOZ, value date 1 January 2023); Prospect theme scores"
+}

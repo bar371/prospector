@@ -302,3 +302,5 @@ dl.facts dd { margin: 0; font-weight: 500; }
 .stack-legend { list-style: none; margin: 0 0 12px; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; }
 .stack-legend li { display: flex; align-items: center; gap: 6px; }
 .docs { padding-left: 18px; margin: 6px 0; display: grid; gap: 6px; }
+.value-verdict { font-size: 15px; line-height: 1.45; }
+#woz-box .council-button { margin: 4px 0 10px; }

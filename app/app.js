@@ -16,7 +16,10 @@ const THEMES = {
 };
 // Education is scored per street (schools near the address), so the buurt map leaves it out.
 const MAP_THEMES = Object.keys(THEMES).filter((k) => k !== 'onderwijs');
-const DEFAULT_WEIGHTS = Object.fromEntries(Object.keys(THEMES).map((k) => [k, 1]));
+// Slider positions Off/Low/Normal/High for "my own priorities"; by default the score uses market weights instead.
+const SLIDER = ['Off', 'Low', 'Normal', 'High'];
+const SLIDER_WEIGHT = [0, 0.5, 1, 2];
+const DEFAULT_WEIGHTS = Object.fromEntries(Object.keys(THEMES).map((k) => [k, 2]));
 
 // Diverging scale, validated for colour-blind separation: red (worse than most of NL) -> grey -> teal-green (better).
 const SCORE_COLORS = ['#b8322a', '#ec9474', '#e6e3dc', '#4fb3b0', '#0f6d78'];
@@ -42,17 +45,24 @@ function storageSet(key, value) {
 
 const state = {
   layer: 'overall',
-  weights: { ...DEFAULT_WEIGHTS, ...storageGet('prospect.weights', {}) },
+  // null: market weights (learned from home values, data/market-weights.json); otherwise slider positions per theme
+  weights: storageGet('prospect.weights.v2', null),
+  market: null,
   buurten: null, // GeoJSON with per-buurt scores
   dossiers: {},
   current: null, // what the sheet shows: {kind, ...}
 };
 
+function themeWeight(k) {
+  if (state.weights) return SLIDER_WEIGHT[state.weights[k] ?? 2];
+  return state.market ? (state.market.weights[k] ?? 0) : 1;
+}
+
 function weightedScore(scores, themes = Object.keys(THEMES)) {
   let total = 0;
   let weight = 0;
   for (const k of themes) {
-    const w = state.weights[k] ?? 0;
+    const w = themeWeight(k);
     if (w > 0 && scores[k] != null) { total += w * scores[k]; weight += w; }
   }
   return weight ? Math.round(total / weight) : null;
@@ -98,6 +108,7 @@ function stepExpression(prop, colors, breaks) {
 }
 
 function layerPaint() {
+  if (state.layer === 'fundering') return 'rgba(0,0,0,0)';
   if (state.layer === 'woz') return stepExpression('woz', VALUE_COLORS, VALUE_BREAKS);
   return stepExpression(`score_${state.layer}`, SCORE_COLORS, SCORE_BREAKS);
 }
@@ -109,6 +120,7 @@ function recomputeOverall() {
     p.score_overall = weightedScore(Object.fromEntries(MAP_THEMES.map((k) => [k, p[`score_${k}`]])), MAP_THEMES);
   }
   map.getSource('buurten')?.setData(state.buurten);
+  recomputeBuildings();
 }
 
 // Buurt scores come per gemeente (data/gemeenten/GMxxxx.geojson) and load when they come into view.
@@ -184,14 +196,50 @@ const USES = { woonfunctie: 'home', winkelfunctie: 'shop', kantoorfunctie: 'offi
   logiesfunctie: 'lodging', overige: 'other', celfunctie: 'cells' };
 const villages = { index: null, loaded: new Map(), data: {} };
 
-// Measured per home (pipeline/enrich.py); on these layers buildings show the home's own score instead of foundation risk.
-const MEASURED = ['rust', 'autoluw'];
-const buildingMode = () => (MEASURED.includes(state.layer) && Object.values(villages.data).some((v) => v.enrich) ? state.layer : 'fundering');
+// Scores for one home: measured at the home where pipeline/enrich.py has them, buurt averages for the rest.
+// Liveability is the Leefbaarometer of the home's own 100 m cell; safety and amenities average the buurt and that cell.
+function homeScores(e, buurt) {
+  const b = (k) => buurt?.[`score_${k}`] ?? null;
+  const g = e?.leefbaarometer_grid || {};
+  const mix = (x, y) => (x == null ? y : y == null ? x : Math.round((x + y) / 2));
+  return {
+    veiligheid: mix(b('veiligheid'), g.veiligheid_pct), leefbaarheid: e?.score_leefbaarheid ?? b('leefbaarheid'),
+    bereikbaarheid: b('bereikbaarheid'), autoluw: e?.score_autoluw ?? b('autoluw'),
+    voorzieningen: mix(b('voorzieningen'), g.voorzieningen_pct), rust: e?.score_rust ?? b('rust'),
+  };
+}
+
+// On these layers, buildings show the score of the homes inside them; Foundations shows foundation risk.
+const HOME_LAYERS = ['overall', 'veiligheid', 'leefbaarheid', 'autoluw', 'voorzieningen', 'rust'];
+const hasEnrich = () => Object.values(villages.data).some((v) => v.enrich);
+const buildingMode = () => (state.layer === 'fundering' ? 'fundering' : HOME_LAYERS.includes(state.layer) && hasEnrich() ? state.layer : 'plain');
 
 function buildingPaint() {
   const mode = buildingMode();
-  if (mode !== 'fundering') return ['case', ['==', ['get', `score_${mode}`], null], '#94a3b8', stepExpression(`score_${mode}`, SCORE_COLORS, SCORE_BREAKS)];
-  return ['match', ['get', 'fundering'], 'high', FOUNDATION.high.color, 'check', FOUNDATION.check.color, 'low', FOUNDATION.low.color, '#94a3b8'];
+  if (mode === 'fundering') return ['match', ['get', 'fundering'], 'high', FOUNDATION.high.color, 'check', FOUNDATION.check.color, 'low', FOUNDATION.low.color, '#94a3b8'];
+  if (mode === 'plain') return '#cbd5e1';
+  return ['case', ['==', ['get', `score_${mode}`], null], '#94a3b8', stepExpression(`score_${mode}`, SCORE_COLORS, SCORE_BREAKS)];
+}
+
+// Per-building scores: the average over its homes, combined with the buurt for themes not measured at the home.
+function recomputeBuildings() {
+  let changed = false;
+  for (const v of Object.values(villages.data)) {
+    if (!v.enrich) continue;
+    for (const f of v.buildings.features) {
+      const es = f.properties._homes;
+      if (!es) continue;
+      const buurt = buurtProps(f.properties.buurtcode);
+      const per = es.map((e) => homeScores(e, buurt));
+      for (const k of MAP_THEMES) {
+        const vals = per.map((x) => x[k]).filter((x) => x != null);
+        f.properties[`score_${k}`] = vals.length ? Math.round(vals.reduce((a, c) => a + c, 0) / vals.length) : null;
+      }
+      f.properties.score_overall = weightedScore(Object.fromEntries(MAP_THEMES.map((k) => [k, f.properties[`score_${k}`]])), MAP_THEMES);
+      changed = true;
+    }
+  }
+  if (changed) map.getSource('buildings')?.setData({ type: 'FeatureCollection', features: Object.values(villages.data).flatMap((x) => x.buildings.features) });
 }
 
 function addBuildingLayers() {
@@ -225,15 +273,14 @@ function ensureVillage(key) {
         const byPand = {};
         for (const a of addresses) if (enrich[a.adresseerbaarobject_id] && a.pand) (byPand[a.pand] ??= []).push(enrich[a.adresseerbaarobject_id]);
         for (const f of buildings.features) {
-          const es = byPand[f.properties.pand];
-          if (!es) continue;
-          for (const k of MEASURED) f.properties[`score_${k}`] = Math.round(es.reduce((t, e) => t + (e[`score_${k}`] ?? 0), 0) / es.length);
+          if (byPand[f.properties.pand]) Object.defineProperty(f.properties, '_homes', { value: byPand[f.properties.pand], enumerable: false });
         }
       }
       const v = { key, ...villages.index[key], buildings, streets, addresses, enrich, streetsEnrich };
       villages.data[key] = v;
       const all = Object.values(villages.data).flatMap((x) => x.buildings.features);
       map.getSource('buildings')?.setData({ type: 'FeatureCollection', features: all });
+      recomputeBuildings();
       if (map.getLayer('buildings-fill')) map.setPaintProperty('buildings-fill', 'fill-color', buildingPaint());
       renderLegend();
       return v;
@@ -306,6 +353,13 @@ function setLayer(layer) {
 function renderLegend() {
   const el = document.getElementById('legend');
   const isValue = state.layer === 'woz';
+  if (state.layer === 'fundering') {
+    el.innerHTML = `<div class="legend-title">Foundation risk</div>
+      <ol class="legend-scale">${Object.values(FOUNDATION).map((f) => `<li><span class="swatch" style="background:${f.color}"></span>${esc(f.label)}</li>`).join('')}</ol>
+      <div class="legend-compact" aria-hidden="true"><span>Higher</span>${Object.values(FOUNDATION).map((f) => `<span class="swatch" style="background:${f.color}"></span>`).join('')}<span>Lower</span></div>
+      <div class="legend-note">${buildingsVisible() ? 'Building year and soil; not a survey' : 'Zoom in on a covered village to see buildings'}</div>`;
+    return;
+  }
   const title = isValue ? 'Average home value (WOZ)' : state.layer === 'overall' ? 'Prospect score' : THEMES[state.layer];
   const colors = isValue ? VALUE_COLORS : SCORE_COLORS;
   const labels = isValue ? ['< €250k', '€250–350k', '€350–450k', '€450–600k', '> €600k'] : SCORE_LABELS;
@@ -314,11 +368,8 @@ function renderLegend() {
     <ol class="legend-scale">${colors.map((c, i) => `<li><span class="swatch" style="background:${c}"></span>${esc(labels[i])}</li>`).join('')}</ol>
     <div class="legend-compact" aria-hidden="true"><span>${ends[0]}</span>${colors.map((c) => `<span class="swatch" style="background:${c}"></span>`).join('')}<span>${ends[1]}</span></div>
     ${isValue ? '' : '<div class="legend-note">Compared with all Dutch neighbourhoods</div>'}
-    ${buildingsVisible() && buildingMode() !== 'fundering' ? `<div class="legend-buildings"><div class="legend-title">Buildings: measured at each home</div>
-      <div class="legend-note">Same colours; scored on noise and road data, not compared nationally</div></div>` : ''}
-    ${buildingsVisible() && buildingMode() === 'fundering' ? `<div class="legend-buildings"><div class="legend-title">Buildings: foundation risk</div>
-      <ol class="legend-scale">${Object.values(FOUNDATION).map((f) => `<li><span class="swatch" style="background:${f.color}"></span>${esc(f.label)}</li>`).join('')}</ol>
-      <div class="legend-compact" aria-hidden="true"><span>Higher</span>${Object.values(FOUNDATION).map((f) => `<span class="swatch" style="background:${f.color}"></span>`).join('')}<span>Lower</span></div></div>` : ''}`;
+    ${buildingsVisible() && HOME_LAYERS.includes(buildingMode()) ? `<div class="legend-buildings"><div class="legend-title">Buildings: measured at each home</div>
+      <div class="legend-note">Same colours, using what is measured at the home where available</div></div>` : ''}`;
 }
 
 // ---------------------------------------------------------------- search (PDOK Locatieserver)
@@ -435,6 +486,8 @@ document.querySelector('.search').addEventListener('submit', async (e) => {
 
 // ---------------------------------------------------------------- cards
 
+const weightsLabel = () => (state.weights ? 'Average, with your own priorities,' : 'Average, weighted the way home prices are,');
+
 function scoreBars(scores, { withOverall = true, measured = false } = {}) {
   const overall = weightedScore(scores);
   const rows = Object.entries(THEMES).filter(([k]) => scores[k] !== undefined).map(([k, label]) => {
@@ -446,8 +499,8 @@ function scoreBars(scores, { withOverall = true, measured = false } = {}) {
   }).join('');
   return `${withOverall ? `<div class="overall"><span class="overall-value" style="--c:${scoreColor(overall)}">${overall ?? '–'}</span>
       <span class="overall-text"><strong>Prospect score, ${overall ?? '–'} out of 100</strong><br>${measured
-        ? 'Average of the scores below, with your weights. 0 is worst, 100 is best.'
-        : 'Average of the scores below, with your weights. Each is a national ranking: 50 is a typical Dutch neighbourhood, 0 the worst, 100 the best.'}</span></div>` : ''}
+        ? `${weightsLabel()} of the scores below. 0 is worst, 100 is best.`
+        : `${weightsLabel()} of the scores below, each a national ranking: 50 is a typical Dutch neighbourhood, 0 the worst, 100 the best.`}</span></div>` : ''}
     <ul class="scores">${rows}</ul>`;
 }
 
@@ -471,15 +524,17 @@ function renderPlace(doc) {
 }
 
 function buurtSummary(p, { measured = null, where = 'this home' } = {}) {
-  const scores = Object.fromEntries(MAP_THEMES.map((k) => [k, measured?.[`score_${k}`] ?? p[`score_${k}`] ?? null]));
+  const scores = measured ? homeScores(measured, p) : Object.fromEntries(MAP_THEMES.map((k) => [k, p[`score_${k}`] ?? null]));
+  const grid = measured?.leefbaarometer_grid;
   return `<h2 class="section-title">${measured ? `Scores for ${esc(where)}` : `Neighbourhood ${esc(p.buurtnaam)}`}</h2>
     ${scoreBars(scores, { measured: !!measured })}
-    ${measured ? `<p class="source">Quiet and Car-light are measured at ${esc(where)} on a fixed scale, not ranked nationally: Quiet is 100 at 45 dB
-      or less and 0 at 65 dB or more (noise ${num(measured.lden_db)} dB Lden, ${esc(measured.lden_bron || '')};
-      main road ${num(measured.afstand_hoofdweg_m)} m away). The other scores are averages for buurt ${esc(p.buurtnaam)}.</p>` : ''}
+    ${measured ? `<p class="source">Measured at ${esc(where)}: Liveability is the Leefbaarometer score of its own 100 m square${grid?.jaar ? ` (${grid.jaar})` : ''},
+      ranked among all Dutch squares; Safety and Amenities average that square and the buurt. Quiet and Car-light use a fixed scale, not a
+      national ranking: Quiet is 100 at 45 dB or less and 0 at 65 dB or more (here ${num(measured.lden_db)} dB Lden, ${esc(measured.lden_bron || '')}).
+      Accessibility is the buurt average.</p>` : ''}
     <dl class="facts compact">
       <dt>Residents</dt><dd>${num(p.inwoners)}</dd>
-      <dt>Average WOZ</dt><dd>${p.woz ? eur(p.woz * 1000) : 'n/a'}</dd>
+      <dt>Average WOZ, whole buurt</dt><dd>${p.woz ? eur(p.woz * 1000) : 'n/a'} <span class="muted">(value date 1 Jan 2023)</span></dd>
       <dt>Crimes / 1,000 residents</dt><dd>${num(p.misdrijven_per_1000, 1)} <span class="muted">(2025)</span></dd>
       <dt>Leefbaarometer</dt><dd>${num(p.leefbaarometer, 2)} <span class="muted">(2024)</span></dd>
     </dl>
@@ -544,6 +599,7 @@ async function openBuilding(pand, { address = null } = {}) {
   selectBuurten(a?.buurtcode ? [a.buurtcode] : []);
   selectBuilding(pand);
   renderBuilding(v, f.properties, addrs, a);
+  if (a) renderWoz(v, a);
   setCollapsed(false);
   if (a) input.value = a.weergavenaam;
 }
@@ -570,7 +626,7 @@ function newDevelopmentNotice(v, straat, buurt) {
   if (!st?.bouwjaar_min || st.bouwjaar_min < 2015) return '';
   return `<p class="notice">New development, built ${st.bouwjaar_min === st.bouwjaar_max ? st.bouwjaar_min : `${st.bouwjaar_min}–${st.bouwjaar_max}`}.
     The neighbourhood statistics (health survey, crime, liveability) were mostly collected before these homes existed and describe the older
-    part of buurt ${esc(buurt?.buurtnaam || '')}. Quiet and Car-light below are measured here instead.</p>`;
+    part of buurt ${esc(buurt?.buurtnaam || '')}, including its average WOZ value. Liveability, Quiet and Car-light below are measured here instead.</p>`;
 }
 
 const yesNo = (b) => (b === true ? 'Yes' : b === false ? 'No' : null);
@@ -601,6 +657,128 @@ function homeFacts(e) {
       plot shape and are indicative.</p>`;
 }
 
+// ---------------------------------------------------------------- WOZ values (official WOZ-waardeloket, one request per home)
+
+const WOZ_API = 'https://api.kadaster.nl/lvwoz/wozwaardeloket-api/v1/wozwaarde/nummeraanduiding/';
+const wozCache = new Map();
+
+async function nummeraanduiding(a) {
+  if (a.nummeraanduiding_id) return a.nummeraanduiding_id;
+  const fq = `type:adres AND adresseerbaarobject_id:${a.adresseerbaarobject_id}`;
+  const res = await fetch(`${LOCATIESERVER}/free?q=*&fq=${encodeURIComponent(fq)}&rows=5&fl=nummeraanduiding_id,huisnummer,huisletter,huisnummertoevoeging`);
+  const docs = (await res.json()).response.docs;
+  const match = docs.find((d) => d.huisnummer === a.huisnummer && (d.huisletter || null) === (a.huisletter || null)) || docs[0];
+  a.nummeraanduiding_id = match?.nummeraanduiding_id;
+  return a.nummeraanduiding_id;
+}
+
+// Latest WOZ value of a home: { value, date, history: [{date, value}], plot_m2 } or null
+function wozOf(a) {
+  const key = a.adresseerbaarobject_id;
+  if (!wozCache.has(key)) {
+    wozCache.set(key, (async () => {
+      const id = await nummeraanduiding(a);
+      if (!id) return null;
+      const res = await fetch(WOZ_API + id);
+      if (!res.ok) return null;
+      const doc = await res.json();
+      const history = (doc.wozWaarden || []).map((w) => ({ date: w.peildatum, value: w.vastgesteldeWaarde }))
+        .filter((w) => w.value).sort((x, y) => y.date.localeCompare(x.date));
+      return history.length ? { value: history[0].value, date: history[0].date, history, plot_m2: doc.wozObject?.grondoppervlakte ?? null } : null;
+    })().catch(() => null));
+  }
+  return wozCache.get(key);
+}
+
+const perM2 = (woz, a) => (woz && a.oppervlakte ? woz.value / a.oppervlakte : null);
+
+// Similar homes: same street first, then nearby; same house type, floor area within 30%.
+function similarHomes(v, a, max = 10) {
+  const e = v.enrich?.[a.adresseerbaarobject_id];
+  const type = e?.woningtype;
+  const ok = (x) => x !== a && (x.gebruiksdoel || '').includes('woon') && x.oppervlakte && a.oppervlakte
+    && Math.abs(x.oppervlakte - a.oppervlakte) <= 0.3 * a.oppervlakte && (!type || v.enrich?.[x.adresseerbaarobject_id]?.woningtype === type);
+  const dist = (x) => Math.hypot((x.lon - a.lon) * 68000, (x.lat - a.lat) * 111000);
+  const street = v.addresses.filter((x) => x.straatnaam === a.straatnaam && ok(x)).sort((x, y) => dist(x) - dist(y));
+  const near = v.addresses.filter((x) => x.straatnaam !== a.straatnaam && ok(x) && dist(x) <= 500).sort((x, y) => dist(x) - dist(y));
+  return [...street, ...near].slice(0, max);
+}
+
+async function renderWoz(v, a) {
+  const box = sheetBody.querySelector('#woz-box');
+  if (!box) return;
+  const woz = await wozOf(a);
+  if (!sheetBody.contains(box)) return;
+  if (!woz) {
+    box.innerHTML = '<p class="muted">No WOZ value found for this address (it may be new or not a home).</p>';
+    return;
+  }
+  const m2 = perM2(woz, a);
+  box.innerHTML = `<dl class="facts">
+      <dt>WOZ value</dt><dd><strong>${eur(woz.value)}</strong> <span class="muted">(value date ${esc(woz.date)})</span></dd>
+      ${m2 ? `<dt>Per m²</dt><dd>${eur(m2)}</dd>` : ''}
+      ${woz.history.length > 1 ? `<dt>Earlier</dt><dd>${woz.history.slice(1, 4).map((h) => `${eur(h.value)} <span class="muted">(${esc(h.date.slice(0, 4))})</span>`).join(', ')}</dd>` : ''}
+    </dl>
+    <button type="button" class="council-button" data-value-check>Compare with similar homes</button>
+    <div id="value-check"></div>
+    <p class="source">WOZ-waardeloket (Kadaster), looked up for this address only; values for other homes are looked up one at a time when
+      you tap them. WOZ is the municipality's valuation for tax and usually trails the market.</p>`;
+}
+
+// Similar homes are listed, and each WOZ value is looked up only when the user taps it: the WOZ-waardeloket allows
+// viewing the value of a specific home, not automated extraction of many.
+function renderValueCheck(v, a) {
+  const out = sheetBody.querySelector('#value-check');
+  if (!out) return;
+  const peers = similarHomes(v, a);
+  const type = v.enrich?.[a.adresseerbaarobject_id]?.woningtype;
+  if (!peers.length) {
+    out.innerHTML = '<p class="muted">No similar homes nearby to compare with.</p>';
+    return;
+  }
+  out.innerHTML = `<p class="muted">Similar homes nearby${type ? ` (${esc(type)}, ${num(a.oppervlakte * 0.7)}–${num(a.oppervlakte * 1.3)} m²)` : ''}.
+      Tap a home to look up its WOZ value; with three or more, Prospect compares them per m².</p>
+    <table class="table"><thead><tr><th>Home</th><th>m²</th><th>WOZ</th><th>per m²</th></tr></thead><tbody>
+      ${peers.map((x) => `<tr data-peer="${esc(x.adresseerbaarobject_id)}"><td>${esc(`${x.straatnaam} ${houseNumber(x)}`)}</td><td>${num(x.oppervlakte)}</td>
+        <td colspan="2"><button type="button" class="link-button" data-woz-peer="${esc(x.adresseerbaarobject_id)}">Look up</button></td></tr>`).join('')}
+    </tbody></table>
+    <div id="value-verdict"></div>`;
+  for (const x of peers) if (wozCache.has(x.adresseerbaarobject_id)) showPeer(v, a, x);
+}
+
+async function showPeer(v, a, x) {
+  const row = sheetBody.querySelector(`tr[data-peer="${CSS.escape(x.adresseerbaarobject_id)}"]`);
+  if (!row) return;
+  row.lastElementChild.innerHTML = '<span class="muted">…</span>';
+  const woz = await wozOf(x);
+  if (!sheetBody.contains(row)) return;
+  row.lastElementChild.remove();
+  row.insertAdjacentHTML('beforeend', woz ? `<td>${eur(woz.value)}</td><td>${perM2(woz, x) ? eur(perM2(woz, x)) : '–'}</td>` : '<td colspan="2" class="muted">none</td>');
+  updateVerdict(v, a);
+}
+
+async function updateVerdict(v, a) {
+  const box = sheetBody.querySelector('#value-verdict');
+  if (!box) return;
+  const own = await wozOf(a);
+  const peers = similarHomes(v, a).filter((x) => wozCache.has(x.adresseerbaarobject_id));
+  const rows = (await Promise.all(peers.map(async (x) => ({ x, woz: await wozOf(x) })))).filter((r) => perM2(r.woz, r.x));
+  state.valueCheck = { address: a.adresseerbaarobject_id, peers: rows.map((r) => ({ adres: `${r.x.straatnaam} ${houseNumber(r.x)}`,
+    oppervlakte_m2: r.x.oppervlakte, woz: r.woz.value, woz_date: r.woz.date, woz_per_m2: Math.round(perM2(r.woz, r.x)) })) };
+  if (rows.length < 3 || !perM2(own, a)) {
+    box.innerHTML = rows.length ? `<p class="muted">${rows.length} of 3 looked up.</p>` : '';
+    return;
+  }
+  const vals = rows.map((r) => perM2(r.woz, r.x)).sort((x, y) => x - y);
+  const median = vals[Math.floor(vals.length / 2)];
+  const diff = Math.round((perM2(own, a) / median - 1) * 100);
+  const verdict = Math.abs(diff) <= 5 ? 'in line with' : diff > 0 ? `${diff}% above` : `${-diff}% below`;
+  box.innerHTML = `<p class="value-verdict"><strong>${eur(perM2(own, a))}/m²</strong> is ${verdict} the median of the ${rows.length} similar
+      homes you looked up: <strong>${eur(median)}/m²</strong>. At that median this home would be valued at about ${eur(median * a.oppervlakte)}.</p>
+    <p class="source">Same street first, then within 500 m; same house type and floor area within 30% (BAG). A higher value per m² usually
+      means a larger plot, better finish or a better spot on the street, so check what differs.</p>`;
+}
+
 function renderBuilding(v, p, addrs, a) {
   const buurt = buurtProps(a?.buurtcode || p.buurtcode);
   const e = a && v.enrich?.[a.adresseerbaarobject_id];
@@ -614,6 +792,7 @@ function renderBuilding(v, p, addrs, a) {
       ${home ? '<button type="button" class="council-button" data-valuation-building>Estimate a value</button>' : ''}
       <button type="button" class="council-button" data-street="${esc(p.straat)}">All of ${esc(p.straat)}</button>
     </div>
+    ${a && (a.gebruiksdoel || '').includes('woon') ? `<h2 class="section-title">Value</h2><div id="woz-box"><p class="working">Looking up the WOZ value…</p></div>` : ''}
     ${homeFacts(e)}
     ${(() => { const norm = (t) => t.toLowerCase().replace(/[\s-]/g, '');
       const own = addrs.map((x) => norm(`${x.straatnaam} ${houseNumber(x)}`));
@@ -687,8 +866,9 @@ function renderStreet(v, st, pts) {
         ${Object.entries(FOUNDATION).filter(([k]) => flags[k]).map(([k, f]) => `<span style="flex:${flags[k]};background:${f.color}"></span>`).join('')}</div>
       <ul class="stack-legend">${Object.entries(FOUNDATION).filter(([k]) => flags[k]).map(([k, f]) => `<li><span class="swatch" style="background:${f.color}"></span>${esc(f.label)} <strong>${flags[k]}</strong></li>`).join('')}</ul>` : ''}
     ${area ? `<div class="action-row"><button type="button" class="council-button preset" data-area="${area.key}">Full street dossier</button></div>` : ''}
-    ${buurt ? buurtSummary(buurt, { measured: se && { score_rust: se.score_rust, score_autoluw: se.score_autoluw, lden_db: se.lden_db_mediaan,
-      lden_bron: se.lden_bron, afstand_hoofdweg_m: se.afstand_hoofdweg_m_mediaan }, where: 'this street' }) : ''}
+    ${buurt ? buurtSummary(buurt, { measured: se && { score_rust: se.score_rust, score_autoluw: se.score_autoluw, score_leefbaarheid: se.score_leefbaarheid,
+      leefbaarometer_grid: { jaar: se.leefbaarometer_jaar, veiligheid_pct: se.veiligheid_grid_pct }, lden_db: se.lden_db_mediaan,
+      lden_bron: se.lden_bron }, where: 'this street' }) : ''}
     ${details('s-homes', `Homes on this street (${homes.length})`, `<ul class="address-list">${homes.map((x) =>
       `<li><button type="button" class="link-button" data-address="${esc(x.adresseerbaarobject_id)}">${esc(houseNumber(x))}</button> <span class="muted">${x.bouwjaar || ''}${x.oppervlakte ? ` · ${x.oppervlakte} m²` : ''}</span></li>`).join('')}</ul>`)}
     ${streetListings(v, st.straat).length ? details('s-street-market', `For sale & recently sold (${streetListings(v, st.straat).length})`, listingsHtml(streetListings(v, st.straat)), true) : ''}
@@ -945,8 +1125,19 @@ sheetBody.addEventListener('click', (e) => {
     openValuation(lightDossier(state.current.doc), { addresses: [placeAddress(state.current.doc)] });
   } else if (e.target.closest('[data-valuation-building]') && state.current?.kind === 'building') {
     const { address: a, village } = state.current;
-    openValuation(villageDossier(villages.data[village], a), { addresses: [{ adres: a.weergavenaam, postcode: a.postcode,
-      huisnummer: a.huisnummer, buurtcode: a.buurtcode, vbo: a.adresseerbaarobject_id }] });
+    const d = villageDossier(villages.data[village], a);
+    wozOf(a).then((woz) => {
+      d.woz.this_home = woz;
+      openValuation(d, { addresses: [{ adres: a.weergavenaam, postcode: a.postcode, huisnummer: a.huisnummer, buurtcode: a.buurtcode,
+        vbo: a.adresseerbaarobject_id }] });
+    });
+  } else if (e.target.closest('[data-woz-peer]') && state.current?.kind === 'building') {
+    const v = villages.data[state.current.village];
+    const x = v.addresses.find((y) => y.adresseerbaarobject_id === e.target.closest('[data-woz-peer]').dataset.wozPeer);
+    if (x) showPeer(v, state.current.address, x);
+  } else if (e.target.closest('[data-value-check]') && state.current?.kind === 'building') {
+    e.target.closest('[data-value-check]').hidden = true;
+    renderValueCheck(villages.data[state.current.village], state.current.address);
   } else if (e.target.closest('[data-street]') && state.current?.kind === 'building') {
     openStreet(state.current.village, e.target.closest('[data-street]').dataset.street);
   } else if (e.target.closest('[data-address]') && state.current?.village) {
@@ -991,6 +1182,8 @@ function villageDossier(v, a) {
   d.adressen = st.adressen;
   d.building = { built: p.bouwjaar, status: p.status, addresses_in_building: p.adressen, floor_area_m2: a.oppervlakte, use: uses(a.gebruiksdoel),
     soil: p.bodem, foundation_flag: p.fundering, rijksmonument: p.monument, measured_at_home: v.enrich?.[a.adresseerbaarobject_id] || null };
+  d.woz = { this_home: null, similar_homes: state.valueCheck?.address === a.adresseerbaarobject_id ? state.valueCheck.peers : null,
+    note: 'WOZ-waardeloket; WOZ usually trails market value' };
   d.street = { addresses: st.adressen, homes: st.woningen, built_min: st.bouwjaar_min, built_median: st.bouwjaar_mediaan, built_max: st.bouwjaar_max,
     median_home_floor_area_m2: st.oppervlakte_mediaan, foundation_flags_by_address: st.fundering, soil: st.bodem,
     measured_on_street: v.streetsEnrich?.[a.straatnaam] || null,
@@ -1040,27 +1233,41 @@ document.querySelectorAll('.chip[data-layer]').forEach((c) => c.addEventListener
 
 const dialog = document.getElementById('weights');
 function renderSliders() {
+  const m = state.market;
+  const shares = m ? Object.entries(m.weights).filter(([, w]) => w > 0).sort((a, b) => b[1] - a[1])
+    .map(([k, w]) => `${THEMES[k]} ${Math.round(w * 100)}%`).join(', ') : 'equal weights';
+  document.getElementById('weight-mode').innerHTML = state.weights
+    ? `<p class="notice">Using your own priorities. <button type="button" class="link-button" id="use-market">Use market weights</button></p>`
+    : `<p class="muted"><strong>Market weights</strong> (default): ${esc(shares)}. Learned from home values in ${m ? num(m.buurten) : 'all'}
+        Dutch neighbourhoods, comparing neighbourhoods within the same gemeente${m ? ` (explains ${Math.round(m.r2_within_gemeente * 100)}% of value differences)` : ''}.
+        The Leefbaarometer liveability score is itself built from house prices, so it carries most of the weight.
+        Move a slider to set your own priorities instead.</p>`;
+  const pos = state.weights || DEFAULT_WEIGHTS;
   document.getElementById('weight-sliders').innerHTML = Object.entries(THEMES).map(([k, label]) => `
     <label class="slider"><span>${esc(label)}${k === 'onderwijs' ? ' <span class="muted">(streets only)</span>' : ''}</span>
-      <input type="range" min="0" max="3" step="1" value="${state.weights[k]}" data-weight="${k}" aria-label="${esc(label)} weight">
-      <output>${['Off', 'Low', 'Normal', 'High'][state.weights[k]]}</output></label>`).join('');
+      <input type="range" min="0" max="3" step="1" value="${pos[k] ?? 2}" data-weight="${k}" aria-label="${esc(label)} weight">
+      <output>${state.weights ? SLIDER[pos[k] ?? 2] : 'Market'}</output></label>`).join('');
 }
 document.getElementById('open-weights').addEventListener('click', () => { renderSliders(); dialog.showModal(); });
 document.getElementById('weight-sliders').addEventListener('input', (e) => {
   const k = e.target.dataset.weight;
   if (!k) return;
+  const first = !state.weights;
+  state.weights ??= { ...DEFAULT_WEIGHTS };
   state.weights[k] = Number(e.target.value);
-  e.target.nextElementSibling.textContent = ['Off', 'Low', 'Normal', 'High'][state.weights[k]];
+  if (first) renderSliders(); else e.target.nextElementSibling.textContent = SLIDER[state.weights[k]];
   applyWeights();
 });
-document.getElementById('reset-weights').addEventListener('click', () => {
-  state.weights = { ...DEFAULT_WEIGHTS };
+function useMarketWeights() {
+  state.weights = null;
   renderSliders();
   applyWeights();
-});
+}
+document.getElementById('reset-weights').addEventListener('click', useMarketWeights);
+document.getElementById('weight-mode').addEventListener('click', (e) => { if (e.target.id === 'use-market') useMarketWeights(); });
 
 function applyWeights() {
-  storageSet('prospect.weights', state.weights);
+  storageSet('prospect.weights.v2', state.weights);
   recomputeOverall();
   const c = state.current;
   if (c?.kind === 'area' && sheetBody.querySelector('.overall')) renderArea(state.dossiers[c.key], c.title);
@@ -1070,6 +1277,11 @@ function applyWeights() {
   else if (c?.kind === 'street') openStreet(c.village, c.straat);
 }
 
+fetch('data/market-weights.json').then((r) => (r.ok ? r.json() : null)).then((m) => {
+  state.market = m;
+  window.prospectMarketWeights = m || {}; // for tests
+  if (!state.weights) applyWeights();
+}).catch(() => { window.prospectMarketWeights = {}; });
 const buurtenLoaded = loadBuurten().catch(() => {});
 loadVillages().catch(() => {});
 renderLegend();

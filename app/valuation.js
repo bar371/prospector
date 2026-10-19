@@ -24,6 +24,9 @@ How to work:
   lanes, new build), prefer them over buurt averages. Compare with the same street (street.measured_on_street,
   street.homes) and price the differences: plot and garden size, a sunny back garden, waterfront, detached versus
   terraced, quiet versus a busy road.
+- When woz_values are given (this home's own WOZ value and history, and WOZ per m² of similar homes nearby), anchor on
+  them: they are official valuations of these very homes. WOZ usually trails market value; move it to today with the
+  price trend and the asking prices.
 - For a new development, buurt statistics (surveys, crime, liveability) mostly describe older homes in the buurt;
   give them little weight.
 - When evidence is thin or conflicting, widen the range and lower the confidence rather than guessing.
@@ -97,7 +100,7 @@ This is an indicative estimate, not a formal taxatie.`;
       return { street: `${d.straat}, ${d.woonplaats}`, gemeente: d.gemeente, data_coverage: 'buurt and gemeente level only',
         scores_national_percentile: d.scores, buurt: d.buurten[0], gemeente_average_sale_price_by_year: d.gemeente_vergelijking.gemiddelde_verkoopprijs,
         ...(d.building ? { data_coverage: 'buurt, gemeente, street and building level', building: d.building, street: d.street,
-          listings_on_street: d.listings, listings_in_village: d.village_listings } : {}) };
+          listings_on_street: d.listings, listings_in_village: d.village_listings, woz_values: d.woz } : {}) };
     }
     return {
       street: `${d.straat}, ${d.woonplaats}`, gemeente: d.gemeente, addresses_on_street: d.adressen,

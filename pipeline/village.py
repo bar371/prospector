@@ -384,7 +384,7 @@ def build(key, v):
 
     # Display name, soil, foundation flag and monument status live on the building or are rebuilt in the app.
     keep = ("straatnaam", "huisnummer", "huisletter", "huisnummertoevoeging", "postcode", "buurtcode",
-            "lon", "lat", "adresseerbaarobject_id", "oppervlakte", "gebruiksdoel", "bouwjaar", "pand")
+            "lon", "lat", "adresseerbaarobject_id", "nummeraanduiding_id", "oppervlakte", "gebruiksdoel", "bouwjaar", "pand")
     addr_rows = [{k: d.get(k) for k in keep if d.get(k) is not None} for d in docs]
     (out / "addresses.json").write_text(json.dumps(addr_rows, ensure_ascii=False, separators=(",", ":")))
     (out / "buildings.geojson").write_text(json.dumps({"type": "FeatureCollection", "features": features}, ensure_ascii=False, separators=(",", ":")))
