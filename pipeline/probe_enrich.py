@@ -1,27 +1,22 @@
-"""Probe the public WOZ-waardeloket for one address (Koolrabi 11, Hazerswoude-Rijndijk): response shape and CORS headers."""
-import json
+"""Probe the Leefbaarometer 100 m grid file: header, sample rows, id format, years."""
+import io
 import urllib.request
+import zipfile
 
-UA = {"User-Agent": "prospect-pipeline/0.1 (+https://github.com/bar371/prospector)", "Origin": "https://bar371.github.io"}
-
-
-def get(url):
-    try:
-        with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=60) as r:
-            return r.status, dict(r.headers), r.read().decode("utf-8", "replace")
-    except urllib.error.HTTPError as e:
-        return e.code, dict(e.headers), e.read().decode("utf-8", "replace")[:500]
-    except Exception as e:
-        return None, {}, str(e)
-
-
-code, _, body = get("https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=Koolrabi%2011%20Hazerswoude-Rijndijk&fq=type:adres&rows=1"
-                    "&fl=weergavenaam,nummeraanduiding_id,adresseerbaarobject_id")
-doc = json.loads(body)["response"]["docs"][0]
-print("address", doc)
-na = doc["nummeraanduiding_id"]
-for url in [f"https://api.kadaster.nl/lvwoz/wozwaardeloket-api/v1/wozwaarde/nummeraanduiding/{na}",
-            f"https://www.wozwaardeloket.nl/wozwaardeloket-api/v1/wozwaarde/nummeraanduiding/{na}",
-            "https://www.wozwaardeloket.nl/"]:
-    code, headers, body = get(url)
-    print(f"\n### {url}\n-> {code}\nheaders: { {k: v for k, v in headers.items() if k.lower().startswith(('access-control', 'content-type', 'set-cookie'))} }\n{body[:1500]}")
+UA = {"User-Agent": "prospect-pipeline/0.1 (+https://github.com/bar371/prospector)"}
+URL = "https://www.leefbaarometer.nl/resources/open-data-leefbaarometer-meting-2024.zip"
+with urllib.request.urlopen(urllib.request.Request(URL, headers=UA), timeout=900) as r:
+    blob = r.read()
+print("zip bytes", len(blob))
+z = zipfile.ZipFile(io.BytesIO(blob))
+for i in z.infolist():
+    print(i.filename, i.file_size)
+name = next(i.filename for i in z.infolist() if "scores grids" in i.filename)
+with z.open(name) as fh:
+    t = io.TextIOWrapper(fh, encoding="utf-8-sig", errors="replace")
+    for n, line in enumerate(t):
+        if n < 6:
+            print(repr(line))
+        last = line
+        count = n
+print("rows", count, "last", repr(last))
